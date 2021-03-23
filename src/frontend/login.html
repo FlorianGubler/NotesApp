@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="assets/css/login.css" type="text/css">
+    <script src="https://use.fontawesome.com/releases/v5.9.0/js/all.js" data-auto-replace-svg></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>
+      window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'AutoLogin', attributes: ""}));
+      window.api.receive("fromMainA", (args) => {
+        if(args.type == "replyLogin"){
+            var response = JSON.parse(args.attributes);
+            if(response){
+              location.href = "home.html";
+            }
+        }
+      });
+    </script>
+</head>
+<body>
+
+<div id="login" class="modal">
+  <form class="modal-content animate" onsubmit="checkLogin(); return false;">
+    <div class="imgcontainer">
+      <img src="assets/img/profilepictures/img_avatar2.png" alt="Avatar" class="avatar">
+    </div>
+
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" id="uname" required>
+
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" id="psw" required>
+        
+      <button type="submit">Login</button>
+      <label>
+        <input type="checkbox" checked="checked" id="remember"> Remember me
+      </label>
+
+      <p style='background-color: red;display: none;' class='login-response-false'>Login failed</p>
+
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <span class="psw"><a href="#">Forgot password?</a></span>
+    </div>
+  </form>
+</div>
+
+<script>
+  function checkLogin(){
+    window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'Login', attributes: JSON.stringify({username: document.getElementById('uname').value, password: document.getElementById('psw').value, remember: document.getElementById('remember').checked})}));
+    window.api.receive("fromMainA", (args) => {
+        if(args.type == "replyUserNotes"){
+            var response = JSON.parse(args.attributes);
+            //code...
+        }
+    });
+  }
+</script>
+</body>
+</html>

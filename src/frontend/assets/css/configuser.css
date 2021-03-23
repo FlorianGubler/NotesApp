@@ -1,0 +1,124 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+@media only screen and (orientation: landscape) {
+  h1{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px;
+  }
+  #userprofile{
+    min-width: 400px;
+    position: absolute;
+    top: 250px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #userprofile img{
+    width: 30%;
+    height: 30%;
+    border-radius: 100%;
+    margin: 15px;
+  }
+  #userprofile a{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+    color: rgb(76, 76, 197);
+  }
+  .newuserinput{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .newuserinput input, .newuserinput button {
+    background-color: rgb(172, 172, 172);
+    border: 0;
+    padding: 15px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+  }
+  .newuserinput button {
+    background-color: rgb(83, 83, 83);
+  }
+  #newusername{
+    top: 250px;
+    min-width: 100%;
+    width: auto;
+    min-height: 100px;
+    height: auto;
+  }
+  #newpasswordf{
+    top: 500px;
+    min-width: 100%;
+    width: auto;
+    min-height: 300px;
+    padding-bottom: 40px;
+    height: auto;
+  }
+}
+@media only screen and (orientation: portrait) {
+  h1{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px;
+  }
+  #userprofile{
+    min-width: 384px;
+    position: absolute;
+    top: 250px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #userprofile img{
+    width: 30%;
+    height: 30%;
+    border-radius: 100%;
+    margin: 15px;
+  }
+  #userprofile a{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+    color: rgb(76, 76, 197);
+  }
+  .newuserinput{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .newuserinput input, .newuserinput button {
+    background-color: rgb(172, 172, 172);
+    border: 0;
+    padding: 15px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+  }
+  .newuserinput button {
+    background-color: rgb(83, 83, 83);
+  }
+  #newusername{
+    top: 250px;
+    min-width: 75%;
+    width: auto;
+    min-height: 100px;
+    height: auto;
+  }
+  #newpasswordf{
+    top: 500px;
+    min-width: 75%;
+    width: auto;
+    min-height: 300px;
+    padding-bottom: 40px;
+    height: auto;
+  }
+}

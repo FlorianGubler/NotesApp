@@ -1,0 +1,21 @@
+<div id="includedContent"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script> 
+    $(function(){
+      $("#includedContent").load("navbar.html"); 
+    });
+</script> 
+<div id="new-note-container">
+    <label for="subject">Fach od. Modul</label>
+    <select name="subject" id="cars" required>
+        <optgroup label="BMS">
+            
+        </optgroup>
+        <optgroup label="TBZ">
+        
+        </optgroup>
+    </select>
+    <input type="text" placeholder="Exam Tag" required>
+    <input type="number" placeholder="Grade" required>
+    <button type="submit">Submit</button>
+</div>
