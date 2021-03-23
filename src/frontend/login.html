@@ -42,7 +42,7 @@
 
     </div>
 
-    <div class="container" style="background-color:#f1f1f1">
+    <div class="container" style="background-color:#404142">
       <span class="psw"><a href="#">Forgot password?</a></span>
     </div>
   </form>
@@ -52,9 +52,11 @@
   function checkLogin(){
     window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'Login', attributes: JSON.stringify({username: document.getElementById('uname').value, password: document.getElementById('psw').value, remember: document.getElementById('remember').checked})}));
     window.api.receive("fromMainA", (args) => {
-        if(args.type == "replyUserNotes"){
+        if(args.type == "replyLogin"){
             var response = JSON.parse(args.attributes);
-            //code...
+            if(response){
+              location.href = "home.html"
+            }
         }
     });
   }

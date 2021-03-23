@@ -1,4 +1,4 @@
-const {app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain } = require('electron');
+const {app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
 const path = require("path");
 const { defaultApp } = require('process');
 const exec = require('child_process').execFile;
