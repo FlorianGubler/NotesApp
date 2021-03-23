@@ -1,0 +1,28 @@
+<div id="includedContent"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script> 
+    $(function(){
+      $("#includedContent").load("navbar.html"); 
+    });
+</script> 
+<link rel="stylesheet" href="assets/css/configuser.css">
+<script>document.title = "Mein Profil"; document.getElementById('site-title').innerHTML = "Profil konfigurieren - dddddddddddddd"</script>
+<h1>Benutzerkonfiguration von dddddddddddddddd</h1>
+<div id="userprofile">
+    <img src="/assets/profilepictures/default_pb.png?>" alt="Profile Picture"/>
+    <form id="newusername" action="<?php echo $rootpath ?>/config" method="post" class="newuserinput">
+        <label>New Username</label>
+        <input id="getnewusername" name="newusername" placeholder="New Username">
+        <input id="getpasswordforusr" name="usrpassword" placeholder="Your Password">
+        <button name="submit-usr" type="submit" >Neuer Username Speichern</button>
+    </form>
+    <form id="newpasswordf" action="<?php echo $rootpath ?>/config" method="post" class="newuserinput">
+        <label>Neues Passwort</label>
+        <input type="password" id="getnewpassword" name="newpassword" placeholder="New Password">
+        <label>Neues Passwort wiederholen</label>
+        <input type="password" id="getnewpasswordrepeat" name="newpasswordrepeat" placeholder="New Password">
+        <label>Altes Passwort eingeben</label>
+        <input type="password" id="getoldpassword" name="oldpassword" placeholder="Old Password">
+        <button type="submit" name="submit-paswd">Neues Passwort Speichern</button>
+    </form>
+</div>

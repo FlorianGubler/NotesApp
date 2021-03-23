@@ -1,0 +1,159 @@
+<div id="includedContent"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script> 
+    $(function(){
+      $("#includedContent").load("navbar.html"); 
+    });
+</script> 
+<script>document.title = "BMS - Noten"; document.getElementById('site-title').innerHTML = "BMS - Noten"</script>
+<link rel="stylesheet" href="assets/css/bms.css">
+<div id="top-bar-gui">
+    <h1 id="title-home"></h1>
+    <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
+</div>
+<ul id="semesters">
+
+</ul>
+<div id="tables">
+    <table id="table-notes-norm"></table>
+</div>
+<div id="calculates">
+    <h2>Aktueller Stand</h2>
+    <table id="table-notes-end"></table>
+</div>    
+<script>
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+    window.api.receive("fromMainC", (args) => {
+        if(args.type == "replyUserData"){
+            var response = JSON.parse(args.attributes);
+            if(response != null){
+                user_login = response;
+                document.getElementById("title-home").innerHTML = "BMS Notentabelle von " + response.username;;
+            }
+        }
+    }); 
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Semesters', attributes: ""}));
+    window.api.receive("fromMainD", (args) => {
+        if(args.type == "replySemesters"){
+            var response = JSON.parse(args.attributes);
+            if(response != null){
+                for(var smes in response){
+                    var li = document.createElement("li");
+                    li.addEventListener("click", function() {
+                        document.getElementById("table-notes-norm").innerHTML = "";
+                        document.getElementById("table-notes-end").innerHTML = "";
+                        getNotesData(response[smes].id);
+                    });
+                    li.innerHTML = response[smes].semesterTag;
+                    li.classList.add("semester-choose");
+                    document.getElementById("semesters").appendChild(li);
+                }
+            }
+        }
+    }); 
+    
+    function getNotesData(semester){
+        console.log("GetNotesData: " + semester);
+        window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
+        window.api.receive("fromMainB", (args) => {
+            if(args.type == "replySubjects"){
+                var response = JSON.parse(args.attributes);
+                console.log("subj: ");
+                console.log(response);
+                var subjects = [];
+                var endnotes = [];
+                response.forEach(subj => {
+                    if(subj.schoolName == "BMS"){
+                        subjects[subj.subjectName] = [];
+                        endnotes[subj.subjectName] = 0;
+                    }
+                });
+                window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'NotesfromUser', attributes: ""}));
+                window.api.receive("fromMainA", (args) => {
+                    if(args.type == "replyUserNotes"){
+                        var response = JSON.parse(args.attributes);
+                        console.log("notes: ");
+                        console.log(response);
+                        response.forEach(note => {
+                            if(note.schoolName == "BMS" ){
+                                if(note.semesterTag == semester || note.FK_semester == semester){
+                                    subjects[note.subjectName].push({value: note.value, examName: note.examName});
+                                }
+                            }
+                        });
+                        var count;
+                        for(var subj in subjects){
+                            var tr = document.createElement("tr");
+                            var th = document.createElement("th");
+                            th.innerHTML = subj;
+                            tr.appendChild(th);
+                            count = 0;
+                            subjects[subj].forEach(note => {
+                                count++;
+                                endnotes[subj] += note.value;
+                                var td = document.createElement("td");
+                                td.innerHTML = note.value;
+                                if(note.value > 4){
+                                    td.classList.add("grade-good");
+                                }
+                                else if(note.value < 4){
+                                    td.classList.add("grade-bad");
+                                }
+                                tr.appendChild(td);
+                            })
+                            if(count != 0){
+                                endnotes[subj] = Math.round((endnotes[subj] / count)*2)/2;
+                            }
+                            document.getElementById("table-notes-norm").appendChild(tr);
+                        };
+                        count = 0;
+                        for(var endnote in endnotes){
+                            var tr = document.createElement("tr");
+                            var th = document.createElement("th");
+                            th.innerHTML = "Gesamtnote " + endnote;
+                            tr.appendChild(th);
+                            var td = document.createElement("td");
+                            td.innerHTML = endnotes[endnote];
+                            if(endnotes[endnote] > 4){
+                                td.classList.add("grade-good");
+                            }
+                            else if(endnotes[endnote] < 4){
+                                td.classList.add("grade-bad");
+                            }
+                            tr.appendChild(td);
+                            document.getElementById("table-notes-end").appendChild(tr);
+                            if(endnotes[endnote] != 0){
+                                count++;
+                            }
+                        }
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        //FinalGrade
+                        finalgrade = endnotes["Chemie"] + endnotes["Französisch"] + endnotes["Französich Vokabeln"] + endnotes["Geschichte"] + endnotes["BWL"] + endnotes["Mathematik"];
+                        finalgrade = finalgrade / count;
+                        var tr = document.createElement("tr");
+                        var th = document.createElement("th");
+                        th.innerHTML = "Endnote BMS";
+                        tr.appendChild(th);
+                        var td = document.createElement("td");
+                        td.innerHTML = finalgrade
+                        if(finalgrade > 4){
+                            td.classList.add("grade-good");
+                        }
+                        else if(finalgrade < 4){
+                            td.classList.add("grade-bad");
+                        }
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+                    }
+                });
+            }
+        });
+    }
+    getNotesData(1);
+</script>

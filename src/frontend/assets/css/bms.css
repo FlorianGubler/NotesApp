@@ -1,0 +1,96 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+td, th{
+    text-align: center;
+}
+#edit-table{
+    display: inline;
+}
+.semester-choose{
+    display: block;
+    border-radius: 5px;
+    padding: 3px;
+    margin: 5px;
+    cursor: pointer;
+    display: block;
+}
+.semester-choose:hover{
+    background-color: #343a40;
+}
+#semesters{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+#table-notes-norm{
+    margin: 10px;
+    min-width: 40%;
+    width: fit-content;
+    overflow: auto;
+}
+#table-notes-norm tr{
+    padding: 5px;
+    background-color: #343a40;
+}
+#table-notes-norm th{
+    width: fit-content;
+}
+#table-notes-norm td{
+    min-width: 20px;
+    width: auto;
+}
+#table-notes-norm  tr:nth-child(even){
+    background-color: #3e444a;
+}
+#table-notes-norm td, #table-notes-norm th{
+    padding: 12.5px;
+}
+.grade-bad{
+    color: #ff0000;
+}
+.grade-good{
+    color: #4ada26;
+}
+#calculates{
+    width: auto;
+    position: absolute;
+    right: 25px;
+    top: 115px;
+    border-radius: 5px;
+    background-color: #343a40;
+}
+#calculates h2{
+    padding: 10px;
+}
+#table-notes-end td, #table-notes-end th{
+    padding: 10px;
+}
+#table-notes-end th{
+    text-align: left;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    margin-left: 10px;
+}
+#top-bar-gui{
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+}
+#top-bar-gui a{
+    margin-top: -5px;
+    margin-left: 50px;
+    font-size: 25px;
+}
+#splitline{
+    padding-left: 0;
+    margin-left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #1c1c1c;
+}

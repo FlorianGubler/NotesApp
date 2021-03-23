@@ -1,0 +1,30 @@
+<div id="includedContent"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script> 
+    $(function(){
+      $("#includedContent").load("navbar.html"); 
+    });
+</script> 
+<link rel="stylesheet" href="assets/css/home.css">
+<h1 id="title-home"></h1>
+<div id="notes-container">
+	<h2>Notenberechnung</h2>
+	<div onclick="location.href='bms.html';" style="cursor:pointer;"><p class="dash-icon"><i class="far fa-clipboard"></i></p><a>BMS Noten</a></div>
+	<div onclick="location.href='lap.html';" style="cursor:pointer;"><p class="dash-icon"><i class="far fa-clipboard"></i></p><a>LAP Noten</a></div>
+</div>
+<div id="else-container">
+	<h2>Sonstiges</h2>
+	<div onclick="location.href='config.php';" style="cursor:pointer;"><p class="dash-icon"><i class="fas fa-users-cog"></i></p><a>Profil Konfiguration</a></div>
+</div>
+<script>
+	window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+	window.api.receive("fromMainC", (args) => {
+		if(args.type == "replyUserData"){
+			var response = JSON.parse(args.attributes);
+			if(response != null){
+				user_login = response;
+				document.getElementById("title-home").innerHTML = "Willkommen, " + response.username;;
+			}
+		}
+	});
+</script>
