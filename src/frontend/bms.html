@@ -39,12 +39,12 @@
             if(response != null){
                 for(var smes in response){
                     var li = document.createElement("li");
+                    li.innerHTML = response[smes].semesterTag;
                     li.addEventListener("click", function() {
                         document.getElementById("table-notes-norm").innerHTML = "";
                         document.getElementById("table-notes-end").innerHTML = "";
-                        getNotesData(response[smes].id);
+                        getNotesData(this.innerHTML);
                     });
-                    li.innerHTML = response[smes].semesterTag;
                     li.classList.add("semester-choose");
                     document.getElementById("semesters").appendChild(li);
                 }
@@ -53,13 +53,10 @@
     }); 
     
     function getNotesData(semester){
-        console.log("GetNotesData: " + semester);
         window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
         window.api.receive("fromMainB", (args) => {
             if(args.type == "replySubjects"){
                 var response = JSON.parse(args.attributes);
-                console.log("subj: ");
-                console.log(response);
                 var subjects = [];
                 var endnotes = [];
                 response.forEach(subj => {
@@ -72,8 +69,6 @@
                 window.api.receive("fromMainA", (args) => {
                     if(args.type == "replyUserNotes"){
                         var response = JSON.parse(args.attributes);
-                        console.log("notes: ");
-                        console.log(response);
                         response.forEach(note => {
                             if(note.schoolName == "BMS" ){
                                 if(note.semesterTag == semester || note.FK_semester == semester){
@@ -117,7 +112,7 @@
                             if(endnotes[endnote] > 4){
                                 td.classList.add("grade-good");
                             }
-                            else if(endnotes[endnote] < 4){
+                            else if(endnotes[endnote] < 4 && endnotes[endnote] != 0){
                                 td.classList.add("grade-bad");
                             }
                             tr.appendChild(td);
@@ -145,7 +140,7 @@
                         if(finalgrade > 4){
                             td.classList.add("grade-good");
                         }
-                        else if(finalgrade < 4){
+                        else if(finalgrade < 4 && finalgrade != 0){
                             td.classList.add("grade-bad");
                         }
                         tr.appendChild(td);

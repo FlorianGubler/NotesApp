@@ -7,6 +7,7 @@
     "start": "electron ."
   },
   "dependencies": {
+    "custom-electron-titlebar": "^3.2.6",
     "jquery": "^3.6.0",
     "js-sha256": "^0.9.0",
     "mysql": "^2.18.1"

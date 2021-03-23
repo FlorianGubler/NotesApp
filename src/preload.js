@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld(
             }
         },
         receive: (channel, func) => {
-            ipcRenderer.on(channel, (event, args) => {
+            ipcRenderer.once(channel, (event, args) => {
                 func(JSON.parse(args))
                 args = null;
             });
