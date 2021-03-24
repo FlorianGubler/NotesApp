@@ -149,7 +149,6 @@ function checkAutoLogin(event){
 }
 
 function uploadNotes(event, data){
-  console.log(JSON.stringify(data))
   con.query("SELECT * FROM subjects where subjectName='"+data.subject+"';", function (err, subject) {
     if (err) {
       console.log(err);
