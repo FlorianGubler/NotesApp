@@ -67,12 +67,6 @@
                 subjects[school].forEach(subject => {
                     var option = document.createElement("option");
                     option.innerHTML = subject;
-                    for(obj in response){
-                        if(response[obj].subjectName == subject){
-                            index = obj;
-                        }
-                    }
-                    option.name = obj;
                     optiongroup.appendChild(option);
                 })
                 document.getElementById("select-subject").appendChild(optiongroup)
@@ -84,7 +78,7 @@
     function submitNote(){
         var examTagVal = document.getElementById("get-examTag").value;
         var noteVal = document.getElementById("get-note").value;
-        var subjectVal = document.getElementById("select-subject").selectedOptions[0].name;
+        var subjectVal = document.getElementById("select-subject").value;
         var semesterVal = document.getElementById("select-semester").value.split(".")[0];
 
         window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Note', attributes: JSON.stringify({examTag: examTagVal, note: noteVal, subject: subjectVal, semester: semesterVal})}));
