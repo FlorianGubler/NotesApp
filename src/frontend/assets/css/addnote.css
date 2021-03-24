@@ -2,8 +2,13 @@ body {font-family: Arial, Helvetica, sans-serif;}
 *{
   color: white;
 }
-/* Full-width input fields */
-input[type=text], input[type=password] {
+h1{
+    font-size: 40px;
+    display: block;
+    margin-top: 30px;
+}
+
+input, #select-subject, #select-semester{
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -12,9 +17,11 @@ input[type=text], input[type=password] {
   box-sizing: border-box;
   background-color: #323233;
 }
-
+input:focus{
+    outline: none;
+}
 button {
-  background-color: rgb(61, 129, 219);
+  background-color: #616264;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -29,8 +36,7 @@ button:hover {
 
 .imgcontainer {
   text-align: center;
-  margin: 24px 0 12px 0;
-  position: relative;
+  width: 100%;
 }
 
 img.avatar {
@@ -48,7 +54,7 @@ span.psw {
 
 .psw a{
   padding-top: 10px;
-  color: rgb(77, 154, 255);
+  color: #9b9b9b;
 }
 
 .modal {
@@ -69,7 +75,7 @@ span.psw {
   background-color: #333435;
   margin: 5% auto 5% auto;
   border: 1px solid rgb(39, 39, 39);
-  width: 60%; 
+  width: 50%; 
 }
 
 /* Add Zoom Animation */
@@ -78,25 +84,8 @@ span.psw {
   animation: animatezoom 0.6s
 }
 
-@-webkit-keyframes animatezoom {
-  from {-webkit-transform: scale(0)} 
-  to {-webkit-transform: scale(1)}
-}
-  
-@keyframes animatezoom {
-  from {transform: scale(0)} 
-  to {transform: scale(1)}
-}
 
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-  span.psw {
-     display: block;
-     float: none;
-  }
-}
-
-#login-response-false{
+#login-response-false, #login-response-true{
     padding: 10px;
     border-radius: 5px;
     text-align: center;

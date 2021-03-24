@@ -25,6 +25,8 @@ td, th{
     align-items: center;
     justify-content: center;
     overflow: auto;
+    border-top: 1px solid #3e444a;
+    border-bottom: 1px solid #3e444a;
 }
 #table-notes-norm{
     margin: 10px;
@@ -59,7 +61,7 @@ td, th{
     width: auto;
     position: absolute;
     right: 25px;
-    top: 115px;
+    top: 142.5px;
     border-radius: 5px;
     background-color: #343a40;
 }
@@ -83,8 +85,7 @@ td, th{
     align-items: center;
 }
 #top-bar-gui a{
-    margin-top: -5px;
-    margin-left: 50px;
+    margin-left: 30px;
     font-size: 25px;
 }
 #splitline{

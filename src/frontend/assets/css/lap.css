@@ -1,230 +1,147 @@
 *{
-    margin: 0;
     padding: 0;
+    margin: 0;
 }
-@media only screen and (orientation: landscape) {
-    h1{
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		padding: 15px;
-    }
-    #calculates{
-        background-color: darkcyan;
-        padding: 10px;
-        min-width: 15%;
-        width: auto;
-        height: auto;
-        position: absolute;
-        right: 5px;
-        top: 55px;
-    }
-    #calculates h2{
-        margin: 5px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #calculates table, #calculates th, #calculates td, #calculates tr{
-        text-align: left;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #calculates td{
-    	padding-right: 15px;
-    }
-    #calculates td{
-        padding: 10px;
-        padding-right: 0;
-    }
-    #tables{
-        margin: 10px;
-        margin-top: -10px;
-        width: 70%;
-    }
-    #tables table, #tables th, #tables td, #tables tr{
-        padding: 15px;
-        margin: 5px;
-        text-align: center;
-    }
-    #tables td{
-        background-color: rgb(214, 214, 214);
-    }
-    #tables h3{
-    	padding: 15px;
-        padding-bottom: 5px;
-        padding-left: 20px;
-    	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #tables th{
-        padding-left: 0px;
-        padding-right: 0px;
-        background-color: rgb(114, 146, 214);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .table-edit-input{
-        width: 100%;
-        height: 100%;
-        padding: 5px;
-        padding-right: 0;
-        background-color: rgba(0, 0, 255, 0);
-        border: none;
-    }
-    #edit-table{
-        position: absolute;
-        top: 75px;
-        right: 30%;
-        border: none;
-        background-color: rgba(255, 255, 255, 0);
-        font-size: 30px;
-        cursor: pointer;
-        color: rgb(89, 89, 180);
-    }
-    #exit-edit-table{
-        position: absolute;
-        top: 75px;
-        right: 40px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0);
-        font-size: 30px;
-        cursor: pointer;
-        color: rgb(89, 89, 180);
-    }
-    .add-column-btn{
-        background-color: rgb(114, 146, 214);
-        color: rgb(230, 230, 230);
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 100%;
-        font-size: 30px;
-        cursor: pointer;
-    }
-    #btn-safe{
-        position: absolute;
-        left: 600px;
-        top: 70px;
-        background-color: rgb(114, 146, 214);
-        border: none;
-        padding: 12px;
-        cursor: pointer;
-    }
-    #splitline{
-        padding-left: 0;
-        margin-left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: rgb(65, 65, 65);
-    }
-    #bs-table{
-    	overflow-x: scroll;
-    }
+td, th{
+    text-align: center;
 }
-@media only screen and (orientation: portrait) {
-    h1{
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        padding: 15px;
-        width: 90%;
-    }
-    #calculates{
-        background-color: darkcyan;
-        padding: 10px;
-        min-width: 85%;
-        width: auto;
-        height: auto;
-        position: absolute;
-        left: 15px;
-        top: 160px;
-    }
-    #calculates h2{
-        margin: 5px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #calculates table, #calculates th, #calculates td, #calculates tr{
-        margin: 0px;
-        padding: 0px;
-        text-align: left;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #calculates td{
-        padding: 5px;
-        padding-right: 0;
-    }
-    #tables h3{
-    	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        padding: 10px;
-    }
-    #tables{
-        position: absolute;
-        top: 490px;
-        margin: -5px;
-        margin-top: -10px;
-        width: 97.5%;
-    }
-    #tables table, #tables th, #tables td, #tables tr{
-        padding: 15px;
-        margin: 5px;
-        text-align: center;
-    }
-    #tables td{
-        background-color: rgb(214, 214, 214);
-    }
-    #tables th{
-        padding-left: 0px;
-        padding-right: 0px;
-        background-color: rgb(114, 146, 214);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .table-edit-input{
-        width: 100%;
-        height: 100%;
-        padding: 5px;
-        padding-right: 0;
-        background-color: rgba(0, 0, 255, 0);
-        border: none;
-    }
-    #edit-table{
-        position: absolute;
-        top: 70px;
-        right: 15px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0);
-        font-size: 30px;
-        cursor: pointer;
-        color: rgb(89, 89, 180);
-    }
-    #exit-edit-table{
-        position: absolute;
-        top: 70px;
-        right: 15px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0);
-        font-size: 30px;
-        cursor: pointer;
-        color: rgb(89, 89, 180);
-    }
-    .add-column-btn{
-        background-color: rgb(114, 146, 214);
-        color: rgb(230, 230, 230);
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 100%;
-        font-size: 30px;
-        cursor: pointer;
-    }
-    #btn-safe{
-        position: absolute;
-        right: 15px;
-        top: 112.5px;
-        background-color: rgb(114, 146, 214);
-        border: none;
-        padding: 12px;
-        cursor: pointer;
-    }
-    #splitline{
-        padding-left: 0;
-        margin-left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: rgb(65, 65, 65);
-    }
-    #bs-table{
-    	overflow-x: scroll;
-    }
+#edit-table{
+    display: inline;
+}
+.semester-choose{
+    display: block;
+    border-radius: 5px;
+    padding: 3px;
+    margin: 5px;
+    cursor: pointer;
+    display: block;
+}
+.semester-choose:hover{
+    background-color: #343a40;
+}
+#semesters{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    border-top: 1px solid #3e444a;
+    border-bottom: 1px solid #3e444a;
+}
+*::-webkit-scrollbar {
+    width: 20px;
+    height: 15px;
+}
+*::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #3e444a;
+    border: 1px solid #5b5b5c;
+    background-clip: content-box;
+    min-width: 40px;
+    min-height: 40px;
+}
+*::-webkit-scrollbar-thumb:hover{
+    background-color: #535353;
+}
+*::-webkit-scrollbar-thumb:active{
+    background-color: #535353;
+}
+*::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+#table-notes-norm{
+    margin: 10px;
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: top;
+}
+#table-notes-norm table{
+    margin: 10px;
+    margin-right: 40px;
+}
+.table-container{
+    max-height: 80vh;
+    overflow: auto;
+    width: fit-content;
+    margin-right: 10px;
+}
+.table-container h3{
+    margin: 5px;
+    margin-right: 10px;
+}
+#table-notes-norm tr{
+    padding: 10px;
+    background-color: #343a40;
+}
+#table-notes-norm th{
+    min-width: 150px;
+    width: fit-content;
+}
+#table-notes-norm td{
+    min-width: 75px;
+    width: auto;
+}
+#table-notes-norm  tr:nth-child(even){
+    background-color: #3e444a;
+}
+#table-notes-norm td, #table-notes-norm th{
+    padding: 10px;
+}
+.grade-bad{
+    color: #ff0000;
+}
+.grade-good{
+    color: #4ada26;
+}
+#calculates{
+    width: auto;
+    position: absolute;
+    right: 25px;
+    top: 142.5px;
+    border-radius: 5px;
+    background-color: #343a40;
+}
+#calculates h2{
+    padding: 10px;
+}
+#table-notes-end td, #table-notes-end th{
+    padding: 10px;
+}
+#table-notes-end th{
+    text-align: left;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    margin-left: 10px;
+}
+#top-bar-gui{
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+}
+#top-bar-gui a{
+    margin-top: -5px;
+    margin-left: 50px;
+    font-size: 25px;
+}
+#splitline{
+    padding-left: 0;
+    margin-left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #1c1c1c;
+}
+#info-lap-noten{
+    display: none;
+    position: absolute;
+    right: 0;
+    color: rgb(182, 182, 182);
+    width: 320px;
+    margin-right: 20px;
+    bottom: 375px;
 }

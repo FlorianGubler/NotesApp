@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotenManager 2021</title>
+    <title>Noten Manager</title>
     <link rel="stylesheet" href="assets/css/navbar.css">
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" data-auto-replace-svg></script>
 </head>
 <body>
     <div id="site-title-container">
-        <a id="menu-expand" onclick="document.getElementById('menu-expand').style.display = 'none';" href="#menu"><i class="fas fa-ellipsis-v"></i></a>
+        <a id="menu-expand" onclick="document.getElementById('menu-expand').style.display = 'none';" href="#menu"><i style="color: inherit;" class="fas fa-ellipsis-v"></i></a>
         <p id="site-title"></p>
-        <a id="show-genlink" href="#generatedlink" onklick="document.getElementById('show-genlink').style.display = 'none';"><i class="fas fa-share-square"></i> Share</a>
+        <a style="display: none;" id="show-genlink" href="#generatedlink" onklick="document.getElementById('show-genlink').style.display = 'none';"><i class="fas fa-share-square"></i> Share</a>
         <div id="generatedlink">
         	<a id="genlink-close" onclick="document.getElementById('show-genlink').style.display = 'block';" href="#"><i class="fas fa-times"></i></a>
         	<ul>
@@ -24,7 +24,7 @@
         <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block';" href="#"><i class="fas fa-times"></i></a>
         <div id="nav-user">
         	<img id="profile-pic" src="" alt="Profile Picture">
-            <a href="config.html" id="menu-user" class="use-user-name"></a>
+            <a href="configuser.html" id="menu-user" class="use-user-name"></a>
         </div>
         <div id="menu-splitline"></div>
         <ul>
@@ -32,7 +32,7 @@
             <li><a id="bms-anchor" href="bms.html"><i class="fas fa-school"></i> BMS Notenstand</a></li>
             <li><a id="lap-anchor" href="lap.html"><i class="fas fa-chalkboard-teacher"></i> LAP Notenstand</a></li>
             <li><a id="addnote-anchor" href="addnote.html"><i class="fas fa-folder-plus"></i> Noten hinzufügen</a></li>
-            <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Von <span style="display: inline;color: inherit;" class="use-user-name"></span> ausloggen</a></li>
+            <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
     <script>
@@ -47,7 +47,7 @@
                     for (var i = 0; i < x.length; i++) {
                         x[i].innerHTML = response.username;
                     }
-                    document.getElementById("profile-pic").src = "assets/img/profilepictures/" + response.profilepicture;
+                    document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
                 }
                 
             }

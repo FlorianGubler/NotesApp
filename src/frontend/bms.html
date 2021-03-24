@@ -11,9 +11,7 @@
     <h1 id="title-home"></h1>
     <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
 </div>
-<ul id="semesters">
-
-</ul>
+<ul id="semesters"></ul>
 <div id="tables">
     <table id="table-notes-norm"></table>
 </div>
@@ -77,6 +75,13 @@
                             }
                         });
                         var count;
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
                         for(var subj in subjects){
                             var tr = document.createElement("tr");
                             var th = document.createElement("th");

@@ -55,6 +55,9 @@
         font-size: 20px;
         padding: 2px;
     }
+    #menu-close:hover{
+        color: #888888;
+    }
     #nav-user{
         padding: 25px;
     	display: flex;
@@ -70,9 +73,15 @@
         border-radius: 100%;
         margin: 5px;
         margin-right: 0;
+        display: block;
+        border-radius: 200px;
+        box-sizing: border-box;
+        background-color: #DDD;
+        border: 2px solid #cfd8dc;
     }
     #menu-expand{
         padding: 10px;
+        margin-left: 5px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-decoration: none;
         font-size: 20px;
