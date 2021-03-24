@@ -29,7 +29,7 @@
         }
     }); 
 
-    function getNotesData(semester){
+    function getNotesData(){
         window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
         window.api.receive("fromMainB", (args) => {
             if(args.type == "replySubjects"){
@@ -55,11 +55,8 @@
                         var response = JSON.parse(args.attributes);
                         response.forEach(note => {
                             if(note.schoolName == "LAP"){
-                                if(note.semesterTag == semester || note.FK_semester == semester){
-                                    subjects[note.additionalTag][note.subjectName].push({value: note.value, examName: note.examName});
-                                }
+                                subjects[note.additionalTag][note.subjectName].push({value: note.value, examName: note.examName});
                             }
-
                         });
                         var count;
                         for(var tag in subjects){
@@ -244,5 +241,5 @@
             }
         });
     }
-    getNotesData(1);
+    getNotesData();
 </script>

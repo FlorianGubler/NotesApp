@@ -45,18 +45,34 @@
             var response = JSON.parse(args.attributes);
             subjects = [];
             response.forEach(subject => {
-                if(subjects[subject.schoolName] == undefined){
-                    subjects[subject.schoolName] = [];
+                if(subjects[subject.schoolName] == undefined && subjects[subject.additionalTag] == undefined){
+                    if(subject.schoolName == "LAP"){
+                        subjects[subject.additionalTag] = [];
+                    }
+                    else{
+                        subjects[subject.schoolName] = [];
+                    }
                 }
-                subjects[subject.schoolName].push(subject.subjectName);
+                if(subject.schoolName == "LAP"){
+                    subjects[subject.additionalTag].push(subject.subjectName);
+                }
+                else{
+                    subjects[subject.schoolName].push(subject.subjectName);
+                }
             })
+            console.log(subjects)
             for(var school in subjects){
                 var optiongroup = document.createElement("optgroup");
                 optiongroup.label = school;
                 subjects[school].forEach(subject => {
                     var option = document.createElement("option");
                     option.innerHTML = subject;
-                    option.name = subjects[school].indexOf(subject) + 1;
+                    for(obj in response){
+                        if(response[obj].subjectName == subject){
+                            index = obj;
+                        }
+                    }
+                    option.name = obj;
                     optiongroup.appendChild(option);
                 })
                 document.getElementById("select-subject").appendChild(optiongroup)
