@@ -1,2 +1,2 @@
 <?php
-echo hash("sha256", "FlorianFlorogur1.");
+echo hash("sha256", "");
