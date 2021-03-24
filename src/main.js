@@ -149,15 +149,24 @@ function checkAutoLogin(event){
 }
 
 function uploadNotes(event, data){
-  con.query("INSERT INTO notes (value, examName, FK_subject, FK_user, FK_semester) VALUES ("+data.note+", '"+data.examTag+"', '"+data.subject+"', "+login_user.id+", "+data.semester+");", function (err, result) {
-    if(err) throw err;
+  console.log(JSON.stringify(data))
+  con.query("SELECT * FROM subjects where subjectName='"+data.subject+"';", function (err, subject) {
     if (err) {
-      event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify(err)}))
+      console.log(err);
     }
     else{
-      event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")}))
+      con.query("INSERT INTO notes (value, examName, FK_subject, FK_user, FK_semester) VALUES ("+data.note+", '"+data.examTag+"', "+subject[0].id+", "+login_user.id+", "+data.semester+");", function (err, result) {
+        if(err) throw err;
+        if (err) {
+          event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+        }
+        else{
+          event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")}))
+        }
+    });  
     }
-  });  
+  }); 
+  
 }
 
 function logout(){
