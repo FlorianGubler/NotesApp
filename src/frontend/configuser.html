@@ -7,22 +7,100 @@
 </script> 
 <link rel="stylesheet" href="assets/css/configuser.css">
 <script>document.title = "Mein Profil"; document.getElementById('site-title').innerHTML = "Profil konfigurieren - dddddddddddddd"</script>
-<h1>Benutzerkonfiguration von dddddddddddddddd</h1>
-<div id="userprofile">
-    <img src="/assets/profilepictures/default_pb.png?>" alt="Profile Picture"/>
-    <form id="newusername" action="<?php echo $rootpath ?>/config" method="post" class="newuserinput">
-        <label>New Username</label>
-        <input id="getnewusername" name="newusername" placeholder="New Username">
-        <input id="getpasswordforusr" name="usrpassword" placeholder="Your Password">
-        <button name="submit-usr" type="submit" >Neuer Username Speichern</button>
-    </form>
-    <form id="newpasswordf" action="<?php echo $rootpath ?>/config" method="post" class="newuserinput">
-        <label>Neues Passwort</label>
-        <input type="password" id="getnewpassword" name="newpassword" placeholder="New Password">
-        <label>Neues Passwort wiederholen</label>
-        <input type="password" id="getnewpasswordrepeat" name="newpasswordrepeat" placeholder="New Password">
-        <label>Altes Passwort eingeben</label>
-        <input type="password" id="getoldpassword" name="oldpassword" placeholder="Old Password">
-        <button type="submit" name="submit-paswd">Neues Passwort Speichern</button>
-    </form>
-</div>
+<div id="configuser" class="modal">
+    <div class="modal-content animate">
+      <div class="imgcontainer">
+        <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
+        <p style="display: inline;" class="use-user-name"></p>
+      </div>
+      <div class="container">
+        <form id="newusername" onsubmit="newUsername(); return false;" class="newuserinput">
+            <label>Neuer Benutzername</label>
+            <input id="getnewusername" name="newusername" placeholder="Benutzername" required>
+            <input type="password" id="getpswforuser" name="pswnewusername" placeholder="Passwort" required>
+            <button name="submit-usr" type="submit" >Neuer Benutzername Speichern</button>
+        </form>
+        <form id="newpassword" onsubmit="newPassword(); return false;" class="newuserinput">
+            <label>Neues Passwort</label>
+            <input type="password" id="getnewpassword" name="newpassword" placeholder="Neues Passwort" required>
+            <input type="password" id="getnewpasswordrepeat" name="newpasswordrepeat" placeholder="Neues Passwort wiederholen" required>
+            <input type="password" id="getoldpassword" name="oldpassword" placeholder="Altes Passwort" required>
+            <button type="submit" name="submit-paswd">Neues Passwort Speichern</button>
+        </form>
+  
+        <p style='background-color: red;display: none;' id='login-response-false'>Etwas hat nicht geklappt</p>
+  
+      </div>
+
+      <div class="container" style="background-color:#404142">
+        <span class="psw">* Bei Änderungen ist ein erneutes Login vonnöten</span>
+      </div>
+    </div>
+  </div>
+<script>
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+    window.api.receive("fromMainC", (args) => {
+        if(args.type == "replyUserData"){
+            var response = JSON.parse(args.attributes);
+            if(response != null){
+                user_login = response;
+                x = document.getElementsByClassName("use-user-name");
+                for (var i = 0; i < x.length; i++) {
+                    x[i].innerHTML = response.username;
+                }
+                document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
+            }
+            
+        }
+    });
+    function newPassword(){
+        var newpasswordVal = document.getElementById("getnewpassword").value;
+        var newpasswordrepeatVal = document.getElementById("getnewpasswordrepeat").value;
+        var oldpasswordVal = document.getElementById("getoldpassword").value;
+
+        if(newpasswordVal == newpasswordrepeatVal){
+            window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Password', attributes: JSON.stringify({newpassword: newpasswordVal, oldpassword: oldpasswordVal})}));
+            window.api.receive("fromMainA", (args) => {
+                if(args.type == "replyNewPassword"){
+                    if(args.cmd == "true"){
+                        //document.getElementById("login-response-true").style.display = "block";
+                        resetInputs();
+                        location.href = "login.html";
+                    }
+                    else{
+                        document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
+                        document.getElementById("login-response-false").style.display = "block";
+                    }
+                }
+            });
+        }
+        else{
+            document.getElementById("login-response-false").innerHTML = "Passwörter stimmen nicht überein";
+            document.getElementById("login-response-false").style.display = "block";
+        }
+    }
+    function newUsername(){
+        var newusernameVal = document.getElementById("getnewusername").value;
+        var passwordVal = document.getElementById("getpswforuser").value;
+        window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Username', attributes: JSON.stringify({newusername: newusernameVal, password: passwordVal})}));
+        window.api.receive("fromMainA", (args) => {
+            if(args.type == "replyNewUsername"){
+                if(args.cmd == "true"){
+                    //document.getElementById("login-response-true").style.display = "block";
+                    resetInputs();
+                    location.href = "login.html";
+                }
+                else{
+                    document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
+                    document.getElementById("login-response-false").style.display = "block";
+                }
+            }
+        });
+    }
+    function resetInputs(){
+        document.getElementById("getnewpassword").value = "";
+        document.getElementById("getnewpasswordrepeat").value = "";
+        document.getElementById("getoldpassword").value = "";
+        document.getElementById("getnewusername").value = "";
+    }
+</script>

@@ -11,6 +11,7 @@ td, th{
 .semester-choose{
     display: block;
     border-radius: 5px;
+    border: 1px solid rgba(223, 223, 223, 0.123);
     padding: 3px;
     margin: 5px;
     cursor: pointer;
@@ -25,10 +26,12 @@ td, th{
     align-items: center;
     justify-content: center;
     overflow: auto;
+    border-top: 1px solid #3e444a;
+    border-bottom: 1px solid #3e444a;
 }
 #table-notes-norm{
     margin: 10px;
-    min-width: 40%;
+    min-width: 50%;
     width: fit-content;
     overflow: auto;
 }
@@ -59,7 +62,7 @@ td, th{
     width: auto;
     position: absolute;
     right: 25px;
-    top: 115px;
+    top: 142.5px;
     border-radius: 5px;
     background-color: #343a40;
 }
@@ -83,8 +86,7 @@ td, th{
     align-items: center;
 }
 #top-bar-gui a{
-    margin-top: -5px;
-    margin-left: 50px;
+    margin-left: 30px;
     font-size: 25px;
 }
 #splitline{

@@ -91,27 +91,27 @@ var con = mysql.createConnection({
 });
   
 con.connect(function(err) {
-  if (err) throw err;
+  if (err) console.log(err);
   console.log("Connected to Notes DB");
 });
 
 function getUserNotes(event){
   con.query("SELECT * FROM notes INNER JOIN subjects ON notes.FK_subject = subjects.id INNER JOIN schools ON subjects.FK_school = schools.id INNER JOIN semesters ON notes.FK_semester = semesters.id WHERE FK_user="+login_user.id+";", function (err, result) {
-    if (err) throw err;
+    if (err) console.log(err);
     event.reply('fromMainA', JSON.stringify({type: "replyUserNotes", cmd: "", attributes: JSON.stringify(result)}));
   });  
 }
 
 function getSubjects(event){
   con.query("SELECT * FROM subjects INNER JOIN schools ON subjects.FK_school = schools.id;", function (err, result) {
-    if (err) throw err;
+    if (err) console.log(err);
     event.reply('fromMainB', JSON.stringify({type: "replySubjects", cmd: "", attributes: JSON.stringify(result)}));
   });  
 }
 
 function getSemesters(event){
   con.query("SELECT * FROM semesters;", function (err, result) {
-    if (err) throw err;
+    if (err) console.log(err);
     event.reply('fromMainD', JSON.stringify({type: "replySemesters", cmd: "", attributes: JSON.stringify(result)}));
   });  
 }
@@ -143,8 +143,21 @@ function checkAutoLogin(event){
   var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', {encoding:'utf8', flag:'r'}); 
   if(autoLoginData != "" && autoLoginData != null){
     var autoLoginData = JSON.parse(autoLoginData);
+    autoLoginData.remember = false;
     checkLogin(event, autoLoginData)
   }
+}
+
+function uploadNotes(event, data){
+  con.query("INSERT INTO notes (value, examName, FK_subject, FK_user, FK_semester) VALUES ("+data.note+", '"+data.examTag+"', '"+data.subject+"', "+login_user.id+", "+data.semester+");", function (err, result) {
+    if(err) throw err;
+    if (err) {
+      event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify(err)}))
+    }
+    else{
+      event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")}))
+    }
+  });  
 }
 
 function logout(){
@@ -159,6 +172,58 @@ function getUserData(){
       return null;
   }
   return {id: login_user.id, username: login_user.username, profilepicture: login_user.profilepicture};
+}
+
+function setUsername(event, data){
+  con.query("SELECT * from users WHERE id="+login_user.id+";", function (err, result) {
+    if (err) throw err;
+    if (err) {
+      event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+    }
+    else{
+      if(sha256(result[0].username+data.password) == result[0].passwordhash){
+        con.query("UPDATE users SET username='"+data.newusername+"', passwordhash='"+sha256(data.newusername+data.password)+"' WHERE id="+login_user.id+";", function (err, result) {
+          if(err) throw err;
+          if (err) {
+            event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+          }
+          else{
+            event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: "true", attributes: JSON.stringify("")}))
+            logout();
+          }
+        }); 
+      }
+      else{
+        event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Falsches Passwort")}))
+      }
+    }
+  });  
+}
+
+function setPassword(event, data){
+  con.query("SELECT * from users WHERE id="+login_user.id+";", function (err, result) {
+    if (err) throw err;
+    if (err) {
+      event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+    }
+    else{
+      if(sha256(result[0].username+data.oldpassword) == result[0].passwordhash){
+        con.query("UPDATE users SET passwordhash='"+sha256(result[0].username+data.newpassword)+"' WHERE id="+login_user.id+";", function (err, result) {
+          if(err) throw err;
+          if (err) {
+            event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+          }
+          else{
+            event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "true", attributes: JSON.stringify("")}))
+            logout();
+          }
+        }); 
+      }
+      else{
+        event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Falsches Passwort")}))
+      }
+    }
+  });  
 }
 
 ipcMain.on("toMain", (event, command) => {
@@ -188,6 +253,20 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "AutoLogin":
           checkAutoLogin(event)
+          break;
+        default: console.error("Unkwown Command in Messaging");
+      }
+      break;
+    case "UploadData":
+      switch(args.cmd){
+        case "Note":
+          uploadNotes(event, JSON.parse(args.attributes))
+          break;
+        case "Password":
+          setPassword(event, JSON.parse(args.attributes))
+          break;
+        case "Username":
+          setUsername(event, JSON.parse(args.attributes))
           break;
         default: console.error("Unkwown Command in Messaging");
       }

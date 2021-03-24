@@ -11,9 +11,7 @@
     <h1 id="title-home"></h1>
     <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
 </div>
-<ul id="semesters">
-
-</ul>
+<ul id="semesters"></ul>
 <div id="tables">
     <table id="table-notes-norm"></table>
 </div>
@@ -77,6 +75,13 @@
                             }
                         });
                         var count;
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+                        var franzendnote = 0;
                         for(var subj in subjects){
                             var tr = document.createElement("tr");
                             var th = document.createElement("th");
@@ -96,6 +101,13 @@
                                 }
                                 tr.appendChild(td);
                             })
+                            
+                            if(subj == "Französisch" || subj == "Französisch Vokabeln"){
+                                franzendnote += endnotes[subj];
+                            }
+                            if(subj == "Französisch"){
+                                var franzcount = count+1;
+                            }
                             if(count != 0){
                                 endnotes[subj] = Math.round((endnotes[subj] / count)*2)/2;
                             }
@@ -129,14 +141,24 @@
                         document.getElementById("table-notes-end").appendChild(tr);
 
                         //FinalGrade
-                        finalgrade = endnotes["Chemie"] + endnotes["Französisch"] + endnotes["Französich Vokabeln"] + endnotes["Geschichte"] + endnotes["BWL"] + endnotes["Mathematik"];
+                        finalgrade = endnotes["Chemie"] + (Math.round((franzendnote / franzcount)*2)/2) + endnotes["Geschichte"] + endnotes["BWL"] + endnotes["Mathematik"];
+                        if(franzendnote != 0){
+                            count -= 1;
+                        }
                         finalgrade = finalgrade / count;
                         var tr = document.createElement("tr");
                         var th = document.createElement("th");
                         th.innerHTML = "Endnote BMS";
                         tr.appendChild(th);
                         var td = document.createElement("td");
-                        td.innerHTML = finalgrade
+                        finalgradestr = "" + finalgrade;
+                        if (finalgradestr.length > 6) {
+                            var finalgradefinal = finalgradestr.substring(0, 5) + "...";
+                            td.innerHTML = finalgradefinal
+                        }
+                        else{
+                            td.innerHTML = finalgrade;
+                        }
                         if(finalgrade > 4){
                             td.classList.add("grade-good");
                         }

@@ -7,98 +7,239 @@
 </script> 
 <script>document.title = "LAP - Noten"; document.getElementById('site-title').innerHTML = "LAP - Noten"</script>
 <link rel="stylesheet" href="assets/css/lap.css">
-<h1>LAP Notentabelle von ddddddddddddddd</h1>
-<form action="<?php echo $rootpath; ?>/lap/edit" method="post"><button id="edit-table"><i class="fas fa-pencil-alt"></i></button></form>
-<div id="tables" >
-	<h3>ÜK Module</h3>
-    <table style="width:100%;">
-        <tr>
-            <th>M304</th>
-            <th>M305</th>
-            <th>M101</th>
-            <th>M318</th>
-            <th>M105</th>
-            <th>M107</th>
-            <th>M335</th>
-        </tr>
-        <tr>
-            ddddddddddddddd
-        </tr>
-    </table>
-    <h3>IPA Abschlussprüfung</h3>
-    <table style="width:100%;">
-        <tr>
-            <th>Resultat der Arbeit</th>
-            <th>Dokumentation</th>
-            <th>Fachgespräch und Präsentation</th>
-        </tr>
-        <tr>
-            dddddddddddddddddd
-        </tr>
-    </table>
-    <h3>Berufsfachschule Module</h3>
-    <div id="bs-table">
-    <table style="width:100%;">
-        <tr>
-            <th>M100</th>
-            <th>M104</th>
-            <th>M114</th>
-            <th>M117</th>
-            <th>M120</th>
-            <th>M122</th>
-            <th>M123</th>
-            <th>M133</th>
-            <th>M150</th>
-            <th>M151</th>
-            <th>M152</th>
-            <th>M153</th>
-            <th>M183</th>
-            <th>M214</th>
-            <th>M226</th>
-            <th>M242</th>
-            <th>M254</th>
-            <th>M306</th>
-            <th>M326</th>
-            <th>M403</th>
-            <th>M404</th>
-            <th>M411</th>
-            <th>M426</th>
-            <th>M431</th>
-        </tr>
-        <tr>
-            ddddddddddddddddddddddddddd
-        </tr>
-    </table>
-    </div>
+<div id="top-bar-gui">
+    <h1 id="title-home"></h1>
+    <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
 </div>
+<div id="table-notes-norm"></div>
 <div id="calculates">
     <h2>Aktueller Stand</h2>
-    <table>
-        <tr>
-            <th>Gesamtnote IPA</th>
-            <td>ddddddddddddddddddd</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding-left: 0;"><div id="splitline"></div></td>
-        </tr>
-        <tr>
-            <td>Gesamtnote Berufsfachschule</td>
-            <td>ddddddddddddddddddddd</td>
-        </tr>
-        <tr>
-            <td>Gesamtnote ÜKs</td>
-            <td>dddddddddddddddd</td>
-        </tr>
-        <tr>
-            <th>Gesamtnote Informatikkompetenzen: </th>
-            <td>ddddddddddddddddddddd</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding-left: 0;"><div id="splitline"></div></td>
-        </tr>
-        <tr>
-            <th>Endnote Lehrabschluss: </th>
-            <td>dddddddddddddddddd</td>
-        </tr>
-    </table>
+    <table id="table-notes-end"></table>
 </div>
+<p id="info-lap-noten">* Wenn du bei der Abschlussprüfung noch nicht alle Noten eingetragen hast, wird das Ergebnis möglicherweise nicht, oder falsch berechnet</p>
+<script>
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+    window.api.receive("fromMainC", (args) => {
+        if(args.type == "replyUserData"){
+            var response = JSON.parse(args.attributes);
+            if(response != null){
+                user_login = response;
+                document.getElementById("title-home").innerHTML = "LAP Notentabelle von " + response.username;;
+            }
+        }
+    }); 
+
+    function getNotesData(){
+        window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
+        window.api.receive("fromMainB", (args) => {
+            if(args.type == "replySubjects"){
+                var response = JSON.parse(args.attributes);
+                var subjects = [];
+                var endnotes = [];
+                response.forEach(subj => {
+                    if(subj.schoolName == "LAP"){
+                        subjects[subj.additionalTag] = [];
+                        endnotes[subj.additionalTag] = [];
+                        endnotes[subj.additionalTag+"_end"] = 0;
+                    }
+                });
+                response.forEach(subj => {
+                    if(subj.schoolName == "LAP"){
+                        subjects[subj.additionalTag][subj.subjectName] = [];
+                        endnotes[subj.additionalTag][subj.subjectName] = 0;
+                    }
+                });
+                window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'NotesfromUser', attributes: ""}));
+                window.api.receive("fromMainA", (args) => {
+                    if(args.type == "replyUserNotes"){
+                        var response = JSON.parse(args.attributes);
+                        response.forEach(note => {
+                            if(note.schoolName == "LAP"){
+                                subjects[note.additionalTag][note.subjectName].push({value: note.value, examName: note.examName});
+                            }
+                        });
+                        var count;
+                        for(var tag in subjects){
+                            var div = document.createElement("div")
+                            div.classList.add("table-container")
+                            var table = document.createElement("table");
+                            var h3 = document.createElement("h3");
+                            var tr;
+                            var th;
+                            var td;
+                            h3.innerHTML = tag;
+                            var counttag = 0;
+                            for(var subj in subjects[tag]){
+                                var tr = document.createElement("tr");
+                                th = document.createElement("th");
+                                th.innerHTML = subj;
+                                tr.appendChild(th);
+                                count = 0;
+                                subjects[tag][subj].forEach(note => {
+                                    count++;
+                                    counttag++;
+                                    td = document.createElement("td");
+                                    td.innerHTML = note.value;
+                                    if(note.value > 4){
+                                        td.classList.add("grade-good");
+                                    }
+                                    if(note.value < 4 && note.value != 0){
+                                        td.classList.add("grade-bad");
+                                    }
+                                    endnotes[tag][subj] += note.value;
+                                    td.name = note.examName;
+                                    tr.appendChild(td);
+                                });
+                                table.appendChild(tr);
+                                if(count != 0 && tag != "IPA Abschlussprüfung"){
+                                    endnotes[tag][subj] = Math.round((endnotes[tag][subj] / count)*2)/2;
+                                    endnotes[tag+"_end"] += endnotes[tag][subj];
+                                }
+                                else if (count == 0){
+                                    endnotes[tag+"_end"] += 0;
+                                }
+                                
+                            }
+                            if(counttag != 0 && tag != "IPA Abschlussprüfung"){
+                                endnotes[tag+"_end"] = Math.round((endnotes[tag+"_end"] / counttag) * 2)/2;
+                            }
+                            else if(counttag != 0 && tag == "IPA Abschlussprüfung"){
+                                if(endnotes[tag].length == 3){
+                                    endnotes[tag+"_end"] = endnotes[tag]["Resulat der Arbeit"]*0.5 + endnotes[tag]["Dokumenation"]*0.25 + endnotes[tag]["Fachgespräch und Präsentation"]*0.25;
+                                }
+                            }
+                            else if (counttag == 0){
+                                endnotes[tag+"_end"] = 0;
+                            }
+                            div.appendChild(h3)
+                            div.appendChild(table)
+                            document.getElementById("table-notes-norm").appendChild(div);
+                        };
+                        var finalgradeExam = 0;
+                        var finalgradeModules = 0;
+
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        for(var endnote in endnotes){
+                            if(endnote.split("_")[1] == "end"){
+                                var tr = document.createElement("tr");
+                                var th = document.createElement("th");
+                                th.innerHTML = endnote.split("_")[0];
+                                var td = document.createElement("td");
+                                td.innerHTML = endnotes[endnote];
+                                if(endnotes[endnote] > 4){
+                                    td.classList.add("grade-good");
+                                }
+                                if(endnotes[endnote] < 4 && endnotes[endnote] != 0){
+                                    td.classList.add("grade-bad");
+                                }
+                                tr.appendChild(th);
+                                tr.appendChild(td);
+                                document.getElementById("table-notes-end").appendChild(tr);
+                                switch(endnote.split("_")[0]){
+                                    case "Berufsfachschule Module":
+                                        if(endnotes["ÜK Module_end"] != 0){
+                                            finalgradeModules += endnotes[endnote]*0.8;
+                                        }
+                                        else{
+                                            finalgradeModules += endnotes[endnote];
+                                        }
+                                        break;
+                                    case "ÜK Module":
+                                        if(endnotes["Berufsfachschule Module_end"] != 0){
+                                            finalgradeModules += endnotes[endnote]*0.2;
+                                        }
+                                        else{
+                                            finalgradeModules += endnotes[endnote];
+                                        }
+                                        break;
+                                    case "IPA Abschlussprüfung":
+                                        finalgradeExam += endnotes[endnote];
+                                        break;
+                                }
+                            }
+                        }                            
+                        
+                        //FinalGrade
+                        if(finalgradeExam == 0){
+                            finalgrade = finalgradeModules.toFixed(1);
+                        }
+                        else if(finalgradeModules == 0){
+                            finalgrade = finalgradeExam.toFixed(1);
+                        }
+                        else if(finalgradeExam != 0 && finalgradeModules != 0){
+                            finalgrade = (finalgradeExam * 0.5).toFixed(1) + (finalgradeModules * 0.5).toFixed(1);
+                        }
+
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        //Mini Final Grades
+                        var tr = document.createElement("tr");
+                        var th = document.createElement("th");
+                        th.innerHTML = "Endnote Abschlussprüfung";
+                        tr.appendChild(th);
+                        var td = document.createElement("td");
+                        td.innerHTML = finalgradeExam
+                        if(finalgradeExam > 4){
+                            td.classList.add("grade-good");
+                        }
+                        else if(finalgradeExam < 4 && finalgradeExam != 0){
+                            td.classList.add("grade-bad");
+                        }
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        var tr = document.createElement("tr");
+                        var th = document.createElement("th");
+                        th.innerHTML = "Endnote Informatikkompentenzen";
+                        tr.appendChild(th);
+                        var td = document.createElement("td");
+                        td.innerHTML = finalgradeModules
+                        if(finalgradeModules > 4){
+                            td.classList.add("grade-good");
+                        }
+                        else if(finalgradeModules < 4 && finalgradeModules != 0){
+                            td.classList.add("grade-bad");
+                        }
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+                        td.innerHTML = "<div id='splitline'></div>";
+                        td.colSpan = "2";
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+
+                        //Real Final Grade
+                        var tr = document.createElement("tr");
+                        var th = document.createElement("th");
+                        th.innerHTML = "Endnote Lehrabschluss";
+                        tr.appendChild(th);
+                        var td = document.createElement("td");
+                        td.innerHTML = finalgrade
+                        if(finalgrade > 4){
+                            td.classList.add("grade-good");
+                        }
+                        else if(finalgrade < 4 && finalgrade != 0){
+                            td.classList.add("grade-bad");
+                        }
+                        tr.appendChild(td);
+                        document.getElementById("table-notes-end").appendChild(tr);
+                    }
+                });
+            }
+        });
+    }
+    getNotesData();
+</script>

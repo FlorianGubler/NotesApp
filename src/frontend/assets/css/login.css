@@ -14,7 +14,7 @@ input[type=text], input[type=password] {
 }
 
 button {
-  background-color: rgb(77, 154, 255);
+  background-color: rgb(61, 129, 219);
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -24,7 +24,7 @@ button {
 }
 
 button:hover {
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .imgcontainer {
@@ -34,8 +34,7 @@ button:hover {
 }
 
 img.avatar {
-  width: 30%;
-  border-radius: 50%;
+  width: 25%;
 }
 
 .container {
@@ -97,7 +96,7 @@ span.psw {
   }
 }
 
-.login-response-false{
+#login-response-false{
     padding: 10px;
     border-radius: 5px;
     text-align: center;

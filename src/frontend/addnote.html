@@ -1,21 +1,107 @@
 <div id="includedContent"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="assets/css/addnote.css">
 <script> 
     $(function(){
       $("#includedContent").load("navbar.html"); 
     });
 </script> 
-<div id="new-note-container">
-    <label for="subject">Fach od. Modul</label>
-    <select name="subject" id="cars" required>
-        <optgroup label="BMS">
-            
-        </optgroup>
-        <optgroup label="TBZ">
-        
-        </optgroup>
-    </select>
-    <input type="text" placeholder="Exam Tag" required>
-    <input type="number" placeholder="Grade" required>
-    <button type="submit">Submit</button>
-</div>
+<div id="add-note" class="modal">
+    <form class="modal-content animate" onsubmit="submitNote(); return false;">
+      <div class="imgcontainer">
+        <h1>Note hinzufügen</h1>
+      </div>
+      <div class="container">
+        <select name="subject" id="select-subject" required><option disabled selected value> - Fach oder Modul - </option></select>
+        <select name="semester" id="select-semester" required><option disabled selected value> - Semester - </option></select>
+        <input id="get-examTag" type="text" placeholder="Prüfungsname" required>
+        <input id="get-note" type="number" step="0.001" placeholder="Note" required>
+        <button type="submit">Submit</button>
+  
+        <p style='background-color: red; display: none;' id='login-response-false'>Etwas hat nicht geklappt :(</p>
+        <p style='background-color: #4ada26; color: #404142;display: none;' id='login-response-true'>Note erfolgreich hochgeladen :)</p>
+      </div>
+  
+      <div class="container" style="background-color:#404142">
+        <span class="psw"><a href="mailto:gubler.florian@gmx.net">Probleme beim hochladen?</a></span>
+      </div>
+    </form>
+  </div>
+  <script>
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Semesters', attributes: ""}));
+    window.api.receive("fromMainD", (args) => {
+        if(args.type == "replySemesters"){
+            var response = JSON.parse(args.attributes);
+            response.forEach(semester => {
+                var option = document.createElement("option");
+                option.innerHTML = semester.id + ". " + semester.semesterTag;
+                document.getElementById("select-semester").appendChild(option)
+            });
+        }
+    });
+    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
+    window.api.receive("fromMainB", (args) => {
+        if(args.type == "replySubjects"){
+            var response = JSON.parse(args.attributes);
+            subjects = [];
+            response.forEach(subject => {
+                if(subjects[subject.schoolName] == undefined && subjects[subject.additionalTag] == undefined){
+                    if(subject.schoolName == "LAP"){
+                        subjects[subject.additionalTag] = [];
+                    }
+                    else{
+                        subjects[subject.schoolName] = [];
+                    }
+                }
+                if(subject.schoolName == "LAP"){
+                    subjects[subject.additionalTag].push(subject.subjectName);
+                }
+                else{
+                    subjects[subject.schoolName].push(subject.subjectName);
+                }
+            })
+            console.log(subjects)
+            for(var school in subjects){
+                var optiongroup = document.createElement("optgroup");
+                optiongroup.label = school;
+                subjects[school].forEach(subject => {
+                    var option = document.createElement("option");
+                    option.innerHTML = subject;
+                    for(obj in response){
+                        if(response[obj].subjectName == subject){
+                            index = obj;
+                        }
+                    }
+                    option.name = obj;
+                    optiongroup.appendChild(option);
+                })
+                document.getElementById("select-subject").appendChild(optiongroup)
+            }
+        }
+    });
+  </script>
+  <script>
+    function submitNote(){
+        var examTagVal = document.getElementById("get-examTag").value;
+        var noteVal = document.getElementById("get-note").value;
+        var subjectVal = document.getElementById("select-subject").selectedOptions[0].name;
+        var semesterVal = document.getElementById("select-semester").value.split(".")[0];
+
+        window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Note', attributes: JSON.stringify({examTag: examTagVal, note: noteVal, subject: subjectVal, semester: semesterVal})}));
+        window.api.receive("fromMainA", (args) => {
+            if(args.type == "replyUploadNote"){
+                if(args.cmd){
+                    document.getElementById("login-response-true").style.display = "block";
+                    document.getElementById("select-subject").selectedIndex = 0;
+                    document.getElementById("select-semester").selectedIndex = 0;
+                    document.getElementById("get-note").value = "";
+                    document.getElementById("get-examTag").value = "";
+                }
+                else {
+                    document.getElementById("login-response-false").style.display = "block";
+                    console.log(response)
+                }
+            }
+        });
+    }
+  </script>
