@@ -11,7 +11,6 @@
     <h1 id="title-home"></h1>
     <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
 </div>
-<ul id="semesters"></ul>
 <div id="table-notes-norm"></div>
 <div id="calculates">
     <h2>Aktueller Stand</h2>
@@ -30,26 +29,6 @@
         }
     }); 
 
-    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Semesters', attributes: ""}));
-    window.api.receive("fromMainD", (args) => {
-        if(args.type == "replySemesters"){
-            var response = JSON.parse(args.attributes);
-            if(response != null){
-                for(var smes in response){
-                    var li = document.createElement("li");
-                    li.innerHTML = response[smes].semesterTag;
-                    li.addEventListener("click", function() {
-                        document.getElementById("table-notes-norm").innerHTML = "";
-                        document.getElementById("table-notes-end").innerHTML = "";
-                        getNotesData(this.innerHTML);
-                    });
-                    li.classList.add("semester-choose");
-                    document.getElementById("semesters").appendChild(li);
-                }
-            }
-        }
-    }); 
-    
     function getNotesData(semester){
         window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
         window.api.receive("fromMainB", (args) => {

@@ -11,6 +11,7 @@ td, th{
 .semester-choose{
     display: block;
     border-radius: 5px;
+    border: 1px solid rgba(223, 223, 223, 0.123);
     padding: 3px;
     margin: 5px;
     cursor: pointer;
