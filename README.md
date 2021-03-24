@@ -1,4 +1,4 @@
-# notesLocal
+Notenberechner by Florian Gubler
 
 Simple Electron App to manage my Grades in School.
 To use it please request an account by me. 
