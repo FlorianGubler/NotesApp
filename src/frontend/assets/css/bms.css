@@ -14,6 +14,9 @@ td, th{
 #edit-table path:hover{
     color:#757575;
 }
+.active-semester{
+    background-color: #343a40;
+}
 .semester-choose{
     display: block;
     border-radius: 5px;
