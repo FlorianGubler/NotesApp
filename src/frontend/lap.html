@@ -75,9 +75,9 @@
                                 th.innerHTML = subj;
                                 tr.appendChild(th);
                                 count = 0;
+                                counttag++;
                                 subjects[tag][subj].forEach(note => {
                                     count++;
-                                    counttag++;
                                     td = document.createElement("td");
                                     td.innerHTML = note.value;
                                     if(note.value > 4){
@@ -90,31 +90,39 @@
                                     td.name = note.examName;
                                     tr.appendChild(td);
                                 });
-                                table.appendChild(tr);
-                                if(count != 0 && tag != "IPA Abschlussprüfung"){
+                                if(count != 0){
                                     endnotes[tag][subj] = Math.round((endnotes[tag][subj] / count)*2)/2;
-                                    endnotes[tag+"_end"] += endnotes[tag][subj];
+                                    endnotes[tag+"_end"] += endnotes;
                                 }
-                                else if (count == 0){
-                                    endnotes[tag+"_end"] += 0;
-                                }
-                                
+                                table.appendChild(tr);
                             }
-                            if(counttag != 0 && tag != "IPA Abschlussprüfung"){
-                                endnotes[tag+"_end"] = Math.round((endnotes[tag+"_end"] / counttag) * 2)/2;
+                            if (counttag != 0){
+                                endnotes[tag+"_end"] = Math.round((endnotes[tag+"_end"] / count)*10)/10
                             }
-                            else if(counttag != 0 && tag == "IPA Abschlussprüfung"){
-                                if(endnotes[tag].length == 3){
-                                    endnotes[tag+"_end"] = endnotes[tag]["Resulat der Arbeit"]*0.5 + endnotes[tag]["Dokumenation"]*0.25 + endnotes[tag]["Fachgespräch und Präsentation"]*0.25;
-                                }
+                            else{
+                                endnotes[tag+"_end"] += 0
                             }
-                            else if (counttag == 0){
-                                endnotes[tag+"_end"] = 0;
-                            }
+
                             div.appendChild(h3)
                             div.appendChild(table)
                             document.getElementById("table-notes-norm").appendChild(div);
+                            var split = document.createElement("div");
+                            split.classList.add("table-split");
+                            document.getElementById("table-notes-norm").appendChild(split);
+
                         };
+                        for(tag in subjects){
+                            count = 0;
+                            for(subj in subjects[tag]){
+                                count++;
+                                subjects[tag+"_end"] += subjects[tag][subj];
+                            }
+                            if (count != 0){
+                                subjects[tag+"_end"] = Math.round((endnotes[tag+"_end"] / count)*10)/10
+                            }
+                        }
+                        console.log(endnotes)
+
                         var finalgradeExam = 0;
                         var finalgradeModules = 0;
 

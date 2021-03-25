@@ -56,7 +56,7 @@ td, th{
     width: 70%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: safe;
     align-items: top;
 }
 #table-notes-norm table{
@@ -65,9 +65,16 @@ td, th{
 }
 .table-container{
     max-height: 80vh;
-    overflow: auto;
+    overflow-y: auto;
+    max-width: 400px;
     width: fit-content;
     margin-right: 10px;
+}
+.table-split{
+    margin: 5px;
+    width: 1px;
+    background-color: #8d8d8d9d;
+    height: 80vh;
 }
 .table-container h3{
     margin: 5px;
