@@ -7,7 +7,31 @@ h1{
     display: block;
     margin-top: 30px;
 }
-
+*::-webkit-scrollbar {
+  width: 20px;
+  height: 15px;
+}
+*::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #3e444a83;
+  border-radius: 12px;
+  border: 5px solid #5b5b5c00;
+  background-clip: content-box;
+  min-width: 40px;
+  min-height: 40px;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background-color: #535353;
+}
+*::-webkit-scrollbar-thumb:active{
+  background-color: #535353;
+}
+*::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
+  padding: 2px;
+}
 input{
   width: 100%;
   padding: 12px 20px;
@@ -77,20 +101,18 @@ span.psw {
   top: 0;
   width: 100%; 
   height: 100%; 
-  overflow: hidden;
+  overflow: auto;
   background-color: rgba(61, 61, 61, 0);
   padding-top: 10px;
 }
 
-/* Modal Content/Box */
 .modal-content {
   background-color: #333435;
-  margin: 5% auto 5% auto;
+  margin: 5% auto 10px auto;
   border: 1px solid rgb(39, 39, 39);
   width: 50%; 
 }
 
-/* Add Zoom Animation */
 .animate {
   -webkit-animation: animatezoom 0.6s;
   animation: animatezoom 0.6s
