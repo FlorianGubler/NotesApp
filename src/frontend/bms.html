@@ -15,7 +15,7 @@
     <table id="table-notes-norm"></table>
 </div>
 <div id="calculates">
-    <h2>Aktueller Stand</h2>
+    <h2>Notenberechnung</h2>
     <table id="table-notes-end"></table>
 </div>    
 <script>
@@ -173,6 +173,27 @@
                 });
             }
         });
+        if(document.getElementById("old-semster-choosen-style") != null){
+            document.getElementById("old-semster-choosen-style").remove();
+        }
+        if(document.getElementsByClassName("active-semester")[0] != null){
+            document.getElementsByClassName("active-semester")[0].classList.remove("active-semester")
+        }
+        if(Number.isInteger(semester)){
+            newstyle = document.createElement("style");
+            semesterNTH = semester + 1;
+            newstyle.innerHTML = ".semester-choose:nth-child("+semesterNTH+"){background-color: #343a40}";
+            newstyle.id="old-semster-choosen-style"
+            document.body.appendChild(newstyle);
+        }
+        else{
+            var semesterarr = Array.from(document.getElementsByClassName("semester-choose"))
+            semesterarr.forEach(el => {
+                if(el.innerHTML == semester){
+                    el.classList.add("active-semester");
+                }
+            })
+        }
     }
-    getNotesData(1);
+    getNotesData(0);
 </script>

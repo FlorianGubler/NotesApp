@@ -5,8 +5,8 @@
     color: #dedede;
 }
 @keyframes showmenu{
-	0% { left: -200px;}
-  100% { left: 0;}
+	from { left: -200px; }
+    to { left: 0;}
 }
 button:focus{
     outline: none;
@@ -20,9 +20,9 @@ button:focus{
     height: 100%;
     background-color: #3e444a;
     box-shadow: 10px 0 15px rgba(24, 24, 24, 0.5);
-    animation-direction: reverse;
     animation: showmenu 0.5s ease-in;
-    display: none;
+    animation-direction: reverse;
+    display: none;    
 }
 #menu a{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
