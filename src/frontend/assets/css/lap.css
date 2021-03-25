@@ -6,8 +6,21 @@ td, th{
     text-align: center;
 }
 #edit-table{
+
     display: inline;
 }
+#BerufsfachschuleModule{
+    -moz-box-shadow:    inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow:         inset 0 0 30px #00000057;
+}
+#edit-table path{
+    color:#343a40;
+}
+#edit-table path:hover{
+    color:#757575;
+}
+
 .semester-choose{
     display: block;
     border-radius: 5px;
@@ -59,6 +72,10 @@ td, th{
     justify-content: safe;
     align-items: top;
 }
+#container-notes-form{
+    margin: 10px;
+    margin-left: 30px;
+}
 #table-notes-norm table{
     margin: 10px;
     margin-right: 40px;
@@ -66,15 +83,17 @@ td, th{
 .table-container{
     max-height: 80vh;
     overflow-y: auto;
-    max-width: 400px;
+    max-width: 1000px;
     width: fit-content;
-    margin-right: 10px;
+    margin-right: 20px;
+    margin: 20px;
 }
-.table-split{
+.table-split{    
+    border-radius: 5px;
     margin: 5px;
-    width: 1px;
-    background-color: #8d8d8d9d;
-    height: 80vh;
+    width: 2px;
+    background-color: #8d8d8d70;
+    height: 85vh;
 }
 .table-container h3{
     margin: 5px;
@@ -132,8 +151,7 @@ td, th{
     align-items: center;
 }
 #top-bar-gui a{
-    margin-top: -5px;
-    margin-left: 50px;
+    margin-left: 30px;
     font-size: 25px;
 }
 #splitline{

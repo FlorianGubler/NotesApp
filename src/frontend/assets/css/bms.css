@@ -8,6 +8,12 @@ td, th{
 #edit-table{
     display: inline;
 }
+#edit-table path{
+    color:#343a40;
+}
+#edit-table path:hover{
+    color:#757575;
+}
 .semester-choose{
     display: block;
     border-radius: 5px;
