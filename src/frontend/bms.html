@@ -5,7 +5,6 @@
       $("#includedContent").load("navbar.html"); 
     });
 </script> 
-<script>document.title = "BMS - Noten"; document.getElementById('site-title').innerHTML = "BMS - Noten"</script>
 <link rel="stylesheet" href="assets/css/bms.css">
 <div id="top-bar-gui">
     <h1 id="title-home"></h1>
@@ -146,6 +145,9 @@
                             count -= 1;
                         }
                         finalgrade = finalgrade / count;
+                        if(Number.isNaN(finalgrade)){
+                            finalgrade = "" + 0;
+                        }
                         var tr = document.createElement("tr");
                         var th = document.createElement("th");
                         th.innerHTML = "Endnote BMS";
