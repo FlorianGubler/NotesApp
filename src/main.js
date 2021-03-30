@@ -2,7 +2,6 @@ const {app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main
 const path = require("path");
 const { defaultApp } = require('process');
 const fs = require('fs');
-const mysql = require('mysql');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 
@@ -14,7 +13,6 @@ var trayIcon;
 var tray;
 
 var login_user;
-
 
 function init() {
   createWindow();
@@ -142,8 +140,6 @@ function getSemesters(event){
   getData("GetSemesters")
     .then(data => event.reply('fromMainD', JSON.stringify({type: "replySemesters", cmd: "", attributes: JSON.stringify(data)}))) 
 }
-
-var sha256 = require('js-sha256');
 
 function checkLogin(event, loginData){
   let headers = new fetch.Headers();
