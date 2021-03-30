@@ -1,4 +1,4 @@
-# Notenberechner by Florian Gubler
+# Simple Notes Calculator by Florian Gubler with NODEJS
 
 Simple Electron App to manage my Grades in School.
 To use it please request an account by me. 
