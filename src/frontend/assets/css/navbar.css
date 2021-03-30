@@ -90,6 +90,9 @@ button:focus{
     font-size: 20px;
     color: rgb(219, 219, 219);
 }
+#menu-expand:focus{
+    outline: none;
+}
 #site-title-container{
     display: flex;
     align-items: center;
@@ -189,3 +192,13 @@ button:focus{
     margin: auto auto;
     width: 85%;
 }
+
+#loading{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    z-index: 100;
+}
+  

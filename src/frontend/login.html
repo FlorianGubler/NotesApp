@@ -6,20 +6,15 @@
     <script src="https://use.fontawesome.com/releases/v5.9.0/js/all.js" data-auto-replace-svg></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noten Manager - Login</title>
-    <script>
-      //AutoLogin Check
-      window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'AutoLogin', attributes: ""}));
-      window.api.receive("fromMainA", (args) => {
-          if(args.type == "replyLogin"){
-              var response = JSON.parse(args.attributes);
-              if(response){
-                location.href = "home.html"
-              }
-          }
-      });
-    </script>
 </head>
 <body>
+<div id="loading"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script> 
+    $(function(){
+      $("#loading").load("loading.html"); 
+    });
+</script> 
 <div id="login" class="modal">
   <form class="modal-content animate" onsubmit="checkLogin(true); return false;">
     <div class="imgcontainer">
@@ -48,6 +43,22 @@
 </div>
 
 <script>
+  document.getElementById("login").style.display = "none";
+  document.getElementById("loading").style.display = "block";
+
+  //AutoLogin Check
+  window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'AutoLogin', attributes: ""}));
+  window.api.receive("fromMainA", (args) => {
+      if(args.type == "replyLogin"){
+          var response = JSON.parse(args.attributes);
+          if(response){
+            location.href = "home.html"
+          }
+      }
+      document.getElementById("login").style.display = "block";
+      document.getElementById("loading").style.display = "none";
+  });
+
   function checkLogin(showError){
     window.api.send("toMain", JSON.stringify({type: 'CheckData', cmd: 'Login', attributes: JSON.stringify({username: document.getElementById('uname').value, password: document.getElementById('psw').value, remember: document.getElementById('remember').checked})}));
     window.api.receive("fromMainA", (args) => {
