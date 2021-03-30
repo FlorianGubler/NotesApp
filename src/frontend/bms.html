@@ -66,6 +66,7 @@
                 window.api.receive("fromMainA", (args) => {
                     if(args.type == "replyUserNotes"){
                         var response = JSON.parse(args.attributes);
+                        console.log(response)
                         response.forEach(note => {
                             if(note.schoolName == "BMS" ){
                                 if(note.semesterTag == semester || note.FK_semester == semester){

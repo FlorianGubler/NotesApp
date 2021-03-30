@@ -1,9 +1,10 @@
 const {app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
 const path = require("path");
 const { defaultApp } = require('process');
-const exec = require('child_process').execFile;
 const fs = require('fs');
 const mysql = require('mysql');
+let base64 = require('base-64');
+const fetch = require("node-fetch")
 
 const appName = "GameLauncher";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -11,6 +12,9 @@ const iconPath = 'frontend/assets/img/icon.png';
 var win;
 var trayIcon;
 var tray;
+
+var login_user;
+
 
 function init() {
   createWindow();
@@ -41,9 +45,9 @@ function createWindow () {
     }
   });
   //win.removeMenu();
-  win.loadFile('frontend/login.html');
-  showWindow();
+  win.loadFile('frontend/login.html');  
   win.maximize()
+  showWindow();
 
   win.webContents.on('before-input-event', (event, input) => {
     if (input.key.toLowerCase() === 'escape') {
@@ -82,53 +86,83 @@ function createTray() {
 
 app.whenReady().then(init);
 
-var con = mysql.createConnection({
-  host: "dekinotu.mysql.db.hostpoint.ch",
-  user: "dekinotu_user1",
-  password: "CBXG2pfrpKkDWsG",
-  database: "dekinotu_notenberechnung",
-  port: 3306
-});
-  
-con.connect(function(err) {
-  if (err) console.log(err);
-  console.log("Connected to Notes DB");
-});
+async function getData(action){
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+
+  var raw = JSON.stringify([
+    {
+      "action": action
+    }
+  ]);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
+  console.log("GetDataAPI: "+response.status);
+  return response.json();
+}
+
+async function setData(body){
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+
+  var raw = JSON.stringify([body]);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
+  console.log("SetDataAPI: "+response.status);
+}
+
 
 function getUserNotes(event){
-  con.query("SELECT * FROM notes INNER JOIN subjects ON notes.FK_subject = subjects.id INNER JOIN schools ON subjects.FK_school = schools.id INNER JOIN semesters ON notes.FK_semester = semesters.id WHERE FK_user="+login_user.id+";", function (err, result) {
-    if (err) console.log(err);
-    event.reply('fromMainA', JSON.stringify({type: "replyUserNotes", cmd: "", attributes: JSON.stringify(result)}));
-  });  
+  getData("GetUserNotes")
+    .then(data => event.reply('fromMainA', JSON.stringify({type: "replyUserNotes", cmd: "", attributes: JSON.stringify(data)})))  
 }
 
 function getSubjects(event){
-  con.query("SELECT * FROM subjects INNER JOIN schools ON subjects.FK_school = schools.id;", function (err, result) {
-    if (err) console.log(err);
-    event.reply('fromMainB', JSON.stringify({type: "replySubjects", cmd: "", attributes: JSON.stringify(result)}));
-  });  
+  getData("GetSubjects")
+    .then(data => event.reply('fromMainB', JSON.stringify({type: "replySubjects", cmd: "", attributes: JSON.stringify(data)})))  
 }
 
 function getSemesters(event){
-  con.query("SELECT * FROM semesters;", function (err, result) {
-    if (err) console.log(err);
-    event.reply('fromMainD', JSON.stringify({type: "replySemesters", cmd: "", attributes: JSON.stringify(result)}));
-  });  
+  getData("GetSemesters")
+    .then(data => event.reply('fromMainD', JSON.stringify({type: "replySemesters", cmd: "", attributes: JSON.stringify(data)}))) 
 }
 
 var sha256 = require('js-sha256');
-var login_user;
 
 function checkLogin(event, loginData){
-  con.query("SELECT * from users WHERE username="+con.escape(loginData.username)+";", function (err, result) {
-    if (err) throw err;
-    var login = false;
-    result.forEach(user => {
-      if(sha256(loginData.username+loginData.password) == user.passwordhash){
-        login = true
-        login_user = user;
-      }
-    });
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(loginData.username+":"+loginData.password));
+  var raw = JSON.stringify([{"action": "GetUserData"}]);
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+  fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
+    if(result.status == 200){
+      login = true
+    }
+    else{
+      login = false
+    }
     event.reply('fromMainA', JSON.stringify({type: "replyLogin", cmd: "", attributes: JSON.stringify(login)}));
     if(loginData.remember && login == true){
       fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
@@ -136,7 +170,11 @@ function checkLogin(event, loginData){
         console.log('Remember status > frontend/assets/data/data.json');
       });
     }
-  });  
+    return result.json();
+  }).then(json => {
+    login_user = json
+    login_user.password = loginData.password;
+  }).catch(err => console.log("error in login fetch: ", err)); 
 }
 
 function checkAutoLogin(event){
@@ -149,23 +187,25 @@ function checkAutoLogin(event){
 }
 
 function uploadNotes(event, data){
-  con.query("SELECT * FROM subjects where subjectName='"+data.subject+"';", function (err, subject) {
-    if (err) {
-      console.log(err);
-    }
-    else{
-      con.query("INSERT INTO notes (value, examName, FK_subject, FK_user, FK_semester) VALUES ("+data.note+", '"+data.examTag+"', "+subject[0].id+", "+login_user.id+", "+data.semester+");", function (err, result) {
-        if(err) throw err;
-        if (err) {
-          event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
+  var FK_subject_calc
+  getData("GetSubjects")
+    .then(result => {
+      result.forEach(subj => {
+        if(subj.subjectName == data.subject){
+          FK_subject_calc = subj.id;
         }
-        else{
-          event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")}))
-        }
-    });  
-    }
-  }); 
-  
+      })
+      var uploadnotebody = {
+        "action": "UploadNote",
+        "value": data.note,
+        "examName": data.examTag,
+        "FK_subject": FK_subject_calc,
+        "FK_semester": data.semester
+      }
+      setData(uploadnotebody)
+        .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")})); logout();})
+        .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify("Interner Fehler")})))
+    })
 }
 
 function logout(){
@@ -179,59 +219,32 @@ function getUserData(){
   if(login_user == null || login_user == undefined){
       return null;
   }
-  return {id: login_user.id, username: login_user.username, profilepicture: login_user.profilepicture};
+  else{
+    return {id: login_user.id, username: login_user.username, profilepicture: login_user.profilepicture};
+  }
 }
 
 function setUsername(event, data){
-  con.query("SELECT * from users WHERE id="+login_user.id+";", function (err, result) {
-    if (err) throw err;
-    if (err) {
-      event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
-    }
-    else{
-      if(sha256(result[0].username+data.password) == result[0].passwordhash){
-        con.query("UPDATE users SET username='"+data.newusername+"', passwordhash='"+sha256(data.newusername+data.password)+"' WHERE id="+login_user.id+";", function (err, result) {
-          if(err) throw err;
-          if (err) {
-            event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
-          }
-          else{
-            event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: "true", attributes: JSON.stringify("")}))
-            logout();
-          }
-        }); 
-      }
-      else{
-        event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Falsches Passwort")}))
-      }
-    }
-  });  
+  var newusernamebody = {
+    "action": "SetUsername",
+    "newusername": data.newusername,
+    "password": data.password
+  }
+  setData(newusernamebody)
+    .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: true, attributes: JSON.stringify("")})); logout();})
+    .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: false, attributes: JSON.stringify("Interner Fehler")})));
+
 }
 
 function setPassword(event, data){
-  con.query("SELECT * from users WHERE id="+login_user.id+";", function (err, result) {
-    if (err) throw err;
-    if (err) {
-      event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
-    }
-    else{
-      if(sha256(result[0].username+data.oldpassword) == result[0].passwordhash){
-        con.query("UPDATE users SET passwordhash='"+sha256(result[0].username+data.newpassword)+"' WHERE id="+login_user.id+";", function (err, result) {
-          if(err) throw err;
-          if (err) {
-            event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Interner Fehler")}))
-          }
-          else{
-            event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "true", attributes: JSON.stringify("")}))
-            logout();
-          }
-        }); 
-      }
-      else{
-        event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: "false", attributes: JSON.stringify("Falsches Passwort")}))
-      }
-    }
-  });  
+  var newusernamebody = {
+    "action": "SetPassword",
+    "newpassword": data.newpassword,
+    "oldpassword": data.oldpassword
+  }
+  setData(newusernamebody)
+    .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: true, attributes: JSON.stringify("")})); logout();})
+    .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler")})));
 }
 
 ipcMain.on("toMain", (event, command) => {

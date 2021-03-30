@@ -61,7 +61,7 @@
             window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Password', attributes: JSON.stringify({newpassword: newpasswordVal, oldpassword: oldpasswordVal})}));
             window.api.receive("fromMainA", (args) => {
                 if(args.type == "replyNewPassword"){
-                    if(args.cmd == "true"){
+                    if(args.cmd){
                         //document.getElementById("login-response-true").style.display = "block";
                         resetInputs();
                         location.href = "login.html";
@@ -84,7 +84,7 @@
         window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Username', attributes: JSON.stringify({newusername: newusernameVal, password: passwordVal})}));
         window.api.receive("fromMainA", (args) => {
             if(args.type == "replyNewUsername"){
-                if(args.cmd == "true"){
+                if(args.cmd){
                     //document.getElementById("login-response-true").style.display = "block";
                     resetInputs();
                     location.href = "login.html";
