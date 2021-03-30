@@ -1,8 +1,12 @@
 <div id="includedContent"></div>
+<div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script> 
     $(function(){
       $("#includedContent").load("navbar.html"); 
+    });
+    $(function(){
+      $("#loading").load("loading.html"); 
     });
 </script> 
 <link rel="stylesheet" href="assets/css/lap.css">
@@ -10,6 +14,10 @@
     <h1 id="title-home"></h1>
     <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
 </div>
+<ul id="semesters">
+    <li class="semester-choose"><a onclick="showbs()">Berufsfachschule</a></li>
+    <li class="semester-choose"><a onclick="showuek()">ÜK Module & IPA Abschlussprüfung</a></li>
+</ul>
 <div id="table-notes-norm"></div>
 <div id="calculates">
     <h2>Aktueller Stand</h2>
@@ -27,8 +35,8 @@
             }
         }
     }); 
-
     function getNotesData(){
+        document.getElementById("loading").style.display = "block";
         window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
         window.api.receive("fromMainB", (args) => {
             if(args.type == "replySubjects"){
@@ -121,9 +129,6 @@
                             }
                             else{
                                 document.getElementById("table-notes-norm").appendChild(div);
-                                var split = document.createElement("div");
-                                split.classList.add("table-split");
-                                document.getElementById("table-notes-norm").appendChild(split);
                             }
                         }
                         console.log(endnotes)
@@ -240,9 +245,21 @@
                         tr.appendChild(td);
                         document.getElementById("table-notes-end").appendChild(tr);
                     }
+                    showbs();
+                    document.getElementById("loading").style.display = "none";
                 });
             }
         });
     }
     getNotesData();
+
+    function showbs(){
+        document.getElementById("container-notes-form").style.display = "none";
+        document.getElementById("BerufsfachschuleModule").style.display = "block";
+    }
+    function showuek(){
+        document.getElementById("container-notes-form").style.display = "block";
+        document.getElementById("BerufsfachschuleModule").style.display = "none";
+    }
+
 </script>

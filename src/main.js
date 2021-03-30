@@ -42,7 +42,7 @@ function createWindow () {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
-  //win.removeMenu();
+  win.removeMenu();
   win.loadFile('frontend/login.html');  
   win.maximize()
   showWindow();
@@ -103,7 +103,9 @@ async function getData(action){
   };
 
   var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
-  console.log("GetDataAPI: "+response.status);
+  if(response.status != 200){
+    console.log("GetDataAPI: "+response.status);
+  }
   return response.json();
 }
 
@@ -122,7 +124,9 @@ async function setData(body){
   };
 
   var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
-  console.log("SetDataAPI: "+response.status);
+  if(response.status != 200){
+    console.log("SetDataAPI: "+response.status);
+  }
 }
 
 

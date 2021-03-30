@@ -1,8 +1,12 @@
 <div id="includedContent"></div>
+<div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script> 
     $(function(){
       $("#includedContent").load("navbar.html"); 
+    });
+    $(function(){
+      $("#loading").load("loading.html"); 
     });
 </script> 
 <link rel="stylesheet" href="assets/css/bms.css">
@@ -50,6 +54,7 @@
     }); 
     
     function getNotesData(semester){
+        document.getElementById("loading").style.display = "block";
         window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
         window.api.receive("fromMainB", (args) => {
             if(args.type == "replySubjects"){
@@ -171,6 +176,7 @@
                         tr.appendChild(td);
                         document.getElementById("table-notes-end").appendChild(tr);
                     }
+                    document.getElementById("loading").style.display = "none";
                 });
             }
         });

@@ -1,11 +1,15 @@
 <div id="includedContent"></div>
+<div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="assets/css/addnote.css">
 <script> 
     $(function(){
       $("#includedContent").load("navbar.html"); 
     });
+    $(function(){
+      $("#loading").load("loading.html"); 
+    });
 </script> 
+<link rel="stylesheet" href="assets/css/addnote.css">
 <div id="add-note" class="modal">
     <form class="modal-content animate" onsubmit="submitNote(); return false;">
       <div class="imgcontainer">
@@ -72,10 +76,12 @@
                 document.getElementById("select-subject").appendChild(optiongroup)
             }
         }
+        document.getElementById("loading").style.display = "none";
     });
   </script>
   <script>
-    function submitNote(){
+    function submitNote(){        
+        document.getElementById("loading").style.display = "block";
         var examTagVal = document.getElementById("get-examTag").value;
         var noteVal = document.getElementById("get-note").value;
         var subjectVal = document.getElementById("select-subject").value;
@@ -96,6 +102,7 @@
                     console.log(response)
                 }
             }
+            document.getElementById("loading").style.display = "none";
         });
     }
   </script>

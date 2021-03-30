@@ -1,10 +1,14 @@
 <div id="includedContent"></div>
+<div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script> 
-    $(function(){
+<script>
+	$(function(){
       $("#includedContent").load("navbar.html"); 
     });
-</script> 
+    $(function(){
+      $("#loading").load("loading.html"); 
+    });
+</script>
 <link rel="stylesheet" href="assets/css/home.css">
 <h1 id="title-home"></h1>
 <div id="notes-container">
@@ -24,7 +28,8 @@
 			var response = JSON.parse(args.attributes);
 			if(response != null){
 				user_login = response;
-				document.getElementById("title-home").innerHTML = "Willkommen, " + response.username;;
+				document.getElementById("title-home").innerHTML = "Willkommen, " + response.username;
+				document.getElementById("loading").style.display = "none";
 			}
 		}
 	});

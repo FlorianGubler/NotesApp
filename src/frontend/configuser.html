@@ -1,6 +1,10 @@
 <div id="includedContent"></div>
+<div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script> 
+    $(function(){
+        $("#loading").load("loading.html"); 
+    });
     $(function(){
       $("#includedContent").load("navbar.html"); 
     });
@@ -48,6 +52,7 @@
                     x[i].innerHTML = response.username;
                 }
                 document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
+                document.getElementById("loading").style.display = "none";
             }
             
         }
