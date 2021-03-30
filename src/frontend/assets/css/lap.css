@@ -16,7 +16,7 @@ td, th{
     display: block;
 }
 #edit-table path{
-    color:#343a40;
+    color:#5e6163;
 }
 #edit-table path:hover{
     color:#757575;
@@ -114,7 +114,7 @@ td, th{
     margin-right: 40px;
 }
 .table-container{
-    max-height: 80vh;
+    max-height: 75vh;
     overflow-y: auto;
     max-width: 1000px;
     width: fit-content;

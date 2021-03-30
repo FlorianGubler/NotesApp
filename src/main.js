@@ -42,7 +42,7 @@ function createWindow () {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
-  win.removeMenu();
+  //win.removeMenu();
   win.loadFile('frontend/login.html');  
   win.maximize()
   showWindow();
