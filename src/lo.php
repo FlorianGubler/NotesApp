@@ -1,2 +1,2 @@
 <?php
-echo hash("sha256", "Jon Bunjaku1234");
+echo base64_decode(strrev(hex2bin("3d3d516343746d4d6d6c315669563362")));

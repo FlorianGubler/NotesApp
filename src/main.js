@@ -192,6 +192,9 @@ function checkAutoLogin(event){
     autoLoginData.remember = false;
     checkLogin(event, autoLoginData)
   }
+  else{
+    event.reply('fromMainA', JSON.stringify({type: "replyLogin", cmd: "", attributes: JSON.stringify(false)}));
+  }
 }
 
 function uploadNotes(event, data){
