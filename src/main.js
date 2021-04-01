@@ -4,8 +4,9 @@ const { defaultApp } = require('process');
 const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
+const exec = require("child_process").exec;
 
-const appName = "GameLauncher";
+const appName = "Notes";
 const iconPath = 'frontend/assets/img/icon.png';
 
 var win;
@@ -42,7 +43,7 @@ function createWindow () {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
-  win.removeMenu();
+  //win.removeMenu();
   win.loadFile('frontend/login.html');  
   win.maximize()
   showWindow();
@@ -65,17 +66,24 @@ function hideWindow() {
   win.hide();
 }
 
+function openExternalWebpage(url){
+  exec("start chrome " + url, function(err){
+    if(err){
+      console.log(err)
+    }
+  });
+}
+
 function createTray() {
   tray = new Tray(iconPath);
   const contextMenu = Menu.buildFromTemplate([
     { type: 'normal', enabled: false, icon: nativeImage.createFromPath(iconPath).resize({width:16}), label: appName},
     { type: 'separator'},
+    { label: 'About this Project', type: 'normal', click: () => {openExternalWebpage("https://github.com/FlorianGubler/notesLocal")}},
     { label: 'Show ', type: 'normal', click: () => {showWindow()}},
-    { label: 'Quit', type: 'normal', click: () => {shutdown()}},
+    { label: 'Hide ', type: 'normal', click: () => {hideWindow()}},
     { type: 'separator'},
-    { label: 'Settings ', type: 'normal', click: () => {openWindow_Settings()}},
-    { type: 'separator'},
-    { label: 'Exit Menu', type: 'normal'}
+    { label: 'Quit', type: 'normal', click: () => {shutdown()}},  
   ])
   tray.setToolTip(appName);
   tray.setContextMenu(contextMenu);
@@ -183,6 +191,9 @@ function checkAutoLogin(event){
     var autoLoginData = JSON.parse(autoLoginData);
     autoLoginData.remember = false;
     checkLogin(event, autoLoginData)
+  }
+  else{
+    event.reply('fromMainA', JSON.stringify({type: "replyLogin", cmd: "", attributes: JSON.stringify(false)}));
   }
 }
 

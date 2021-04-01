@@ -32,6 +32,7 @@
     </form>
   </div>
   <script>
+    document.getElementById("loading").style.display = "none";
     window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Semesters', attributes: ""}));
     window.api.receive("fromMainD", (args) => {
         if(args.type == "replySemesters"){
@@ -76,7 +77,6 @@
                 document.getElementById("select-subject").appendChild(optiongroup)
             }
         }
-        document.getElementById("loading").style.display = "none";
     });
   </script>
   <script>
