@@ -54,9 +54,11 @@
           if(response){
             location.href = "home.html"
           }
+          else{
+            document.getElementById("login").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+          }
       }
-      document.getElementById("login").style.display = "block";
-      document.getElementById("loading").style.display = "none";
   });
 
   function checkLogin(showError){

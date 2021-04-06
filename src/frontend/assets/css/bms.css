@@ -6,13 +6,15 @@ td, th{
     text-align: center;
 }
 #edit-table{
-    display: inline;
+    padding: 5px;
+    border-radius: 5px;
+}
+#edit-table:hover{
+    background-color:#928b8b70;
+    box-shadow: 5px 5px 5px rgb(24, 24, 24);
 }
 #edit-table path{
-    color:#5e6163;
-}
-#edit-table path:hover{
-    color:#757575;
+    color:#a2a3a3;
 }
 .active-semester{
     background-color: #343a40;
