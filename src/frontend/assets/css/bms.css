@@ -78,6 +78,9 @@ td, th{
 #calculates h2{
     padding: 10px;
 }
+#calculates td, #calculates th{
+    text-align: left;
+}
 #table-notes-end td, #table-notes-end th{
     padding: 10px;
 }
