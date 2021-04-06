@@ -16,10 +16,10 @@ td, th{
     display: block;
 }
 #edit-table path{
-    color:#5e6163;
+    color:#a2a3a3;
 }
 #edit-table path:hover{
-    color:#757575;
+    color:#cac1c1;
 }
 .semester-choose{
     display: block;

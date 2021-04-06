@@ -28,10 +28,6 @@ function getNotesData(){
                             subjects[note.additionalTag][note.subjectName].push({value: note.value, examName: note.examName});
                         }
                     });
-                    var count;
-                    var counttag;
-                    var countipa = 0;
-                    var countend = 0;
                     for(var tag in subjects){
                         var div = document.createElement("div")
                         div.classList.add("table-container")
@@ -41,18 +37,17 @@ function getNotesData(){
                         var th;
                         var td;
                         h3.innerHTML = tag;
-                        counttag = 0;
                         for(var subj in subjects[tag]){
                             var tr = document.createElement("tr");
                             th = document.createElement("th");
                             th.innerHTML = subj;
                             tr.appendChild(th);
-                            count = 0;
+                            countsubj = 0;
                             subjects[tag][subj].forEach(note => {
-                                if(tag == "IPA Abschlussprüfung"){
-                                    ountipa++;
+                                if(note.value != 0){
+                                    endnotes[tag][subj] += parseFloat(note.value);
+                                    countsubj++;
                                 }
-                                count++;
                                 td = document.createElement("td");
                                 td.innerHTML = note.value;
                                 if(note.value > 4){
@@ -61,23 +56,23 @@ function getNotesData(){
                                 if(note.value < 4 && note.value != 0){
                                     td.classList.add("grade-bad");
                                 }
-                                endnotes[tag][subj] += note.value;
                                 td.name = note.examName;
                                 tr.appendChild(td);
                             });
-                            if(count != 0){
-                                endnotes[tag][subj] = Math.round((endnotes[tag][subj] / count)*10)/10;
-                                endnotes[tag+"_end"] += endnotes[tag][subj];
-                                counttag++;
+                            if(countsubj != 0){
+                                endnotes[tag][subj] = Math.round((endnotes[tag][subj] / countsubj)*2)/2;
+                                tagcount = 0;
                             }
                             table.appendChild(tr);
                         }
-                        if (counttag != 0){
-                            endnotes[tag+"_end"] = Math.round((endnotes[tag+"_end"] / counttag)*10)/10
+                        for(var endsubj in endnotes[tag]){
+                            if(endnotes[tag][endsubj] != 0){
+                                endnotes[tag+"_end"] += endnotes[tag][endsubj];
+                                tagcount++;
+                            }
                         }
-                        else{
-                            endnotes[tag+"_end"] += 0
-                        }
+                        endnotes[tag+"_end"] = endnotes[tag+"_end"] / tagcount;
+
                         div.id = tag.replace(/\s/g, "");
                         div.appendChild(h3)
                         div.appendChild(table)
@@ -94,122 +89,64 @@ function getNotesData(){
                             document.getElementById("table-notes-norm").appendChild(div);
                         }
                     }
-                    console.log(endnotes)
-                    var tr = document.createElement("tr");
-                    var td = document.createElement("td");
-                    td.innerHTML = "<div id='splitline'></div>";
-                    td.colSpan = "2";
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
+                    endnotes["ÜK Module_end"] = Math.round(endnotes["ÜK Module_end"]*2)/2;
+                    endnotes["Berufsfachschule Module_end"] = Math.round(endnotes["Berufsfachschule Module_end"]*2)/2;
 
-                    for(tag in subjects){
-                        var tr = document.createElement("tr");
-                        var th = document.createElement("th");
-                        th.innerHTML = tag
-                        var td = document.createElement("td");
-                        td.innerHTML = endnotes[tag+"_end"];
-                        if(endnotes[tag+"_end"] > 4){
-                            td.classList.add("grade-good");
-                        }
-                        if(endnotes[tag+"_end"] < 4 && endnotes[tag+"_end"] != 0){
-                            td.classList.add("grade-bad");
-                        }
-                        tr.appendChild(th);
-                        tr.appendChild(td);
-                        document.getElementById("table-notes-end").appendChild(tr);
-                    }                           
-                    
-                    //FinalGrade
-                    var finalgradeModules = 0;
+                    checkinf = false;
+                    checkipa = false;
+
+                    //Calc intermediate notes
                     if(endnotes["ÜK Module_end"] != 0 && endnotes["Berufsfachschule Module_end"] != 0){
-                        finalgradeModules = (((Math.round(endnotes["ÜK Module_end"]*2)/2)*0.2) + ((Math.round(endnotes["Berufsfachschule Module_end"]*2)/2)*0.8));
+                        endnotes["Informatikkompetenzen"] = endnotes["ÜK Module_end"]*0.2 + endnotes["Berufsfachschule Module_end"]*0.8;
+                    }
+                    else if(endnotes["ÜK Module_end"] != 0 && endnotes["Berufsfachschule Module_end"] == 0){
+                        endnotes["Informatikkompetenzen"] = endnotes["ÜK Module_end"];
+                    }
+                    else if(endnotes["ÜK Module_end"] == 0 && endnotes["Berufsfachschule Module_end"] != 0){
+                        endnotes["Informatikkompetenzen"] = endnotes["Berufsfachschule Module_end"];
                     }
                     else{
-                        finalgradeModules = (Math.round(endnotes["Berufsfachschule Module_end"]*2)/2) + (Math.round(endnotes["ÜK Module_end"]*2)/2);    
+                        checkinf = true;
                     }
-                    finalgradeModules = Math.round(finalgradeModules*10)/10;
+                    endnotes["Informatikkompetenzen"] = Math.round(endnotes["Informatikkompetenzen"]*10)/10;
 
-                    //Check if something is 0
-                    endnotes["IPA Abschlussprüfung_end"] = (Math.round(endnotes["IPA Abschlussprüfung"]["Resultat der Arbeit"]*2)/2)*0.5 +  (Math.round(endnotes["IPA Abschlussprüfung"]["Dokumentation"]*2)/2)*0.25 +  (Math.round(endnotes["IPA Abschlussprüfung"]["Fachgespräch und Präsentation"]*2)/2)*0.25 / countipa;
-                    endnotes["IPA Abschlussprüfung_end"] = Math.round(endnotes["IPA Abschlussprüfung_end"]*10)/10;
-
-                    var tr = document.createElement("tr");
-                    var td = document.createElement("td");
-                    td.innerHTML = "<div id='splitline'></div>";
-                    td.colSpan = "2";
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
-
-                    //Mini Final Grades
-                    var tr = document.createElement("tr");
-                    var th = document.createElement("th");
-                    th.innerHTML = "Endnote Abschlussprüfung";
-                    tr.appendChild(th);
-                    var td = document.createElement("td");
-                    td.innerHTML = endnotes["IPA Abschlussprüfung_end"]
-                    if(endnotes["IPA Abschlussprüfung_end"] > 4){
-                        td.classList.add("grade-good");
-                    }
-                    else if(endnotes["IPA Abschlussprüfung_end"] < 4 && endnotes["IPA Abschlussprüfung_end"] != 0){
-                        td.classList.add("grade-bad");
-                    }
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
-
-                    var tr = document.createElement("tr");
-                    var th = document.createElement("th");
-                    th.innerHTML = "Endnote Informatikkompentenzen";
-                    tr.appendChild(th);
-                    var td = document.createElement("td");
-                    td.innerHTML = finalgradeModules
-                    if(finalgradeModules > 4){
-                        td.classList.add("grade-good");
-                    }
-                    else if(finalgradeModules < 4 && finalgradeModules != 0){
-                        td.classList.add("grade-bad");
-                    }
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
-
-                    var tr = document.createElement("tr");
-                    var td = document.createElement("td");
-                    td.innerHTML = "<div id='splitline'></div>";
-                    td.colSpan = "2";
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
-
-                    //Real Final Grade
-                    var finalgrade = 0;
-                    if(finalgradeModules != 0 && endnotes["IPA Abschlussprüfung_end"] != 0){
-                        finalgrade = (finalgradeModules + endnotes["IPA Abschlussprüfung_end"]) / 2;
+                    if(endnotes["IPA Abschlussprüfung_end"] != 0){
+                        endnotes["IPA Abschlussprüfung_end"] = Math.round(endnotes["IPA Abschlussprüfung"]["Resultat der Arbeit"]*0.5*2)/2 + Math.round(endnotes["IPA Abschlussprüfung"]["Dokumentation"]*0.25*2)/2 + Math.round(endnotes["IPA Abschlussprüfung"]["Fachgespräch und Präsentation"]*0.25*2)/2;
+                        endnotes["IPA Abschlussprüfung_end"] = Math.round(endnotes["IPA Abschlussprüfung_end"]*10)/10;
                     }
                     else{
-                        finalgrade = finalgradeModules + endnotes["IPA Abschlussprüfung_end"];
+                        checkipa = true;
                     }
-                    var tr = document.createElement("tr");
-                    var th = document.createElement("th");
-                    th.innerHTML = "Endnote Lehrabschluss";
-                    tr.appendChild(th);
-                    var td = document.createElement("td");
-                    finalgradestr = "" + finalgrade;
-                    if (finalgradestr.length > 6) {
-                        var finalgradefinal = finalgradestr.substring(0, 5) + "...";
-                        td.innerHTML = finalgradefinal
+                    
+
+                    //Calc Final Grade
+                    if(!checkinf && !checkipa){
+                        endnotes["final"] = (endnotes["Informatikkompetenzen"] + endnotes["IPA Abschlussprüfung"]) / 2
                     }
-                    else{
-                        td.innerHTML = finalgrade
+                    else if(checkinf && !checkipa){
+                        endnotes["final"] = endnotes["IPA Abschlussprüfung"];
                     }
-                    if(finalgrade > 4){
-                        td.classList.add("grade-good");
+                    else if(!checkinf && checkipa){
+                        endnotes["final"] = endnotes["Informatikkompetenzen"];
                     }
-                    else if(finalgrade < 4 && finalgrade != 0){
-                        td.classList.add("grade-bad");
-                    }
-                    tr.appendChild(td);
-                    document.getElementById("table-notes-end").appendChild(tr);
+
+                    drawSplit();
+
+                    showEnd("Endnote ÜK Module", endnotes["ÜK Module_end"]);
+                    showEnd("Endnote BS Module", endnotes["Berufsfachschule Module_end"]);
+
+                    drawSplit();
+
+                    showEnd("Endnote Informatikkompetenzen", endnotes["Informatikkompetenzen"]);
+                    showEnd("Endnote IPA Abschlussprüfung", endnotes["IPA Abschlussprüfung_end"]);
+
+                    drawSplit();
+
+                    showEnd("Endnote Lehrabschluss", endnotes["final"]);
+
+                    showbs();
+                    document.getElementById("loading").style.display = "none";
                 }
-                showbs();
-                document.getElementById("loading").style.display = "none";
             });
         }
     });
@@ -221,4 +158,29 @@ function showbs(){
 function showuek(){
     document.getElementById("container-notes-form").style.display = "block";
     document.getElementById("BerufsfachschuleModule").style.display = "none";
+}
+
+function drawSplit(){
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.innerHTML = "<div id='splitline'></div>";
+    td.colSpan = "2";
+    tr.appendChild(td);
+    document.getElementById("table-notes-end").appendChild(tr);
+}
+function showEnd(title, value){
+    var tr = document.createElement("tr");
+    var th = document.createElement("th");
+    var td = document.createElement("td");
+    th.innerHTML = title;
+    td.innerHTML = value;
+    if(value > 4){
+        td.classList.add("grade-good");
+    }
+    if(value < 4 && value != 0){
+        td.classList.add("grade-bad");
+    }
+    tr.appendChild(th);                    
+    tr.appendChild(td);
+    document.getElementById("table-notes-end").appendChild(tr);
 }
