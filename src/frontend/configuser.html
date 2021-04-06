@@ -13,6 +13,7 @@
 <div id="configuser" class="modal">
     <div class="modal-content animate">
       <div class="imgcontainer">
+        <!--<form id="upload-pb" onsubmit="uploadPB(this);"><input type="file"><button type="submit">Submit</button></form>-->
         <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
         <p style="display: inline;" class="use-user-name"></p>
       </div>
@@ -57,6 +58,21 @@
             
         }
     });
+    // function uploadPB(form){
+    //     tmpFiles = document.getElementById("upload-pb").getElementsByTagName("input")[0];
+
+    //     window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify(tmpFiles.files[0])}));
+    //     window.api.receive("fromMainC", (args) => {
+    //     if(args.type == "replyPBUpload"){
+    //         if(args.cmd){
+    //             console.log("Upload finished");
+    //         }
+    //         else{
+    //             console.log("Fehler: " + JSON.parse(args.attributes))
+    //         }
+    //     }
+    // });
+    // }
     function newPassword(){
         var newpasswordVal = document.getElementById("getnewpassword").value;
         var newpasswordrepeatVal = document.getElementById("getnewpasswordrepeat").value;

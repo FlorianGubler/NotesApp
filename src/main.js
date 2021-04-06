@@ -5,6 +5,7 @@ const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
+var FormData = require('form-data');
 
 const appName = "Notes";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -117,7 +118,7 @@ async function getData(action){
   return response.json();
 }
 
-async function setData(body){
+async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/'){
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
   headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
@@ -131,7 +132,7 @@ async function setData(body){
     redirect: 'follow'
   };
 
-  var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
+  var response = await fetch(url, requestOptions);
   if(response.status != 200){
     console.log("SetDataAPI: "+response.status);
   }
@@ -226,6 +227,7 @@ function logout(){
   });
 }
 
+
 function getUserData(){
   if(login_user == null || login_user == undefined){
       return null;
@@ -257,6 +259,31 @@ function setPassword(event, data){
     .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: true, attributes: JSON.stringify("")})); logout();})
     .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler")})));
 }
+
+// function uploadPB(event, file){
+//   let headers = new fetch.Headers();
+//   headers.append('Content-Type', 'image/jpeg');
+//   headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+
+//   let formdata = new FormData();
+//   formdata.append("newpb", file);
+
+//   var requestOptions = {
+//     method: 'POST',
+//     headers: headers,
+//     body: formdata,
+//     redirect: 'follow'
+//   };
+
+//  fetch(url, requestOptions).then(response => {
+//     if(response.status != 200){
+//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: false, attributes: JSON.stringify("")}));;
+//     }
+//     else{
+//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: true, attributes: JSON.stringify("")}));
+//     }
+//   });
+// }
 
 ipcMain.on("toMain", (event, command) => {
   args = JSON.parse(command);
@@ -300,6 +327,9 @@ ipcMain.on("toMain", (event, command) => {
         case "Username":
           setUsername(event, JSON.parse(args.attributes))
           break;
+        // case "UploadPB":
+        //   uploadPB(event, JSON.parse(args.attributes))
+        //   break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;

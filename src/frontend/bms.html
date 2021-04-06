@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="assets/css/bms.css">
 <div id="top-bar-gui">
     <h1 id="title-home"></h1>
-    <a href="addnote.html" id="edit-table"><i class="fas fa-feather"></i></a>
+    <a href="addnote.html" id="edit-table"><i class="far fa-edit"></i></a>
 </div>
 <ul id="semesters"></ul>
 <div id="tables">
@@ -21,7 +21,8 @@
 <div id="calculates">
     <h2>Notenberechnung</h2>
     <table id="table-notes-end"></table>
-</div>    
+</div>   
+<script src="assets/js/calc_bms.js"></script> 
 <script>
     window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
     window.api.receive("fromMainC", (args) => {
@@ -49,158 +50,8 @@
                     li.classList.add("semester-choose");
                     document.getElementById("semesters").appendChild(li);
                 }
+                getNotesData(response.length - 1);
             }
         }
     }); 
-    
-    function getNotesData(semester){
-        document.getElementById("loading").style.display = "block";
-        window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
-        window.api.receive("fromMainB", (args) => {
-            if(args.type == "replySubjects"){
-                var response = JSON.parse(args.attributes);
-                var subjects = [];
-                var endnotes = [];
-                response.forEach(subj => {
-                    if(subj.schoolName == "BMS"){
-                        subjects[subj.subjectName] = [];
-                        endnotes[subj.subjectName] = 0;
-                    }
-                });
-                window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'NotesfromUser', attributes: ""}));
-                window.api.receive("fromMainA", (args) => {
-                    if(args.type == "replyUserNotes"){
-                        var response = JSON.parse(args.attributes);
-                        console.log(response)
-                        response.forEach(note => {
-                            if(note.schoolName == "BMS" ){
-                                if(note.semesterTag == semester || note.FK_semester == semester){
-                                    subjects[note.subjectName].push({value: note.value, examName: note.examName});
-                                }
-                            }
-                        });
-                        var count;
-                        var tr = document.createElement("tr");
-                        var td = document.createElement("td");
-                        td.innerHTML = "<div id='splitline'></div>";
-                        td.colSpan = "2";
-                        tr.appendChild(td);
-                        document.getElementById("table-notes-end").appendChild(tr);
-                        var franzendnote = 0;
-                        for(var subj in subjects){
-                            var tr = document.createElement("tr");
-                            var th = document.createElement("th");
-                            th.innerHTML = subj;
-                            tr.appendChild(th);
-                            count = 0;
-                            subjects[subj].forEach(note => {
-                                count++;
-                                endnotes[subj] += note.value;
-                                var td = document.createElement("td");
-                                td.innerHTML = note.value;
-                                if(note.value > 4){
-                                    td.classList.add("grade-good");
-                                }
-                                else if(note.value < 4){
-                                    td.classList.add("grade-bad");
-                                }
-                                tr.appendChild(td);
-                            })
-                            
-                            if(subj == "Französisch" || subj == "Französisch Vokabeln"){
-                                franzendnote += endnotes[subj];
-                            }
-                            if(subj == "Französisch"){
-                                var franzcount = count+1;
-                            }
-                            if(count != 0){
-                                endnotes[subj] = Math.round((endnotes[subj] / count)*2)/2;
-                            }
-                            document.getElementById("table-notes-norm").appendChild(tr);
-                        };
-                        count = 0;
-                        for(var endnote in endnotes){
-                            var tr = document.createElement("tr");
-                            var th = document.createElement("th");
-                            th.innerHTML = "Gesamtnote " + endnote;
-                            tr.appendChild(th);
-                            var td = document.createElement("td");
-                            td.innerHTML = endnotes[endnote];
-                            if(endnotes[endnote] > 4){
-                                td.classList.add("grade-good");
-                            }
-                            else if(endnotes[endnote] < 4 && endnotes[endnote] != 0){
-                                td.classList.add("grade-bad");
-                            }
-                            tr.appendChild(td);
-                            document.getElementById("table-notes-end").appendChild(tr);
-                            if(endnotes[endnote] != 0){
-                                count++;
-                            }
-                        }
-                        var tr = document.createElement("tr");
-                        var td = document.createElement("td");
-                        td.innerHTML = "<div id='splitline'></div>";
-                        td.colSpan = "2";
-                        tr.appendChild(td);
-                        document.getElementById("table-notes-end").appendChild(tr);
-
-                        //FinalGrade
-                        finalgrade = endnotes["Chemie"] + (Math.round((franzendnote / franzcount)*2)/2) + endnotes["Geschichte"] + endnotes["BWL"] + endnotes["Mathematik"];
-                        if(franzendnote != 0){
-                            count -= 1;
-                        }
-                        finalgrade = finalgrade / count;
-                        if(Number.isNaN(finalgrade)){
-                            finalgrade = "" + 0;
-                        }
-                        var tr = document.createElement("tr");
-                        var th = document.createElement("th");
-                        th.innerHTML = "Endnote BMS";
-                        tr.appendChild(th);
-                        var td = document.createElement("td");
-                        finalgradestr = "" + finalgrade;
-                        if (finalgradestr.length > 6) {
-                            var finalgradefinal = finalgradestr.substring(0, 5) + "...";
-                            td.innerHTML = finalgradefinal
-                        }
-                        else{
-                            td.innerHTML = finalgrade;
-                        }
-                        if(finalgrade > 4){
-                            td.classList.add("grade-good");
-                        }
-                        else if(finalgrade < 4 && finalgrade != 0){
-                            td.classList.add("grade-bad");
-                        }
-                        tr.appendChild(td);
-                        document.getElementById("table-notes-end").appendChild(tr);
-                    }
-                    document.getElementById("loading").style.display = "none";
-                });
-            }
-        });
-        if(document.getElementById("old-semster-choosen-style") != null){
-            document.getElementById("old-semster-choosen-style").remove();
-        }
-        if(document.getElementsByClassName("active-semester")[0] != null){
-            document.getElementsByClassName("active-semester")[0].classList.remove("active-semester")
-        }
-        if(Number.isInteger(semester)){
-            newstyle = document.createElement("style");
-            semesterNTH = semester + 1;
-            newstyle.innerHTML = ".semester-choose:nth-child("+semesterNTH+"){background-color: #343a40}";
-            newstyle.id="old-semster-choosen-style"
-            document.body.appendChild(newstyle);
-        }
-        else{
-            var semesterarr = Array.from(document.getElementsByClassName("semester-choose"))
-            semesterarr.forEach(el => {
-                if(el.innerHTML == semester){
-                    el.classList.add("active-semester");
-                }
-            })
-        }
-    }
-    getNotesData(0);
 </script>
