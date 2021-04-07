@@ -197,7 +197,6 @@ button:focus{
     margin: auto auto;
     width: 85%;
 }
-
 #loading{
     position: absolute;
     left: 50%;
@@ -205,4 +204,25 @@ button:focus{
     transform: translate(-50%, -50%);
     display: block;
     z-index: 100;
+}
+.copyright-nav{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 20px;
+    padding: 5px;
+    padding-bottom: 10px;
+}
+.copyright-nav img{
+    margin: 2px;
+    width: 17.5px;
+    height: 17.5px;
+}
+.copyright-nav p{
+    margin: 5px;
+    font-size: 12.5px;
 }
