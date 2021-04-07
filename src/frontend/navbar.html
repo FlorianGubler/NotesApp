@@ -16,15 +16,7 @@
     </script>
     <div id="site-title-container">
         <a id="menu-expand" onclick="document.getElementById('menu-expand').style.display = 'none';" href="#menu"><i style="color: inherit;" class="fas fa-ellipsis-v"></i></a>
-        <p id="site-title"></p>
-        <a style="display: none;" id="show-genlink" href="#generatedlink" onklick="document.getElementById('show-genlink').style.display = 'none';"><i class="fas fa-share-square"></i> Share</a>
-        <div id="generatedlink">
-        	<a id="genlink-close" onclick="document.getElementById('show-genlink').style.display = 'block';" href="#"><i class="fas fa-times"></i></a>
-        	<ul>
-            	<li><div id="overflow-div"></div><a class="copy-btn"><i class="fas fa-copy"></i></a></li>
-                <li><div id="code"></div><a class="copy-btn"><i class='fas fa-copy'></i></a></li>
-            </ul>
-        </div>
+        <p id="site-title">ProMarks</p>
     </div>
     <nav id="menu">
         <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block';" href="#"><svg viewBox="0 0 10 10"><polygon points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" /></svg></a>
@@ -42,7 +34,7 @@
         </ul>
         <div class="copyright-nav">
             <img src="assets/img/icon.png">
-            <p>&copy; by Florian Gubler 2021</p>
+            <p>&copy; by Florian Gubler 2021 ZLI BLJ</p>
         </div>
     </nav>
     <script>
@@ -65,10 +57,11 @@
             window.api.send("toMain", JSON.stringify({type: 'Logout', cmd: '', attributes: ""}));
             location.href="login.html";
         }
-        document.body.style.backgroundImage = "url('assets/img/background.jpg')";
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundPosition = "center"
-        document.body.style.backgroundSize= "cover"
+        // document.body.style.backgroundImage = "url('assets/img/background.jpg')";
+        // document.body.style.backgroundRepeat = "no-repeat";
+        // document.body.style.backgroundPosition = "center"
+        // document.body.style.backgroundSize = "cover"
+        // document.body.style.backgroundAttachment = "fixed"
     </script>
 </body>
 </html>
