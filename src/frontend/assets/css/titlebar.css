@@ -1,0 +1,88 @@
+.ui-titlebar {
+    z-index: 100000;
+	display: flex;
+	width: 100%;
+	height: 32px;
+	background-color:rgb(46, 45, 45) ;
+	user-select: none;
+	cursor: default;
+} 
+.ui-titleicon {
+	flex-grow: 1;
+	max-width: 32px;
+	max-height: 32px;
+}
+.ui-titleicon img{
+    margin: 5px;
+    width: 70%;
+    height: 70%;
+}
+.ui-titletext {
+	flex-grow: 2;
+	max-height: 32px;
+	width: auto;
+	font: 12px/32px "Segoe UI", Arial, sans-serif;
+	color: #fff;
+	text-indent: 10px;
+}
+.ui-titlecontrols {
+	max-width: 144px;
+	max-height: 32px;
+	flex-grow: 1;
+}
+.ui-btn {
+	margin: 0;
+	width: 48px;
+	height:32px;
+	border: 0;
+	outline: 0;
+	background: transparent;
+}
+.ui-btn:hover {
+	background: rgba(255,255,255,.1);
+}
+.ui-btn.close:hover {
+	background: #e81123;
+}
+.ui-btn svg path, 
+.ui-btn svg rect, 
+.ui-btn svg polygon {
+	fill: #fff;
+}
+.ui-btn svg {
+  width: 10px;
+  height: 10px;
+}
+.ui-titlebar{
+    user-select: none;
+    -webkit-app-region: drag;
+}
+.ui-titlebar button{
+    -webkit-app-region: no-drag;
+}
+
+*::-webkit-scrollbar {
+	width: 20px;
+	height: 15px;
+}
+*::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0);
+}
+*::-webkit-scrollbar-thumb {
+	background-color: #3e444a83;
+	border-radius: 12px;
+	border: 5px solid #5b5b5c00;
+	background-clip: content-box;
+	min-width: 40px;
+	min-height: 40px;
+}
+*::-webkit-scrollbar-thumb:hover{
+	background-color: #535353;
+}
+*::-webkit-scrollbar-thumb:active{
+	background-color: #535353;
+}
+*::-webkit-scrollbar-track {
+	background-color: rgba(0, 0, 0, 0);
+	padding: 2px;
+}

@@ -35,8 +35,11 @@ function createWindow () {
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
+    minWidth: 700,
+    minHeight: 500,
     alwaysOnTop: false,
-    icon: path.join(__dirname, 'frontend/assets/img/icon.png'),
+    titleBarStyle: "hidden",
+    icon: "frontend/assets/img/icon.png",
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -331,6 +334,19 @@ ipcMain.on("toMain", (event, command) => {
         //   uploadPB(event, JSON.parse(args.attributes))
         //   break;
         default: console.error("Unkwown Command in Messaging");
+      }
+      break;
+    case "Window":
+      switch(args.cmd){
+        case "Minimize":
+          win.minimize();
+          break;
+        case "Maximize":
+          win.maximize();
+          break;
+        case "Close":
+          win.close();
+          break;
       }
       break;
     case "Logout":
