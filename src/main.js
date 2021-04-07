@@ -7,7 +7,7 @@ const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 var FormData = require('form-data');
 
-const appName = "Notes";
+const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
 
 var win;
@@ -31,7 +31,7 @@ function shutdown() {
 function createWindow () {
   win = new BrowserWindow({
     show: false,
-    frame: true,
+    frame: false,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,

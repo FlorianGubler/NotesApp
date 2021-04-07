@@ -35,6 +35,11 @@ input[type=text], input[type=password] {
   position: relative;
 }
 
+.imgcontainer h2{
+  margin: 10px;
+  color: #ccc;
+}
+
 img.avatar {
   width: 25%;
 }
