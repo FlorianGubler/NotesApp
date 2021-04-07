@@ -5,7 +5,7 @@
   padding: 0;
 }
 /* Full-width input fields */
-input[type=text], input[type=password] {
+input[type=text], input[type=password]{
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -15,8 +15,12 @@ input[type=text], input[type=password] {
   background-color: #323233;
 }
 
+input[type=checkbox]{
+  filter: grayscale(1);
+}
+
 .modal button {
-  background-color: rgb(61, 129, 219);
+  background-color: rgb(102, 102, 102);
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -35,6 +39,11 @@ input[type=text], input[type=password] {
   position: relative;
 }
 
+.imgcontainer h2{
+  margin: 10px;
+  color: #ccc;
+}
+
 img.avatar {
   width: 25%;
 }
@@ -50,7 +59,7 @@ span.psw {
 
 .psw a{
   padding-top: 10px;
-  color: rgb(77, 154, 255);
+  color: rgb(180, 180, 180);
 }
 
 #titlebar{
