@@ -46,7 +46,6 @@ td, th{
     border-top: 1px solid #3e444a;
     border-bottom: 1px solid #3e444a;
 }
-
 .active-semester{
     background-color: #343a40;
 }
@@ -143,7 +142,7 @@ td, th{
     width: auto;
     position: absolute;
     right: 25px;
-    top: 135px;
+    top: 180px;
     border-radius: 5px;
     background-color: #343a40;
 }

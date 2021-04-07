@@ -10,16 +10,13 @@
     });
 </script>
 <link rel="stylesheet" href="assets/css/home.css">
-<h1 id="title-home"></h1>
+<h1 id="title-home"></h1>	
+<h2>Aktionen</h2>
 <div id="notes-container">
-	<h2>Noten</h2>
-	<div onclick="location.href='bms.html';" style="cursor:pointer;"><p class="dash-icon"><i class="fas fa-school"></i></p><a>BMS Noten</a></div>
-	<div onclick="location.href='lap.html';" style="cursor:pointer;"><p class="dash-icon"><i class="fas fa-chalkboard-teacher"></i></p><a>LAP Noten</a></div>
-	<div onclick="location.href='addnote.html';" style="cursor:pointer;"><p class="dash-icon"><i class="fas fa-folder-plus"></i></p><a>Noten hinzufügen</a></div>
-</div>
-<div id="else-container">
-	<h2>Sonstiges</h2>
-	<div onclick="location.href='configuser.html';" style="cursor:pointer;"><p class="dash-icon"><i class="fas fa-users-cog"></i></p><a>Profil Konfiguration</a></div>
+	<div onclick="location.href='bms.html';"><p class="dash-icon"><i class="fas fa-school"></i></p><a>BMS Noten</a></div>
+	<div onclick="location.href='lap.html';"><p class="dash-icon"><i class="fas fa-chalkboard-teacher"></i></p><a>LAP Noten</a></div>
+	<div onclick="location.href='addnote.html';"><p class="dash-icon"><i class="fas fa-folder-plus"></i></p><a>Noten hinzufügen</a></div>	
+	<div onclick="location.href='configuser.html';"><p class="dash-icon"><i class="fas fa-users-cog"></i></p><a>Profil Konfiguration</a></div>
 </div>
 <script>
 	window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
@@ -28,7 +25,7 @@
 			var response = JSON.parse(args.attributes);
 			if(response != null){
 				user_login = response;
-				document.getElementById("title-home").innerHTML = "Willkommen, " + response.username;
+				document.getElementById("title-home").innerHTML = "Willkommen zurück, " + response.username;
 				document.getElementById("loading").style.display = "none";
 			}
 		}

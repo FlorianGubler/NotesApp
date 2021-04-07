@@ -33,7 +33,7 @@ function shutdown() {
 function createWindow () {
   win = new BrowserWindow({
     show: false,
-    frame: true,
+    frame: false,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -65,7 +65,6 @@ function createWindow () {
   });
 
   win.on('unmaximize',(e) =>{
-    console.log('electron minimize');
     win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}));
   });
 }
