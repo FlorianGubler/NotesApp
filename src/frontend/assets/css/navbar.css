@@ -13,11 +13,11 @@ button:focus{
 }
 #menu{
     z-index: 1000;
-    position: fixed;
+    position: absolute;
     left: 0;
-    top: 0;
+    top: 32px;
     width: 200px;
-    height: 100%;
+    height: calc(100% - 32px);
     background-color: #3e444a;
     box-shadow: 10px 0 15px rgba(24, 24, 24, 0.5);
     animation: showmenu 0.5s ease-in;
@@ -49,16 +49,21 @@ button:focus{
     display: block;
 }
 #menu-close{
+
     text-align: center;
-    width: 31px;
+    width: 12.5px;
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 5px;
+    right: 5px;
     font-size: 20px;
     padding: 2px;
 }
-#menu-close:hover{
-    color: #888888;
+
+#menu-close svg *{
+    fill: #FFF;
+}
+#menu-close svg *:hover{
+    fill: #888888;
 }
 #nav-user{
     padding: 25px;
