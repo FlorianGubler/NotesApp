@@ -46,29 +46,7 @@ td, th{
     border-top: 1px solid #3e444a;
     border-bottom: 1px solid #3e444a;
 }
-*::-webkit-scrollbar {
-    width: 20px;
-    height: 15px;
-}
-*::-webkit-scrollbar-corner {
-    background: rgba(0, 0, 0, 0);
-}
-*::-webkit-scrollbar-thumb {
-    background-color: #3e444a;
-    border: 1px solid #5b5b5c;
-    background-clip: content-box;
-    min-width: 40px;
-    min-height: 40px;
-}
-*::-webkit-scrollbar-thumb:hover{
-    background-color: #535353;
-}
-*::-webkit-scrollbar-thumb:active{
-    background-color: #535353;
-}
-*::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0);
-}
+
 .active-semester{
     background-color: #343a40;
 }

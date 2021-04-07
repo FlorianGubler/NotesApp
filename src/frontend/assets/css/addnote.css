@@ -20,7 +20,8 @@ input, #select-subject, #select-semester{
 input:focus{
     outline: none;
 }
-button {
+
+.modal button {
   background-color: #616264;
   color: white;
   padding: 14px 20px;
@@ -30,7 +31,7 @@ button {
   width: 100%;
 }
 
-button:hover {
+.modal button:hover {
   opacity: 0.6;
 }
 
@@ -58,27 +59,6 @@ span.psw {
 }
 optgroup{
   color: #bebebe;
-}
-*::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
-}
-*::-webkit-scrollbar-thumb {
-  background-color: #3e444a83;
-  border-radius: 12px;
-  border: 5px solid #5b5b5c00;
-  background-clip: content-box;
-  min-width: 40px;
-  min-height: 40px;
-}
-*::-webkit-scrollbar-thumb:hover{
-  background-color: #535353;
-}
-*::-webkit-scrollbar-thumb:active{
-  background-color: #535353;
-}
-*::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0);
-  padding: 2px;
 }
 .modal {
   display: block; 

@@ -35,6 +35,8 @@ function createWindow () {
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
+    minWidth: 700,
+    minHeight: 500,
     alwaysOnTop: false,
     titleBarStyle: "hidden",
     icon: "frontend/assets/img/icon.png",
