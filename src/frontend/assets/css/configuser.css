@@ -98,9 +98,9 @@ span.psw {
   position: fixed; 
   z-index: 1; 
   left: 0;
-  top: 0;
+  top: 32px;
   width: 100%; 
-  height: 100%; 
+  height: 100%;  
   overflow: auto;
   background-color: rgba(61, 61, 61, 0);
   padding-top: 10px;
