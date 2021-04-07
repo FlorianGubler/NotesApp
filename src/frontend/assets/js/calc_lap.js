@@ -154,10 +154,16 @@ function getNotesData(){
 function showbs(){
     document.getElementById("container-notes-form").style.display = "none";
     document.getElementById("BerufsfachschuleModule").style.display = "block";
+
+    document.getElementById("bs-semester").classList.add("active-semester");
+    document.getElementById("uek-lap-semester").classList.remove("active-semester");
 }
 function showuek(){
     document.getElementById("container-notes-form").style.display = "block";
     document.getElementById("BerufsfachschuleModule").style.display = "none";
+
+    document.getElementById("uek-lap-semester").classList.add("active-semester");
+    document.getElementById("bs-semester").classList.remove("active-semester");
 }
 
 function drawSplit(){

@@ -65,7 +65,6 @@ function createWindow () {
   });
 
   win.on('unmaximize',(e) =>{
-    console.log('electron minimize');
     win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}));
   });
 }

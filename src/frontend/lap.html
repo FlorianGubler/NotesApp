@@ -15,15 +15,14 @@
     <a href="addnote.html" id="edit-table"><i class="far fa-edit"></i></a>
 </div>
 <ul id="semesters">
-    <li class="semester-choose"><a onclick="showbs()">Berufsfachschule</a></li>
-    <li class="semester-choose"><a onclick="showuek()">ÜK Module & IPA Abschlussprüfung</a></li>
+    <li id="bs-semester" class="semester-choose"><a onclick="showbs()">Berufsfachschule</a></li>
+    <li id="uek-lap-semester" class="semester-choose"><a onclick="showuek()">ÜK Module & IPA Abschlussprüfung</a></li>
 </ul>
 <div id="table-notes-norm"></div>
 <div id="calculates">
     <h2>Aktueller Stand</h2>
     <table id="table-notes-end"></table>
 </div>
-<p id="info-lap-noten">* Wenn du bei der Abschlussprüfung noch nicht alle Noten eingetragen hast, wird das Ergebnis möglicherweise nicht, oder falsch berechnet</p>
 <script src="assets/js/calc_lap.js"></script> 
 <script>
     window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
