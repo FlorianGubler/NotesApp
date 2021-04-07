@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld(
                 func(JSON.parse(args))
                 args = null;
             });
+        },
+        receiveEndless: (channel, func) => {
+            ipcRenderer.on(channel, (event, args) => {
+                func(JSON.parse(args))
+                args = null;
+            });
         }
     }
 );

@@ -15,6 +15,8 @@ var trayIcon;
 var tray;
 
 var login_user;
+var WinminWidth = 800;
+var WinminHeight = 600;
 
 function init() {
   createWindow();
@@ -31,15 +33,15 @@ function shutdown() {
 function createWindow () {
   win = new BrowserWindow({
     show: false,
-    frame: false,
+    frame: true,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
-    minWidth: 700,
-    minHeight: 500,
+    minWidth: WinminWidth,
+    minHeight: WinminHeight,
     alwaysOnTop: false,
     titleBarStyle: "hidden",
-    icon: "frontend/assets/img/icon.png",
+    icon: "frontend/assets/img/logo.png",
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -47,7 +49,6 @@ function createWindow () {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
-  //win.removeMenu();
   win.loadFile('frontend/login.html');  
   win.maximize()
   showWindow();
@@ -57,6 +58,15 @@ function createWindow () {
       hideWindow();
       event.preventDefault();
     }
+  });
+
+  win.on('maximize',(e) =>{
+      win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "max", attributes: ""}));
+  });
+
+  win.on('unmaximize',(e) =>{
+    console.log('electron minimize');
+    win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}));
   });
 }
 
@@ -140,7 +150,6 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
     console.log("SetDataAPI: "+response.status);
   }
 }
-
 
 function getUserNotes(event){
   getData("GetUserNotes")
@@ -288,6 +297,15 @@ function setPassword(event, data){
 //   });
 // }
 
+function checkMode(event){
+  if(win.isMaximized()) {
+    event.reply('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "max", attributes: ""}))
+  }
+  else{
+    event.reply('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}))
+  }
+}
+
 ipcMain.on("toMain", (event, command) => {
   args = JSON.parse(command);
   switch(args.type){ 
@@ -347,6 +365,13 @@ ipcMain.on("toMain", (event, command) => {
         case "Close":
           win.close();
           break;
+        case "ExitMax":
+          win.unmaximize()
+          break;
+        case "GetMode":
+          checkMode(event);
+          break;
+        default: console.error("Unkwown Command in Messaging");
       }
       break;
     case "Logout":
