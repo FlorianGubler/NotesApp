@@ -17,7 +17,9 @@ h2{
     margin: 100px;
     margin-top: 10px;
     width: calc(100vw - 200px);
-    height: 20%;
+    height: 20% auto;
+    overflow: auto;
+    max-height: 75%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -30,9 +32,9 @@ h2{
     display: inline-block;
     text-align: center;
     padding-bottom: 10px;
-    width: 40%;
-    height: 130%;
-    margin: 20px;
+    width: 45%;
+    height: 27.5vh;
+    margin: 1%;
     border: 3px solid rgba(187, 187, 187, 0.541);
     background-color: #343a40;
     display: flex;
