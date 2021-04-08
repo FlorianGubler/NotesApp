@@ -225,4 +225,21 @@ button:focus{
         transform: rotate(360deg); 
     } 
 }
+
+#site-download-update{
+    z-index: 100000;
+    position: absolute;
+    right: 55px;
+    top: 52px;
+    font-size: larger;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#site-download-update:hover{
+    opacity: 0.6;
+}
+#site-download-update svg * {
+    fill: #6fce43;
+}
   
