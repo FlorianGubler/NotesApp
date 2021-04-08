@@ -84,7 +84,7 @@ span.psw {
 
 .modal-content {
   background-color: #333435;
-  margin: 5% auto 10px auto;
+  margin: 100px auto 10px auto;
   border: 1px solid rgb(39, 39, 39);
   width: 50%; 
 }
@@ -101,4 +101,11 @@ span.psw {
     text-align: center;
     color: rgb(201, 201, 201);
     font-size: 15px;
+}
+
+#splitline{
+  padding-left: 0;
+  width: 100vw;
+  height: 1px;
+  background-color: #b9b9b9;
 }

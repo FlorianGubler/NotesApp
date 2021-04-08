@@ -76,7 +76,7 @@ optgroup{
 /* Modal Content/Box */
 .modal-content {
   background-color: #333435;
-  margin: 5% auto 5% auto;
+  margin: 100px auto 5% auto;
   border: 1px solid rgb(39, 39, 39);
   width: 50%; 
 }
@@ -94,4 +94,11 @@ optgroup{
     text-align: center;
     color: rgb(201, 201, 201);
     font-size: 15px;
+}
+
+#splitline{
+  padding-left: 0;
+  width: 100vw;
+  height: 1px;
+  background-color: #b9b9b9;
 }
