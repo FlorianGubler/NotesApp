@@ -204,6 +204,25 @@ button:focus{
     border: none;
     cursor: pointer;
 }
+#site-reload-btn svg * {
+    fill: #cfd8dc;
+}
 #site-reload-btn:hover{
     opacity: 0.6;
+    animation-name: reload-spin;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in;
 }
+#site-reload-btn:active, #site-reload-btn:focus{
+    animation-name: reload-spin;
+    animation-duration: 0.75s;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinit;
+}
+
+@keyframes reload-spin {
+    to {
+        transform: rotate(360deg); 
+    } 
+}
+  
