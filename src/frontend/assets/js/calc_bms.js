@@ -84,8 +84,12 @@ function getNotesData(semester){
                         }
                         endnotes[subj] = Math.round(endnotes[subj]*2)/2;
                         if(subj.split(" ")[1] != "Vokabeln"){
-                            endnoteLast += endnotes[subj];
-
+                            if(endnotes[subj] != 0){
+                                endnoteLast += endnotes[subj];
+                            }
+                            else{
+                                subjectcount--;
+                            }
                             tr = document.createElement("tr");
                             tdh = document.createElement("td");
                             tdh.innerHTML = "Endnote " + subj;

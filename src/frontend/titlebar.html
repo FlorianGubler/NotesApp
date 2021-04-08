@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="assets/css/titlebar.css">
 <div class="ui-titlebar">
-	<div class="ui-titleicon"><img src="assets/img/icon.png"></div>
+	<div class="ui-titleicon"><img src="assets/img/icon.png" ondblclick='window.api.send("toMain", JSON.stringify({type: "Window", cmd: "Close", attributes: ""}));'></div>
 	<div id="window-title" class="ui-titletext">ProMarks</div>
 	<div class="ui-titlecontrols">
 		<button onclick='window.api.send("toMain", JSON.stringify({type: "Window", cmd: "Minimize", attributes: ""}));' class="ui-btn minimize">

@@ -15,8 +15,8 @@ var trayIcon;
 var tray;
 
 var login_user;
-var WinminWidth = 800;
-var WinminHeight = 600;
+var WinminWidth = 700;
+var WinminHeight = 500;
 
 function init() {
   createWindow();

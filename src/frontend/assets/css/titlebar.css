@@ -1,3 +1,9 @@
+*{
+	user-drag: none; 
+}
+body {
+	overflow: hidden;
+}
 img{
 	user-drag: none; 
 	user-select: none;
