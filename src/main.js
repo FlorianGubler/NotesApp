@@ -1,4 +1,4 @@
-const {app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
+const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
 const path = require("path");
 const { defaultApp } = require('process');
 const fs = require('fs');
@@ -30,7 +30,7 @@ function shutdown() {
   app.quit();
 }
 
-function createWindow () {
+function createWindow() {
   win = new BrowserWindow({
     show: false,
     frame: false,
@@ -49,7 +49,7 @@ function createWindow () {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
-  win.loadFile('frontend/login.html');  
+  win.loadFile('frontend/login.html');
   win.maximize()
   showWindow();
 
@@ -60,12 +60,12 @@ function createWindow () {
     }
   });
 
-  win.on('maximize',(e) =>{
-      win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "max", attributes: ""}));
+  win.on('maximize', (e) => {
+    win.webContents.send('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }));
   });
 
-  win.on('unmaximize',(e) =>{
-    win.webContents.send('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}));
+  win.on('unmaximize', (e) => {
+    win.webContents.send('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }));
   });
 }
 
@@ -79,9 +79,9 @@ function hideWindow() {
   win.hide();
 }
 
-function openExternalWebpage(url){
-  exec("start chrome " + url, function(err){
-    if(err){
+function openExternalWebpage(url) {
+  exec("start chrome " + url, function (err) {
+    if (err) {
       console.log(err)
     }
   });
@@ -90,13 +90,13 @@ function openExternalWebpage(url){
 function createTray() {
   tray = new Tray(iconPath);
   const contextMenu = Menu.buildFromTemplate([
-    { type: 'normal', enabled: false, icon: nativeImage.createFromPath(iconPath).resize({width:16}), label: appName},
-    { type: 'separator'},
-    { label: 'About this Project', type: 'normal', click: () => {openExternalWebpage("https://github.com/FlorianGubler/notesLocal")}},
-    { label: 'Show ', type: 'normal', click: () => {showWindow()}},
-    { label: 'Hide ', type: 'normal', click: () => {hideWindow()}},
-    { type: 'separator'},
-    { label: 'Quit', type: 'normal', click: () => {shutdown()}},  
+    { type: 'normal', enabled: false, icon: nativeImage.createFromPath(iconPath).resize({ width: 16 }), label: appName },
+    { type: 'separator' },
+    { label: 'About this Project', type: 'normal', click: () => { openExternalWebpage("https://github.com/FlorianGubler/notesLocal") } },
+    { label: 'Show ', type: 'normal', click: () => { showWindow() } },
+    { label: 'Hide ', type: 'normal', click: () => { hideWindow() } },
+    { type: 'separator' },
+    { label: 'Quit', type: 'normal', click: () => { shutdown() } },
   ])
   tray.setToolTip(appName);
   tray.setContextMenu(contextMenu);
@@ -105,10 +105,10 @@ function createTray() {
 
 app.whenReady().then(init);
 
-async function getData(action){
+async function getData(action) {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
-  headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
 
   var raw = JSON.stringify([
     {
@@ -124,16 +124,16 @@ async function getData(action){
   };
 
   var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
-  if(response.status != 200){
-    console.log("GetDataAPI: "+response.status);
+  if (response.status != 200) {
+    console.log("GetDataAPI: " + response.status);
   }
   return response.json();
 }
 
-async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/'){
+async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/') {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
-  headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
 
   var raw = JSON.stringify([body]);
 
@@ -145,31 +145,31 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
   };
 
   var response = await fetch(url, requestOptions);
-  if(response.status != 200){
-    console.log("SetDataAPI: "+response.status);
+  if (response.status != 200) {
+    console.log("SetDataAPI: " + response.status);
   }
 }
 
-function getUserNotes(event){
+function getUserNotes(event) {
   getData("GetUserNotes")
-    .then(data => event.reply('fromMainA', JSON.stringify({type: "replyUserNotes", cmd: "", attributes: JSON.stringify(data)})))  
+    .then(data => event.reply('fromMainA', JSON.stringify({ type: "replyUserNotes", cmd: "", attributes: JSON.stringify(data) })))
 }
 
-function getSubjects(event){
+function getSubjects(event) {
   getData("GetSubjects")
-    .then(data => event.reply('fromMainB', JSON.stringify({type: "replySubjects", cmd: "", attributes: JSON.stringify(data)})))  
+    .then(data => event.reply('fromMainB', JSON.stringify({ type: "replySubjects", cmd: "", attributes: JSON.stringify(data) })))
 }
 
-function getSemesters(event){
+function getSemesters(event) {
   getData("GetSemesters")
-    .then(data => event.reply('fromMainD', JSON.stringify({type: "replySemesters", cmd: "", attributes: JSON.stringify(data)}))) 
+    .then(data => event.reply('fromMainD', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
 }
 
-function checkLogin(event, loginData){
+function checkLogin(event, loginData) {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
-  headers.append('Authorization', 'Basic ' + base64.encode(loginData.username+":"+loginData.password));
-  var raw = JSON.stringify([{"action": "GetUserData"}]);
+  headers.append('Authorization', 'Basic ' + base64.encode(loginData.email + ":" + loginData.password));
+  var raw = JSON.stringify([{ "action": "GetUserData" }]);
   var requestOptions = {
     method: 'POST',
     headers: headers,
@@ -177,14 +177,14 @@ function checkLogin(event, loginData){
     redirect: 'follow'
   };
   fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
-    if(result.status == 200){
+    if (result.status == 200) {
       login = true
     }
-    else{
+    else {
       login = false
     }
-    event.reply('fromMainA', JSON.stringify({type: "replyLogin", cmd: "", attributes: JSON.stringify(login)}));
-    if(loginData.remember && login == true){
+    event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(login) }));
+    if (loginData.remember && login == true) {
       fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
         if (err) return console.log(err);
         console.log('Remember status > frontend/assets/data/data.json');
@@ -194,27 +194,27 @@ function checkLogin(event, loginData){
   }).then(json => {
     login_user = json
     login_user.password = loginData.password;
-  }).catch(err => console.log("error in login fetch: ", err)); 
+  }).catch(err => console.log("error in login fetch: ", err));
 }
 
-function checkAutoLogin(event){
-  var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', {encoding:'utf8', flag:'r'}); 
-  if(autoLoginData != "" && autoLoginData != null){
+function checkAutoLogin(event) {
+  var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', { encoding: 'utf8', flag: 'r' });
+  if (autoLoginData != "" && autoLoginData != null) {
     var autoLoginData = JSON.parse(autoLoginData);
     autoLoginData.remember = false;
     checkLogin(event, autoLoginData)
   }
-  else{
-    event.reply('fromMainA', JSON.stringify({type: "replyLogin", cmd: "", attributes: JSON.stringify(false)}));
+  else {
+    event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(false) }));
   }
 }
 
-function uploadNotes(event, data){
+function uploadNotes(event, data) {
   var FK_subject_calc
   getData("GetSubjects")
     .then(result => {
       result.forEach(subj => {
-        if(subj.subjectName == data.subject){
+        if (subj.subjectName == data.subject) {
           FK_subject_calc = subj.id;
         }
       })
@@ -226,12 +226,12 @@ function uploadNotes(event, data){
         "FK_semester": data.semester
       }
       setData(uploadnotebody)
-        .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("")})); logout();})
-        .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyUploadNote", cmd: "false", attributes: JSON.stringify("Interner Fehler")})))
+        .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyUploadNote", cmd: "true", attributes: JSON.stringify("") })); })
+        .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyUploadNote", cmd: "false", attributes: JSON.stringify("Interner Fehler") })))
     })
 }
 
-function logout(){
+function logout() {
   login_user = null;
   fs.writeFile('frontend/assets/data/data.json', "", function (err) {
     if (err) return console.log(err);
@@ -239,36 +239,46 @@ function logout(){
 }
 
 
-function getUserData(){
-  if(login_user == null || login_user == undefined){
-      return null;
+function getUserData() {
+  if (login_user == null || login_user == undefined) {
+    return null;
   }
-  else{
-    return {id: login_user.id, username: login_user.username, profilepicture: login_user.profilepicture};
+  else {
+    return { id: login_user.id, username: login_user.username, email: login_user.email, profilepicture: login_user.profilepicture };
   }
 }
 
-function setUsername(event, data){
+function setUsername(event, data) {
   var newusernamebody = {
     "action": "SetUsername",
     "newusername": data.newusername,
     "password": data.password
   }
   setData(newusernamebody)
-    .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: true, attributes: JSON.stringify("")})); logout();})
-    .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyNewUsername", cmd: false, attributes: JSON.stringify("Interner Fehler")})));
-
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewUsername", cmd: true, attributes: JSON.stringify("") })); logout(); })
+    .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewUsername", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
-function setPassword(event, data){
-  var newusernamebody = {
+function setEmail(event, data) {
+  var newemailbody = {
+    "action": "SetEmail",
+    "newemail": data.newemail,
+    "password": data.password
+  }
+  setData(newemailbody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewEmail", cmd: true, attributes: JSON.stringify("") })); logout(); })
+    .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewEmail", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
+}
+
+function setPassword(event, data) {
+  var newpasswordbody = {
     "action": "SetPassword",
     "newpassword": data.newpassword,
     "oldpassword": data.oldpassword
   }
-  setData(newusernamebody)
-    .then(() => {event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: true, attributes: JSON.stringify("")})); logout();})
-    .catch(err => event.reply('fromMainA', JSON.stringify({type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler")})));
+  setData(newpasswordbody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: true, attributes: JSON.stringify("") })); logout(); })
+    .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
 // function uploadPB(event, file){
@@ -296,37 +306,37 @@ function setPassword(event, data){
 //   });
 // }
 
-function checkMode(event){
-  if(win.isMaximized()) {
-    event.reply('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "max", attributes: ""}))
+function checkMode(event) {
+  if (win.isMaximized()) {
+    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }))
   }
-  else{
-    event.reply('fromMainF', JSON.stringify({type: "replyWinMode", cmd: "notMax", attributes: ""}))
+  else {
+    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }))
   }
 }
 
 ipcMain.on("toMain", (event, command) => {
   args = JSON.parse(command);
-  switch(args.type){ 
+  switch (args.type) {
     case "GetData":
-        switch(args.cmd){
-          case "UserData":
-            event.reply('fromMainC', JSON.stringify({type: "replyUserData", cmd: "", attributes: JSON.stringify(getUserData())}));
-            break;
-          case "NotesfromUser":
-            getUserNotes(event);
-            break;
-          case "Subjects":
-            getSubjects(event);
-            break;
-          case "Semesters":
-            getSemesters(event);
-            break;
-          default: console.error("Unkwown Command in Messaging");
-        }
+      switch (args.cmd) {
+        case "UserData":
+          event.reply('fromMainC', JSON.stringify({ type: "replyUserData", cmd: "", attributes: JSON.stringify(getUserData()) }));
+          break;
+        case "NotesfromUser":
+          getUserNotes(event);
+          break;
+        case "Subjects":
+          getSubjects(event);
+          break;
+        case "Semesters":
+          getSemesters(event);
+          break;
+        default: console.error("Unkwown Command in Messaging");
+      }
       break;
     case "CheckData":
-      switch(args.cmd){
+      switch (args.cmd) {
         case "Login":
           checkLogin(event, JSON.parse(args.attributes))
           break;
@@ -337,7 +347,7 @@ ipcMain.on("toMain", (event, command) => {
       }
       break;
     case "UploadData":
-      switch(args.cmd){
+      switch (args.cmd) {
         case "Note":
           uploadNotes(event, JSON.parse(args.attributes))
           break;
@@ -347,6 +357,9 @@ ipcMain.on("toMain", (event, command) => {
         case "Username":
           setUsername(event, JSON.parse(args.attributes))
           break;
+        case "Email":
+          setEmail(event, JSON.parse(args.attributes))
+          break;
         // case "UploadPB":
         //   uploadPB(event, JSON.parse(args.attributes))
         //   break;
@@ -354,7 +367,7 @@ ipcMain.on("toMain", (event, command) => {
       }
       break;
     case "Window":
-      switch(args.cmd){
+      switch (args.cmd) {
         case "Minimize":
           win.minimize();
           break;

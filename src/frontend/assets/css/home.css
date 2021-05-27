@@ -33,6 +33,7 @@ h2{
     text-align: center;
     padding-bottom: 10px;
     width: 45%;
+    min-width: max-content;
     height: 27.5vh;
     margin: 1%;
     border: 3px solid rgba(187, 187, 187, 0.541);

@@ -1,63 +1,135 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script> 
-    $(function(){
-        $("#loading").load("loading.html"); 
+<script>
+    $(function () {
+        $("#loading").load("loading.html");
     });
-    $(function(){
-      $("#includedContent").load("navbar.html"); 
+    $(function () {
+        $("#includedContent").load("navbar.html");
     });
-</script> 
+</script>
 <link rel="stylesheet" href="assets/css/configuser.css">
 <div id="configuser" class="modal">
     <div class="modal-content animate">
-      <div class="imgcontainer">
-        <!--<form id="upload-pb" onsubmit="uploadPB(this);"><input type="file"><button type="submit">Submit</button></form>-->
-        <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
-        <p style="display: inline;" class="use-user-name"></p>
-      </div>
-      <div class="container">
-        <form id="newusername" onsubmit="newUsername(); return false;" class="newuserinput">
-            <label>Neuer Benutzername</label>
-            <input id="getnewusername" name="newusername" placeholder="Benutzername" required>
-            <input type="password" id="getpswforuser" name="pswnewusername" placeholder="Passwort" required>
-            <button name="submit-usr" type="submit" >Neuer Benutzername Speichern</button>
-        </form>
-        <form id="newpassword" onsubmit="newPassword(); return false;" class="newuserinput">
-            <label>Neues Passwort</label>
-            <input type="password" id="getnewpassword" name="newpassword" placeholder="Neues Passwort" required>
-            <input type="password" id="getnewpasswordrepeat" name="newpasswordrepeat" placeholder="Neues Passwort wiederholen" required>
-            <input type="password" id="getoldpassword" name="oldpassword" placeholder="Altes Passwort" required>
-            <button type="submit" name="submit-paswd">Neues Passwort Speichern</button>
-        </form>
-  
-        <p style='background-color: red;display: none;' id='login-response-false'>Etwas hat nicht geklappt</p>
-  
-      </div>
+        <div class="imgcontainer">
+            <!--<form id="upload-pb" onsubmit="uploadPB(this);"><input type="file"><button type="submit">Submit</button></form>-->
+            <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
+            <p style="display: inline;" class="use-user-name"></p>
+            <p style="display: inline; opacity: 0.5; font-size: x-small; padding-top: 0px;" class="use-user-email"></p>
+        </div>
+        <div class="container">
+            <form id="newusername" onsubmit="newUsername(); return false;" class="newuserinput">
+                <label>Neuer Benutzername</label>
+                <input id="getnewusername" name="newusername" placeholder="Benutzername" required>
+                <input type="password" id="getpswforuser" name="pswnewusername" placeholder="Passwort" required>
+                <button name="submit-usr" type="submit">Neuer Benutzername Speichern</button>
+            </form>
+            <form id="newemail" onsubmit="newEmail(); return false;" class="newuserinput">
+                <label>Neue E-Mail</label>
+                <input id="getnewemail" name="newemail" placeholder="E-Mail" required>
+                <input type="password" id="getpswforemail" name="pswnewemail" placeholder="Passwort" required>
+                <button name="submit-email" type="submit">Neue E-Mail Speichern</button>
+            </form>
+            <form id="newpassword" onsubmit="newPassword(); return false;" class="newuserinput">
+                <label>Neues Passwort</label>
+                <input type="password" id="getnewpassword" name="newpassword" placeholder="Neues Passwort" required>
+                <input type="password" id="getnewpasswordrepeat" name="newpasswordrepeat"
+                    placeholder="Neues Passwort wiederholen" required>
+                <input type="password" id="getoldpassword" name="oldpassword" placeholder="Altes Passwort" required>
+                <button type="submit" name="submit-paswd">Neues Passwort Speichern</button>
+            </form>
 
-      <div class="container" style="background-color:#404142">
-        <span class="psw">* Bei Änderungen ist ein erneutes Login vonnöten</span>
-      </div>
+            <p style='background-color: red;display: none;' id='login-response-false'>Etwas hat nicht geklappt</p>
+            <p style='background-color: green;display: none;' id='login-response-true'>Neue Daten erfolgreich
+                gespeichert</p>
+        </div>
+
+        <div class="container" style="background-color:#404142">
+            <span class="psw">* Bei Änderungen ist ein erneutes Login vonnöten</span>
+        </div>
     </div>
-  </div>
+</div>
 <script>
-    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+    window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
-        if(args.type == "replyUserData"){
+        if (args.type == "replyUserData") {
             var response = JSON.parse(args.attributes);
-            if(response != null){
+            if (response != null) {
                 user_login = response;
                 x = document.getElementsByClassName("use-user-name");
                 for (var i = 0; i < x.length; i++) {
                     x[i].innerHTML = response.username;
                 }
+                x = document.getElementsByClassName("use-user-email");
+                for (var i = 0; i < x.length; i++) {
+                    x[i].innerHTML = "(" + response.email + ")";
+                }
                 document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
                 document.getElementById("loading").style.display = "none";
             }
-            
+
         }
     });
+    function newPassword() {
+        var newpasswordVal = document.getElementById("getnewpassword").value;
+        var newpasswordrepeatVal = document.getElementById("getnewpasswordrepeat").value;
+        var oldpasswordVal = document.getElementById("getoldpassword").value;
+
+        if (newpasswordVal == newpasswordrepeatVal) {
+            window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'Password', attributes: JSON.stringify({ newpassword: newpasswordVal, oldpassword: oldpasswordVal }) }));
+            window.api.receive("fromMainA", (args) => {
+                if (args.type == "replyNewPassword") {
+                    if (args.cmd) {
+                        resetInputs();
+                        location.href = "login.html";
+                    }
+                    else {
+                        document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
+                        document.getElementById("login-response-false").style.display = "block";
+                    }
+                }
+            });
+        }
+        else {
+            document.getElementById("login-response-false").innerHTML = "Passwörter stimmen nicht überein";
+            document.getElementById("login-response-false").style.display = "block";
+        }
+    }
+    function newUsername() {
+        var newusernameVal = document.getElementById("getnewusername").value;
+        var passwordVal = document.getElementById("getpswforuser").value;
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'Username', attributes: JSON.stringify({ newusername: newusernameVal, password: passwordVal }) }));
+        window.api.receive("fromMainA", (args) => {
+            if (args.type == "replyNewUsername") {
+                if (args.cmd) {
+                    resetInputs();
+                    location.href = "login.html";
+                }
+                else {
+                    document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
+                    document.getElementById("login-response-false").style.display = "block";
+                }
+            }
+        });
+    }
+    function newEmail() {
+        var newemailval = document.getElementById("getnewemail").value;
+        var passwordVal = document.getElementById("getpswforemail").value;
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'Email', attributes: JSON.stringify({ newemail: newemailval, password: passwordVal }) }));
+        window.api.receive("fromMainA", (args) => {
+            if (args.type == "replyNewEmail") {
+                if (args.cmd) {
+                    resetInputs();
+                    location.href = "login.html";
+                }
+                else {
+                    document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
+                    document.getElementById("login-response-false").style.display = "block";
+                }
+            }
+        });
+    }
     // function uploadPB(form){
     //     tmpFiles = document.getElementById("upload-pb").getElementsByTagName("input")[0];
 
@@ -73,54 +145,10 @@
     //     }
     // });
     // }
-    function newPassword(){
-        var newpasswordVal = document.getElementById("getnewpassword").value;
-        var newpasswordrepeatVal = document.getElementById("getnewpasswordrepeat").value;
-        var oldpasswordVal = document.getElementById("getoldpassword").value;
-
-        if(newpasswordVal == newpasswordrepeatVal){
-            window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Password', attributes: JSON.stringify({newpassword: newpasswordVal, oldpassword: oldpasswordVal})}));
-            window.api.receive("fromMainA", (args) => {
-                if(args.type == "replyNewPassword"){
-                    if(args.cmd){
-                        //document.getElementById("login-response-true").style.display = "block";
-                        resetInputs();
-                        location.href = "login.html";
-                    }
-                    else{
-                        document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
-                        document.getElementById("login-response-false").style.display = "block";
-                    }
-                }
-            });
-        }
-        else{
-            document.getElementById("login-response-false").innerHTML = "Passwörter stimmen nicht überein";
-            document.getElementById("login-response-false").style.display = "block";
-        }
-    }
-    function newUsername(){
-        var newusernameVal = document.getElementById("getnewusername").value;
-        var passwordVal = document.getElementById("getpswforuser").value;
-        window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'Username', attributes: JSON.stringify({newusername: newusernameVal, password: passwordVal})}));
-        window.api.receive("fromMainA", (args) => {
-            if(args.type == "replyNewUsername"){
-                if(args.cmd){
-                    //document.getElementById("login-response-true").style.display = "block";
-                    resetInputs();
-                    location.href = "login.html";
-                }
-                else{
-                    document.getElementById("login-response-false").innerHTML = JSON.parse(args.attributes);
-                    document.getElementById("login-response-false").style.display = "block";
-                }
-            }
-        });
-    }
-    function resetInputs(){
+    function resetInputs() {
         document.getElementById("getnewpassword").value = "";
         document.getElementById("getnewpasswordrepeat").value = "";
         document.getElementById("getoldpassword").value = "";
-        document.getElementById("getnewusername").value = "";
+        document.getElementById("getnewemail").value = "";
     }
 </script>

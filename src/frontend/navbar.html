@@ -21,7 +21,7 @@
     <button id="site-reload-btn" onclick="location.reload();"><i class="fas fa-redo"></i></button>
     <button id="site-download-update" onclick="console.error('No Update Available');"><i class="fas fa-download"></i></button>
     <nav id="menu">
-        <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block';" href="#"><svg viewBox="0 0 10 10"><polygon points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" /></svg></a>
+        <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block'; closeMenuAnimation();" href="#"><svg viewBox="0 0 10 10"><polygon points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" /></svg></a>
         <div id="nav-user">
         	<img id="profile-pic" src="" alt="Profile Picture" draggable="false">
             <a href="configuser.html" id="menu-user" class="use-user-name"></a>
@@ -58,6 +58,16 @@
         function logout(){
             window.api.send("toMain", JSON.stringify({type: 'Logout', cmd: '', attributes: ""}));
             location.href="login.html";
+        }
+        function closeMenuAnimation(){
+            // document.getElementById('menu').animate([
+            //     { left: '0' },
+            //     { left: '-200px' }
+            // ], {
+            //     duration: 0.5,
+            //     iterations: 'ease-in'
+            // }
+            // );
         }
         // document.body.style.backgroundImage = "url('assets/img/background.jpg')";
         // document.body.style.backgroundRepeat = "no-repeat";
