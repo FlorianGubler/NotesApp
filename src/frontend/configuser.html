@@ -64,6 +64,9 @@
                 x = document.getElementsByClassName("use-user-email");
                 for (var i = 0; i < x.length; i++) {
                     x[i].innerHTML = "(" + response.email + ")";
+                    if(response.email_verified == 0){
+                        x[i].innerHTML += "<p style='display: inline; color: orange;'><i style='color: inherit;' class='fas fa-exclamation-triangle'></i> Not verified</p>";
+                    }
                 }
                 document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
                 document.getElementById("loading").style.display = "none";
