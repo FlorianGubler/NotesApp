@@ -10,13 +10,16 @@ h1{
 }
 h2{
     margin: 15px;
+    margin-bottom: 0;
     color: #acacac;
 }
 #notes-container{
     margin: 100px;
-    margin-top: 20px;
+    margin-top: 10px;
     width: calc(100vw - 200px);
-    height: 20%;
+    height: 20% auto;
+    overflow: auto;
+    max-height: 75%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -28,11 +31,11 @@ h2{
     cursor: pointer;
     display: inline-block;
     text-align: center;
-    padding-top: 150px;
     padding-bottom: 10px;
-    width: 40%;
-    height: 80%;
-    margin: 20px;
+    width: 45%;
+    min-width: max-content;
+    height: 27.5vh;
+    margin: 1%;
     border: 3px solid rgba(187, 187, 187, 0.541);
     background-color: #343a40;
     display: flex;
@@ -49,7 +52,7 @@ h2{
     color: rgb(212, 212, 212);
 }
 .dash-icon{
-    font-size: 800%;
+    font-size: 12.5vh;
     position: absolute;
     top: 50%;
     left: 50%;

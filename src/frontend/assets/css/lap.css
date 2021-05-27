@@ -11,6 +11,7 @@ td, th{
 }
 #BerufsfachschuleModule{
     display: none;
+    max-width: 80%;
 }
 #BerufsfachschuleModule:target{
     display: block;
@@ -62,7 +63,9 @@ td, th{
     text-decoration: none;
 }
 #container-notes-form{
+    overflow: auto;
     display: none;
+    max-height: 68vh;
 }
 #container-notes-form:target{
     display: block;
