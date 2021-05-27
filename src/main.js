@@ -238,13 +238,35 @@ function logout() {
   });
 }
 
+function reloadUserData(){
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
+  var raw = JSON.stringify([{ "action": "GetUserData" }]);
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+  fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
+    if (result.status == 200) {
+      return result.json();
+    }
+  }).then(json => {
+    password = login_user.password
+    login_user = json
+    login_user.password = password;
+  }).catch(err => console.log("error in reload user data: ", err));
+}
 
 function getUserData() {
+  reloadUserData();
   if (login_user == null || login_user == undefined) {
     return null;
   }
   else {
-    return { id: login_user.id, username: login_user.username, email: login_user.email, profilepicture: login_user.profilepicture };
+    return { id: login_user.id, username: login_user.username, email: login_user.email, email_verified: login_user.email_is_verified, profilepicture: login_user.profilepicture };
   }
 }
 
