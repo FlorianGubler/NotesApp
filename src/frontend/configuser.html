@@ -10,11 +10,26 @@
     });
 </script>
 <link rel="stylesheet" href="assets/css/configuser.css">
+<div id="upload-pb-container">
+    <h2>Upload Profilepicture</h2>
+    <div class="upload-pb-inner-container">
+        <div class="uploadpb-cropper-image-container">
+            <img id="upload-pb-preview-img">
+        </div>
+        <input type="hidden" id="uploadpb-filepath">
+        <input type="hidden" id="uploadpb-x-coordinate">
+        <input type="hidden" id="uploadpb-y-coordinate">
+        <input type="hidden" id="uploadpb-width">
+        <input type="hidden" id="uploadpb-height">
+
+        <button onclick="uploadPB();">Upload New profilepicture</button>
+    </div>
+</div>
 <div id="configuser" class="modal">
     <div class="modal-content animate">
         <div class="imgcontainer">
-            <!--<form id="upload-pb" onsubmit="uploadPB(this);"><input type="file"><button type="submit">Submit</button></form>-->
             <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
+            <button class="upload-pb-select-picture" type="submit" onclick="loadPreviewPB();">Upload New</button>
             <p style="display: inline;" class="use-user-name"></p>
             <p style="display: inline; opacity: 0.5; font-size: x-small; padding-top: 0px;" class="use-user-email"></p>
         </div>
@@ -64,7 +79,7 @@
                 x = document.getElementsByClassName("use-user-email");
                 for (var i = 0; i < x.length; i++) {
                     x[i].innerHTML = "(" + response.email + ")";
-                    if(response.email_verified == 0){
+                    if (response.email_verified == 0) {
                         x[i].innerHTML += "<p style='display: inline; color: orange;'><i style='color: inherit;' class='fas fa-exclamation-triangle'></i> Not verified</p>";
                     }
                 }
@@ -133,21 +148,38 @@
             }
         });
     }
-    // function uploadPB(form){
-    //     tmpFiles = document.getElementById("upload-pb").getElementsByTagName("input")[0];
 
-    //     window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify(tmpFiles.files[0])}));
-    //     window.api.receive("fromMainC", (args) => {
-    //     if(args.type == "replyPBUpload"){
-    //         if(args.cmd){
-    //             console.log("Upload finished");
-    //         }
-    //         else{
-    //             console.log("Fehler: " + JSON.parse(args.attributes))
-    //         }
-    //     }
-    // });
-    // }
+    function loadPreviewPB() {
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB_GetTmpFilePath', attributes: JSON.stringify(undefined) }));
+        window.api.receive("fromMainA", (args) => {
+            if (args.type == "reply_UploadPB_tmpPath") {
+                if (args.cmd) {
+                    attribtue = JSON.parse(args.attributes);
+                    document.getElementById("upload-pb-container").style.display = "block";
+                    document.getElementById("upload-pb-preview-img").src = "../" + attribtue;
+
+                    document.getElementById("uploadpb-filepath").value = attribtue;
+                }
+                else {
+                    alert(JSON.parse(args.attributes));
+                }
+            }
+        });
+    }
+    function uploadPB() {
+
+        // window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify(tmpFiles.files[0])}));
+        // window.api.receive("fromMainC", (args) => {
+        // if(args.type == "replyPBUpload"){
+        //     if(args.cmd){
+        //         console.log("Upload finished");
+        //     }
+        //     else{
+        //         console.log("Fehler: " + JSON.parse(args.attributes))
+        //     }
+        // }
+        //});
+    }
     function resetInputs() {
         document.getElementById("getnewpassword").value = "";
         document.getElementById("getnewpasswordrepeat").value = "";

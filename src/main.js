@@ -1,4 +1,4 @@
-const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
+const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme, dialog } = require('electron');
 const path = require("path");
 const { defaultApp } = require('process');
 const fs = require('fs');
@@ -33,7 +33,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: false,
+    frame: true,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -150,6 +150,26 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
   }
 }
 
+async function uploadPBAPI(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/') {
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
+
+  var raw = JSON.stringify([body]);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  var response = await fetch(url, requestOptions);
+  if (response.status != 200) {
+    console.log("SetDataAPI: " + response.status);
+  }
+}
+
 function getUserNotes(event) {
   getData("GetUserNotes")
     .then(data => event.reply('fromMainA', JSON.stringify({ type: "replyUserNotes", cmd: "", attributes: JSON.stringify(data) })))
@@ -238,7 +258,7 @@ function logout() {
   });
 }
 
-function reloadUserData(){
+function reloadUserData() {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
   headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
@@ -303,30 +323,30 @@ function setPassword(event, data) {
     .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
-// function uploadPB(event, file){
-//   let headers = new fetch.Headers();
-//   headers.append('Content-Type', 'image/jpeg');
-//   headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
+function UploadPB_GetTmpFilePath(event) {
+  dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
+    allowedFileTypes = ["png", "jpg", "gif"];
 
-//   let formdata = new FormData();
-//   formdata.append("newpb", file);
+    if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)])) {
+      const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
+      fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
+        if (err) {
+          console.log("Error Found:", err);
+        }
+        else {
+          event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: true, attributes: JSON.stringify(tmp_filePath) }));
+        }
+      });
+    }
+    else {
+      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Image is not a Picture") }));
+    }
+  });
+}
 
-//   var requestOptions = {
-//     method: 'POST',
-//     headers: headers,
-//     body: formdata,
-//     redirect: 'follow'
-//   };
-
-//  fetch(url, requestOptions).then(response => {
-//     if(response.status != 200){
-//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: false, attributes: JSON.stringify("")}));;
-//     }
-//     else{
-//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: true, attributes: JSON.stringify("")}));
-//     }
-//   });
-// }
+function uploadPB(event, data) {
+  //Upload Image
+}
 
 function checkMode(event) {
   if (win.isMaximized()) {
@@ -382,9 +402,12 @@ ipcMain.on("toMain", (event, command) => {
         case "Email":
           setEmail(event, JSON.parse(args.attributes))
           break;
-        // case "UploadPB":
-        //   uploadPB(event, JSON.parse(args.attributes))
-        //   break;
+        case "UploadPB_GetTmpFilePath":
+          UploadPB_GetTmpFilePath(event);
+          break;
+        case "UploadPB":
+          uploadPB(event, JSON.parse(args.attributes))
+          break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;
