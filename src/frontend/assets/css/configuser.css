@@ -110,24 +110,26 @@ span.psw {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 60%;
-  height: 70%;
+  width: 50%;
   z-index: 100;
   display: none;
+  padding: 10px;
+  box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+  -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
 }
 
 #upload-pb-container h2{
-  margin: 10px;
+  margin: 15px;
 }
 
 .uploadpb-cropper-image-container{
   position: relative;
   margin: 10px;
-  width: 80%;
+  height: 50vh;
 }
 
-.uploadpb-cropper-image-container img{
-  width: 100%;
+.uploadpb-cropper-image-container canvas{
+  height: 100%;
   border: 1px solid white;
 }
 
@@ -149,6 +151,18 @@ span.psw {
 
 .upload-pb-inner-container button:hover{
   opacity: 0.6;
+}
+
+.exit-upload-container{
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 5px;
+}
+
+.exit-upload-container button{
+  background-color: rgba(61, 61, 61, 0);
+  color: white;
 }
 
 

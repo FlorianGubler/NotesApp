@@ -1,6 +1,7 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="assets/js/crop_image.js"></script>
 <script>
     $(function () {
         $("#loading").load("loading.html");
@@ -11,10 +12,13 @@
 </script>
 <link rel="stylesheet" href="assets/css/configuser.css">
 <div id="upload-pb-container">
-    <h2>Upload Profilepicture</h2>
+    <h2>Profilbild bearbeiten</h2>
     <div class="upload-pb-inner-container">
+        <div class="exit-upload-container">
+            <button onclick="document.getElementById('upload-pb-container').style.display = 'none';"><i class="fas fa-times"></i></button>
+        </div>
         <div class="uploadpb-cropper-image-container">
-            <img id="upload-pb-preview-img">
+            <canvas id="upload-pb-preview-canvas" width="800" height="1080">Your browser does not support the HTML canvas tag.</canvas>
         </div>
         <input type="hidden" id="uploadpb-filepath">
         <input type="hidden" id="uploadpb-x-coordinate">
@@ -22,14 +26,14 @@
         <input type="hidden" id="uploadpb-width">
         <input type="hidden" id="uploadpb-height">
 
-        <button onclick="uploadPB();">Upload New profilepicture</button>
+        <button onclick="uploadPB();"><i class="fas fa-check"></i> Neues Profilbild bestätigen</button>
     </div>
 </div>
 <div id="configuser" class="modal">
     <div class="modal-content animate">
         <div class="imgcontainer">
             <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
-            <button class="upload-pb-select-picture" type="submit" onclick="loadPreviewPB();">Upload New</button>
+            <button class="upload-pb-select-picture" type="submit" onclick="loadPreviewPB();">Bearbeiten</button>
             <p style="display: inline;" class="use-user-name"></p>
             <p style="display: inline; opacity: 0.5; font-size: x-small; padding-top: 0px;" class="use-user-email"></p>
         </div>
@@ -154,11 +158,36 @@
         window.api.receive("fromMainA", (args) => {
             if (args.type == "reply_UploadPB_tmpPath") {
                 if (args.cmd) {
-                    attribtue = JSON.parse(args.attributes);
+                    attribute = JSON.parse(args.attributes);
                     document.getElementById("upload-pb-container").style.display = "block";
-                    document.getElementById("upload-pb-preview-img").src = "../" + attribtue;
+                    document.getElementById("uploadpb-filepath").value = attribute;
+                    
+                    //Load Canvas
+                    var canvas = document.getElementById("upload-pb-preview-canvas");
+                    var ctx = canvas.getContext("2d");
 
-                    document.getElementById("uploadpb-filepath").value = attribtue;
+                    var img = new window.Image();
+                    img.onload = function() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+                    };
+                    img.src = "../" + attribute;
+
+                    CropRactangleSite = 0;
+                    if(img.width > img.height){
+                        CropRactangleSite = img.height;
+                    }
+                    else if(img.width < img.height){
+                        CropRactangleSite = img.width;
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = "2";
+                    ctx.strokeStyle = "white";
+                    ctx.rect(0, 0, 100, 100);
+                    ctx.stroke();
                 }
                 else {
                     alert(JSON.parse(args.attributes));

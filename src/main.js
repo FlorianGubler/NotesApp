@@ -326,8 +326,7 @@ function setPassword(event, data) {
 function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
     allowedFileTypes = ["png", "jpg", "gif"];
-
-    if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)])) {
+    if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
       const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
       fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
         if (err) {
@@ -339,7 +338,7 @@ function UploadPB_GetTmpFilePath(event) {
       });
     }
     else {
-      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Image is not a Picture") }));
+      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
     }
   });
 }
