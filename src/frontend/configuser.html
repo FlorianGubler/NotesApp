@@ -1,7 +1,9 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
+<link src="../node_modules/croppr/src/css/croppr.css" rel="stylesheet" />
+<script src="../node_modules/croppr/croppr.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="assets/js/crop_image.js"></script>
+<!-- <script src="assets/js/crop_image.js"></script> -->
 <script>
     $(function () {
         $("#loading").load("loading.html");
@@ -15,10 +17,20 @@
     <h2>Profilbild bearbeiten</h2>
     <div class="upload-pb-inner-container">
         <div class="exit-upload-container">
-            <button onclick="document.getElementById('upload-pb-container').style.display = 'none';"><i class="fas fa-times"></i></button>
+            <button onclick="document.getElementById('upload-pb-container').style.display = 'none';"><i
+                    class="fas fa-times"></i></button>
         </div>
-        <div class="uploadpb-cropper-image-container">
-            <canvas id="upload-pb-preview-canvas" width="800" height="1080">Your browser does not support the HTML canvas tag.</canvas>
+        <div class="edit-image-container">
+            <div class="uploadpb-cropper-image-container">
+                <canvas id="upload-pb-preview-canvas">Your browser does not support the HTML
+                    canvas tag.</canvas>
+            </div>
+            <div class="resize-image-slider-container">
+                <div id="big-image-resize"><i class="fas fa-image"></i></div>
+                <input type="range" id="slider-resize-image" class="resize-image-slider" step="0.05" max="2" min="1"
+                    value="1" oninput="zoomImage(this);">
+                <div id="little-image-resize"><i class="fas fa-image"></i></div>
+            </div>
         </div>
         <input type="hidden" id="uploadpb-filepath">
         <input type="hidden" id="uploadpb-x-coordinate">
@@ -161,33 +173,47 @@
                     attribute = JSON.parse(args.attributes);
                     document.getElementById("upload-pb-container").style.display = "block";
                     document.getElementById("uploadpb-filepath").value = attribute;
-                    
+
                     //Load Canvas
                     var canvas = document.getElementById("upload-pb-preview-canvas");
                     var ctx = canvas.getContext("2d");
 
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
                     var img = new window.Image();
-                    img.onload = function() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(img, 0, 0, img.width, img.height);
-                    };
                     img.src = "../" + attribute;
+                    img.onload = function () {
+                        // canvas.width = img.width;
+                        // canvas.height = img.height;
 
-                    CropRactangleSite = 0;
-                    if(img.width > img.height){
-                        CropRactangleSite = img.height;
-                    }
-                    else if(img.width < img.height){
-                        CropRactangleSite = img.width;
-                    }
+                        // let CropRactangleSite = 0;
+                        // let changeX = 0;
+                        // let changeY = 0;
+                        // if (img.width >= img.height) {
+                        //     CropRactangleSite = img.height;
+                        //     changeX = (img.width / 2) - CropRactangleSite / 2;
+                        // }
+                        // else if (img.width < img.height) {
+                        //     CropRactangleSite = img.width;
+                        //     changeY = (img.height / 2) - CropRactangleSite / 2;
+                        // }
+                        // ctx.beginPath();
+                        // ctx.lineWidth = "2";
+                        // ctx.strokeStyle = "red";
+                        // CropRactangleSite -= ctx.lineWidth;
 
-                    ctx.beginPath();
-                    ctx.lineWidth = "2";
-                    ctx.strokeStyle = "white";
-                    ctx.rect(0, 0, 100, 100);
-                    ctx.stroke();
+                        // startrectX = (ctx.lineWidth / 2) + changeX;
+                        // startrectY = (ctx.lineWidth / 2) + changeY;
+
+                        // ctx.rect(startrectX, startrectY, CropRactangleSite, CropRactangleSite);
+                        // ctx.stroke();
+
+                        // startCroping(canvas, startrectX, startrectY, CropRactangleSite);
+
+                        zoomImage();
+
+                    };
+                    canvas.style.backgroundImage = 'url(../' + attribute + ')';
                 }
                 else {
                     alert(JSON.parse(args.attributes));

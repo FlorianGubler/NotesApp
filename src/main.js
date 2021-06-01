@@ -5,7 +5,7 @@ const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
-var FormData = require('form-data');
+var Croppr = require('croppr');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -326,19 +326,23 @@ function setPassword(event, data) {
 function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
     allowedFileTypes = ["png", "jpg", "gif"];
-    if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
-      const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
-      fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
-        if (err) {
-          console.log("Error Found:", err);
-        }
-        else {
-          event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: true, attributes: JSON.stringify(tmp_filePath) }));
-        }
-      });
-    }
-    else {
-      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
+    if (result.filePaths[0] != undefined) {
+      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
+        const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
+        fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
+          if (err) {
+            console.log("Error Found:", err);
+          }
+          else {
+            event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: true, attributes: JSON.stringify(tmp_filePath) }));
+          }
+        });
+      }
+      else {
+        event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
+      }
+    } else {
+      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Interner Fehler, bitte versuche es später nochmals") }));
     }
   });
 }
