@@ -117,6 +117,13 @@ span.psw {
   -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
 }
 
+#slider-resize-reset{
+  justify-self: flex-start;
+  margin-bottom: 25px;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: larger;
+}
+
 #upload-pb-container h2{
   margin: 15px;
   font-size: large;

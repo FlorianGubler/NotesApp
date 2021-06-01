@@ -23,8 +23,9 @@
                 <img id="upload-pb-preview-cropper">
             </div>
             <div class="resize-image-slider-container">
+                <button id="slider-resize-reset"><i class="fas fa-eraser"></i></button>
                 <div id="big-image-resize"><i class="fas fa-image"></i></div>
-                <input type="range" id="slider-resize-image" class="resize-image-slider" step="0.01" max="1" min="0.5"
+                <input type="range" id="slider-resize-image" class="resize-image-slider" step="0.01" max="1" min="0.75"
                     value="1">
                 <div id="little-image-resize"><i class="fas fa-image"></i></div>
             </div>
@@ -201,6 +202,10 @@
                         document.getElementById("slider-resize-image").addEventListener("input", e => {
                             zoomImage(croppr);
                         });
+
+                        document.getElementById("slider-resize-reset").addEventListener("click", e => {
+                            croppr.reset();
+                        });
                     }
                 }
                 else {
@@ -213,14 +218,14 @@
         slider = document.getElementById("slider-resize-image");
 
         if (slider.value == slider.min) {
-            document.getElementById("little-image-resize").style.opacity = "0.6";
+            document.getElementById("little-image-resize").style.opacity = "0.5";
         }
         else {
             document.getElementById("little-image-resize").style.opacity = "1";
         }
 
         if (slider.value == slider.max) {
-            document.getElementById("big-image-resize").style.opacity = "0.6";
+            document.getElementById("big-image-resize").style.opacity = "0.5";
         }
         else {
             document.getElementById("big-image-resize").style.opacity = "1";
@@ -232,10 +237,10 @@
         window.api.receive("fromMainC", (args) => {
             if (args.type == "replyPBUpload") {
                 if (args.cmd) {
-                    console.log("Upload finished");
+                    location.reload();
                 }
                 else {
-                    console.log("Fehler: " + JSON.parse(args.attributes))
+                    alert(JSON.parse(args.attributes));
                 }
             }
         });

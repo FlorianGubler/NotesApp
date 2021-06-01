@@ -5,6 +5,7 @@ const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
+const FormData = require('form-data');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -348,7 +349,44 @@ function UploadPB_GetTmpFilePath(event) {
 }
 
 function uploadPB(event, data) {
-  console.log(data);
+  const filePath = data.file;
+  const form = new FormData();
+  const stats = fs.statSync(filePath);
+  const fileSizeInBytes = stats.size;
+  const fileStream = fs.createReadStream(filePath);
+  form.append('field-name', fileStream, { knownLength: fileSizeInBytes });
+
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'image/' + filePath.split('.')[(filePath.split('.').length - 1)]);
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
+
+  const options = {
+      method: 'POST',
+      credentials: 'include',
+      redirect: 'follow',
+      headers: headers,
+      body: form
+  };
+
+  fetch("https://dekinotu.myhostpoint.ch/notes/dbapi/uploadpb/", options)
+    .then(res => {
+        if (res.ok) return res;
+
+        var uploadPBdata = {
+          "action": "UploadPB_Data",
+          "file": data.file.replace(/^.*[\\\/]/, ''),
+          "x": data.x,
+          "y": data.y,
+          "width": data.width,
+          "height": data.height,
+        }
+        
+        setData(uploadPBdata)
+          .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewPB", cmd: true, attributes: JSON.stringify("") })); })
+          .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPB", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
+    });
+
+  
 }
 
 function checkMode(event) {
