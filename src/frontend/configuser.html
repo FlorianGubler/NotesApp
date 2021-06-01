@@ -1,9 +1,7 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
-<link src="../node_modules/croppr/src/css/croppr.css" rel="stylesheet" />
-<script src="../node_modules/croppr/croppr.js"></script>
+<script src="assets/js/cropprjs/croppr.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script src="assets/js/crop_image.js"></script> -->
 <script>
     $(function () {
         $("#loading").load("loading.html");
@@ -21,24 +19,17 @@
                     class="fas fa-times"></i></button>
         </div>
         <div class="edit-image-container">
-            <div class="uploadpb-cropper-image-container">
-                <canvas id="upload-pb-preview-canvas">Your browser does not support the HTML
-                    canvas tag.</canvas>
+            <div id="uploadpb-preview-container" class="uploadpb-cropper-image-container">
+                <img id="upload-pb-preview-cropper">
             </div>
             <div class="resize-image-slider-container">
                 <div id="big-image-resize"><i class="fas fa-image"></i></div>
-                <input type="range" id="slider-resize-image" class="resize-image-slider" step="0.05" max="2" min="1"
-                    value="1" oninput="zoomImage(this);">
+                <input type="range" id="slider-resize-image" class="resize-image-slider" step="0.01" max="1" min="0.5"
+                    value="1">
                 <div id="little-image-resize"><i class="fas fa-image"></i></div>
             </div>
         </div>
-        <input type="hidden" id="uploadpb-filepath">
-        <input type="hidden" id="uploadpb-x-coordinate">
-        <input type="hidden" id="uploadpb-y-coordinate">
-        <input type="hidden" id="uploadpb-width">
-        <input type="hidden" id="uploadpb-height">
-
-        <button onclick="uploadPB();"><i class="fas fa-check"></i> Neues Profilbild bestätigen</button>
+        <button id="submit-changed-image"><i class="fas fa-check"></i> Neues Profilbild bestätigen</button>
     </div>
 </div>
 <div id="configuser" class="modal">
@@ -172,48 +163,45 @@
                 if (args.cmd) {
                     attribute = JSON.parse(args.attributes);
                     document.getElementById("upload-pb-container").style.display = "block";
-                    document.getElementById("uploadpb-filepath").value = attribute;
 
-                    //Load Canvas
-                    var canvas = document.getElementById("upload-pb-preview-canvas");
-                    var ctx = canvas.getContext("2d");
+                    img = document.getElementById("upload-pb-preview-cropper");
+                    if (img != undefined) {
+                        img.src = '../' + attribute;
+                    }
+                    else {
+                        document.getElementsByClassName("croppr-container")[0].remove();
+                        img = document.createElement("img");
+                        img.src = "../" + attribute;
+                        img.id = "upload-pb-preview-cropper";
+                        document.getElementById("uploadpb-preview-container").appendChild(img);
+                    }
 
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    img.onload = function (e) {
+                        let CropRactangleSite = 0;
+                        let changeX = 0;
+                        let changeY = 0;
+                        if (img.width >= img.height) {
+                            CropRactangleSite = img.height;
+                            changeX = (img.width / 2) - CropRactangleSite / 2;
+                        }
+                        else if (img.width < img.height) {
+                            CropRactangleSite = img.width;
+                            changeY = (img.height / 2) - CropRactangleSite / 2;
+                        }
 
-                    var img = new window.Image();
-                    img.src = "../" + attribute;
-                    img.onload = function () {
-                        // canvas.width = img.width;
-                        // canvas.height = img.height;
+                        var croppr = new Croppr('#upload-pb-preview-cropper', {
+                            startSize: [CropRactangleSite, CropRactangleSite, 'px'],
+                            aspectRatio: 1
+                        });
 
-                        // let CropRactangleSite = 0;
-                        // let changeX = 0;
-                        // let changeY = 0;
-                        // if (img.width >= img.height) {
-                        //     CropRactangleSite = img.height;
-                        //     changeX = (img.width / 2) - CropRactangleSite / 2;
-                        // }
-                        // else if (img.width < img.height) {
-                        //     CropRactangleSite = img.width;
-                        //     changeY = (img.height / 2) - CropRactangleSite / 2;
-                        // }
-                        // ctx.beginPath();
-                        // ctx.lineWidth = "2";
-                        // ctx.strokeStyle = "red";
-                        // CropRactangleSite -= ctx.lineWidth;
+                        document.getElementById("submit-changed-image").addEventListener("click", e => {
+                            uploadPB(croppr.getValue(), attribute);
+                        });
 
-                        // startrectX = (ctx.lineWidth / 2) + changeX;
-                        // startrectY = (ctx.lineWidth / 2) + changeY;
-
-                        // ctx.rect(startrectX, startrectY, CropRactangleSite, CropRactangleSite);
-                        // ctx.stroke();
-
-                        // startCroping(canvas, startrectX, startrectY, CropRactangleSite);
-
-                        zoomImage();
-
-                    };
-                    canvas.style.backgroundImage = 'url(../' + attribute + ')';
+                        document.getElementById("slider-resize-image").addEventListener("input", e => {
+                            zoomImage(croppr);
+                        });
+                    }
                 }
                 else {
                     alert(JSON.parse(args.attributes));
@@ -221,19 +209,36 @@
             }
         });
     }
-    function uploadPB() {
+    function zoomImage(croppr) {
+        slider = document.getElementById("slider-resize-image");
 
-        // window.api.send("toMain", JSON.stringify({type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify(tmpFiles.files[0])}));
-        // window.api.receive("fromMainC", (args) => {
-        // if(args.type == "replyPBUpload"){
-        //     if(args.cmd){
-        //         console.log("Upload finished");
-        //     }
-        //     else{
-        //         console.log("Fehler: " + JSON.parse(args.attributes))
-        //     }
-        // }
-        //});
+        if (slider.value == slider.min) {
+            document.getElementById("little-image-resize").style.opacity = "0.6";
+        }
+        else {
+            document.getElementById("little-image-resize").style.opacity = "1";
+        }
+
+        if (slider.value == slider.max) {
+            document.getElementById("big-image-resize").style.opacity = "0.6";
+        }
+        else {
+            document.getElementById("big-image-resize").style.opacity = "1";
+        }
+        croppr.scaleBy(slider.value);
+    }
+    function uploadPB(data, filelink) {
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify({ file: filelink, x: data.x, y: data.y, width: data.width, height: data.height }) }));
+        window.api.receive("fromMainC", (args) => {
+            if (args.type == "replyPBUpload") {
+                if (args.cmd) {
+                    console.log("Upload finished");
+                }
+                else {
+                    console.log("Fehler: " + JSON.parse(args.attributes))
+                }
+            }
+        });
     }
     function resetInputs() {
         document.getElementById("getnewpassword").value = "";

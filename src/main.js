@@ -5,7 +5,6 @@ const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
-var Croppr = require('croppr');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -46,6 +45,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
+      webSecurity: true,
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
@@ -348,7 +348,7 @@ function UploadPB_GetTmpFilePath(event) {
 }
 
 function uploadPB(event, data) {
-  //Upload Image
+  console.log(data);
 }
 
 function checkMode(event) {

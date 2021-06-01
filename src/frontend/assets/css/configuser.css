@@ -128,7 +128,7 @@ span.psw {
   height: 50vh;
 }
 
-.uploadpb-cropper-image-container canvas{
+.uploadpb-cropper-image-container canvas, .uploadpb-cropper-image-container img{
   height: 100%;
   /*border: 1px solid white;*/
   background-repeat: no-repeat;
