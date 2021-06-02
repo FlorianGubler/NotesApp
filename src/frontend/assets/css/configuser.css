@@ -125,7 +125,7 @@ span.psw {
 }
 
 #upload-pb-container h2{
-  margin: 15px;
+  margin: 17px;
   font-size: large;
 }
 
@@ -231,4 +231,31 @@ span.psw {
   width: 100vw;
   height: 1px;
   background-color: #b9b9b9;
+}
+
+.uploadpb-title-container{
+  position: relative;
+  width: fit-content;
+}
+
+.uploadpb-title-container button{
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  border: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+#upload-pb-information{
+  display: none;
+  background-color: #242525;
+  padding: 5px;
+  width: 150px;
+  font-size: x-small;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  z-index: 100;
 }

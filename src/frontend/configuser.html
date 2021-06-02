@@ -12,12 +12,18 @@
     });
 </script>
 <link rel="stylesheet" href="assets/css/configuser.css">
+<link rel="stylesheet" href="assets/css/croppr.css">
 <div id="upload-pb-container">
-    <h2>Profilbild bearbeiten</h2>
+    <div class="uploadpb-title-container">
+        <h2>Profilbild bearbeiten</h2>
+        <button onclick="document.getElementById('upload-pb-information').style.display = 'block';"><i class="fas fa-info-circle"></i></button>
+        <div id="upload-pb-information">
+            <p>Eventuell muss die Seite neu geladen werden, wenn das neue Profilbild gesetzt wurde</p>
+        </div>
+    </div>
     <div class="upload-pb-inner-container">
         <div class="exit-upload-container">
-            <button onclick="document.getElementById('upload-pb-container').style.display = 'none';"><i
-                    class="fas fa-times"></i></button>
+            <button id="uploadpb_quit"><i class="fas fa-times"></i></button>
         </div>
         <div class="edit-image-container">
             <div id="uploadpb-preview-container" class="uploadpb-cropper-image-container">
@@ -37,8 +43,10 @@
 <div id="configuser" class="modal">
     <div class="modal-content animate">
         <div class="imgcontainer">
-            <img id="profile-pic" alt="Avatar" class="avatar" draggable="false">
-            <button class="upload-pb-select-picture" type="submit" onclick="loadPreviewPB();">Bearbeiten</button>
+            <img id="profile-pic" alt="Avatar" class="avatar" draggable="false"
+                onerror="this.src = 'https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/defaultpb.jpg';">
+            <button class="upload-pb-select-picture" type="submit" onclick="loadPreviewPB();"><i
+                    class="fas fa-pencil-alt"></i> Bearbeiten</button>
             <p style="display: inline;" class="use-user-name"></p>
             <p style="display: inline; opacity: 0.5; font-size: x-small; padding-top: 0px;" class="use-user-email"></p>
         </div>
@@ -159,12 +167,14 @@
     }
 
     function loadPreviewPB() {
+        document.getElementById("loading").style.display = "block";
         window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB_GetTmpFilePath', attributes: JSON.stringify(undefined) }));
         window.api.receive("fromMainA", (args) => {
             if (args.type == "reply_UploadPB_tmpPath") {
-                if (args.cmd) {
+                if (args.cmd == "quit") {
+                    document.getElementById("loading").style.display = "none";
+                } else if (args.cmd) {
                     attribute = JSON.parse(args.attributes);
-                    document.getElementById("upload-pb-container").style.display = "block";
 
                     img = document.getElementById("upload-pb-preview-cropper");
                     if (img != undefined) {
@@ -179,6 +189,8 @@
                     }
 
                     img.onload = function (e) {
+                        document.getElementById("upload-pb-container").style.display = "block";
+
                         let CropRactangleSite = 0;
                         let changeX = 0;
                         let changeY = 0;
@@ -207,11 +219,16 @@
                         document.getElementById("slider-resize-reset").addEventListener("click", e => {
                             croppr.reset();
                         });
+
+                        document.getElementById("uploadpb_quit").addEventListener("click", e => {
+                            document.getElementById('upload-pb-container').style.display = 'none';
+                            window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB_quit', attributes: JSON.stringify(attribute) }));
+                        });
                     }
-                }
-                else {
+                } else {
                     alert(JSON.parse(args.attributes));
                 }
+                document.getElementById("loading").style.display = "none";
             }
         });
     }
@@ -234,9 +251,9 @@
         croppr.scaleBy(slider.value);
     }
     function uploadPB(data, filelink) {
-        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify({ file: filelink, x: data.x, y: data.y, width: data.width, height: data.height }) }));
         document.getElementById("upload-pb-container").style.display = "none";
         document.getElementById("loading").style.display = "block";
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify({ file: filelink, x: data.x, y: data.y, width: data.width, height: data.height }) }));
         window.api.receive("fromMainC", (args) => {
             if (args.type == "replyPBUpload") {
                 if (args.cmd) {

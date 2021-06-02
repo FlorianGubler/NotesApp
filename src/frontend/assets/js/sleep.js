@@ -3,6 +3,6 @@ function sleep(ms) {
 }
 
 async function reloadSideAsync() {
-    await sleep(750);
+    await sleep(1000);
     location.reload();
 }

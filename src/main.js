@@ -342,6 +342,8 @@ function UploadPB_GetTmpFilePath(event) {
       else {
         event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
       }
+    } else {
+      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: "quit", attributes: JSON.stringify(undefined) }));
     }
   });
 }
@@ -380,6 +382,7 @@ function uploadPB(event, data) {
     .then(res => {
       if (res.ok) {
         event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: true, attributes: "" }));
+        fs.unlinkSync(filePath)
       } else {
         console.log(res);
         event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Fehler beim Upload") }));
@@ -450,6 +453,13 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "UploadPB":
           uploadPB(event, JSON.parse(args.attributes))
+          break;
+        case "UploadPB_quit":
+          try{
+            fs.unlinkSync(JSON.parse(args.attributes));
+          } catch(e){
+            event.reply('fromMainC', JSON.stringify({ type: "reply_PB_quit", cmd: true, attributes: JSON.stringify(undefined) }));
+          }
           break;
         default: console.error("Unkwown Command in Messaging");
       }
