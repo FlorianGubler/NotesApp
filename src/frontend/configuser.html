@@ -16,7 +16,7 @@
 <div id="upload-pb-container">
     <div class="uploadpb-title-container">
         <h2>Profilbild bearbeiten</h2>
-        <button onclick="document.getElementById('upload-pb-information').style.display = 'block';"><i class="fas fa-info-circle"></i></button>
+        <button onmouseover="handleuploadPB_informationTag(true);" onmouseout="handleuploadPB_informationTag(false);"><i class="fas fa-info-circle"></i></button>
         <div id="upload-pb-information">
             <p>Eventuell muss die Seite neu geladen werden, wenn das neue Profilbild gesetzt wurde</p>
         </div>
@@ -271,5 +271,13 @@
         document.getElementById("getnewpasswordrepeat").value = "";
         document.getElementById("getoldpassword").value = "";
         document.getElementById("getnewemail").value = "";
+    }
+    function handleuploadPB_informationTag(over) {
+        if (over) {
+            document.getElementById('upload-pb-information').style.display = 'block';
+        }
+        else {
+            document.getElementById('upload-pb-information').style.display = 'none';
+        }
     }
 </script>
