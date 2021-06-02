@@ -1,6 +1,7 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="assets/js/cropprjs/croppr.js"></script>
+<script src="assets/js/sleep.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(function () {
@@ -234,13 +235,16 @@
     }
     function uploadPB(data, filelink) {
         window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'UploadPB', attributes: JSON.stringify({ file: filelink, x: data.x, y: data.y, width: data.width, height: data.height }) }));
+        document.getElementById("upload-pb-container").style.display = "none";
+        document.getElementById("loading").style.display = "block";
         window.api.receive("fromMainC", (args) => {
             if (args.type == "replyPBUpload") {
                 if (args.cmd) {
-                    location.reload();
+                    reloadSideAsync();
                 }
                 else {
                     alert(JSON.parse(args.attributes));
+                    document.getElementById("loading").style.display = "none";
                 }
             }
         });

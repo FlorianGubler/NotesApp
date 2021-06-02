@@ -342,51 +342,53 @@ function UploadPB_GetTmpFilePath(event) {
       else {
         event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
       }
-    } else {
-      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Interner Fehler, bitte versuche es später nochmals") }));
     }
   });
 }
 
 function uploadPB(event, data) {
   const filePath = data.file;
+  const fileName = data.file.replace(/^.*[\\\/]/, '');
+
+  var uploadPBdata = {
+    "action": "UploadPB_Data",
+    "file": fileName,
+    "x": data.x,
+    "y": data.y,
+    "width": data.width,
+    "height": data.height,
+  }
+
   const form = new FormData();
   const stats = fs.statSync(filePath);
   const fileSizeInBytes = stats.size;
   const fileStream = fs.createReadStream(filePath);
-  form.append('field-name', fileStream, { knownLength: fileSizeInBytes });
+  form.append('uploadpb', fileStream, { knownLength: fileSizeInBytes });
+  form.append('uploadpb-data', JSON.stringify(uploadPBdata));
 
   let headers = new fetch.Headers();
-  headers.append('Content-Type', 'image/' + filePath.split('.')[(filePath.split('.').length - 1)]);
   headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
 
   const options = {
-      method: 'POST',
-      credentials: 'include',
-      redirect: 'follow',
-      headers: headers,
-      body: form
+    method: 'POST',
+    credentials: 'include',
+    headers: headers,
+    body: form
   };
 
   fetch("https://dekinotu.myhostpoint.ch/notes/dbapi/uploadpb/", options)
     .then(res => {
-        if (res.ok) return res;
-
-        var uploadPBdata = {
-          "action": "UploadPB_Data",
-          "file": data.file.replace(/^.*[\\\/]/, ''),
-          "x": data.x,
-          "y": data.y,
-          "width": data.width,
-          "height": data.height,
-        }
-        
-        setData(uploadPBdata)
-          .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewPB", cmd: true, attributes: JSON.stringify("") })); })
-          .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPB", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
+      if (res.ok) {
+        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: true, attributes: "" }));
+      } else {
+        console.log(res);
+        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Fehler beim Upload") }));
+      }
+    }).catch((e) => {
+      event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Interner Fehler") }));
     });
 
-  
+
 }
 
 function checkMode(event) {
