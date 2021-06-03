@@ -6,6 +6,7 @@ let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 const FormData = require('form-data');
+const isImage = require('is-image');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -35,7 +36,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: false,
+    frame: true,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -52,6 +53,7 @@ function createWindow() {
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
+
   win.loadFile('frontend/login.html');
   win.maximize()
   showWindow();
@@ -186,6 +188,11 @@ function getSubjects(event) {
 function getSemesters(event) {
   getData("GetSemesters")
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
+}
+
+function GetStickyNotes(event) {
+  getData("GetStickyNotes")
+    .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
 }
 
 function checkLogin(event, loginData) {
@@ -330,7 +337,7 @@ function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
     allowedFileTypes = ["png", "jpg", "gif"];
     if (result.filePaths[0] != undefined) {
-      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
+      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase()) && isImage(result.filePaths[0])) {
         const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
         fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
           if (err) {
@@ -342,7 +349,7 @@ function UploadPB_GetTmpFilePath(event) {
         });
       }
       else {
-        event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Datei ist kein Bild") }));
+        event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Diese Datei ist kein Bild") }));
       }
     } else {
       event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: "quit", attributes: JSON.stringify(undefined) }));
@@ -421,6 +428,9 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "Semesters":
           getSemesters(event);
+          break;
+        case "StickyNotes":
+          GetStickyNotes(event);
           break;
         default: console.error("Unkwown Command in Messaging");
       }

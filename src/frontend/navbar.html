@@ -7,9 +7,12 @@
     <title>ProMarks</title>
     <link rel="stylesheet" href="assets/css/navbar.css">
     <link src="assets/js/cropprjs/croppr.css" rel="stylesheet" />
-
+    <script src="assets/js/customalert.js"></script>
+    <link rel="stylesheet" href="assets/css/customalert.css">
+    </link>
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" data-auto-replace-svg></script>
     <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script>$.ajaxPrefilter(function (options, originalOptions, jqXHR) { options.async = true; });</script>
 </head>
 
 <body>
@@ -44,6 +47,7 @@
             <li><a id="bms-anchor" href="bms.html"><i class="fas fa-school"></i> BMS Notenstand</a></li>
             <li><a id="lap-anchor" href="lap.html"><i class="fas fa-chalkboard-teacher"></i> LAP Notenstand</a></li>
             <li><a id="addnote-anchor" href="addnote.html"><i class="far fa-plus-square"></i> Noten hinzufügen</a></li>
+            <li><a id="addnote-anchor" href="notes.html"><i class="far fa-comment-alt"></i> Sticky Notes</a></li>
             <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
         <div class="copyright-nav">

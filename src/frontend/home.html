@@ -3,20 +3,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	$(function(){
-      $("#includedContent").load("navbar.html"); 
+      $("#includedContent").load("navbar.html");
     });
     $(function(){
-      $("#loading").load("loading.html"); 
+      $("#loading").load("loading.html");
     });
 </script>
 <link rel="stylesheet" href="assets/css/home.css">
-<h1 id="title-home"></h1>	
+<h1 id="title-home"></h1>
 <h2>Aktionen</h2>
 <div id="notes-container">
 	<div onclick="location.href='bms.html';"><p class="dash-icon"><i class="fas fa-school"></i></p><a>BMS Noten</a></div>
 	<div onclick="location.href='lap.html';"><p class="dash-icon"><i class="fas fa-chalkboard-teacher"></i></p><a>IPA Noten</a></div>
-	<div onclick="location.href='addnote.html';"><p class="dash-icon"><i class="far fa-plus-square"></i></p><a>Noten hinzufügen</a></div>	
-	<div onclick="location.href='configuser.html';"><p class="dash-icon"><i class="fas fa-users-cog"></i></p><a>Profil Konfiguration</a></div>
+	<div onclick="location.href='addnote.html';"><p class="dash-icon"><i class="far fa-plus-square"></i></p><a>Noten hinzufügen</a></div>
+	<div onclick="location.href='notes.html';"><p class="dash-icon"><i class="far fa-comment-alt"></i></p><a>Notizen</a></div>
 </div>
 <script>
 	window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
