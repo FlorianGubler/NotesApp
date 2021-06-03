@@ -10,9 +10,12 @@
     });
 </script>
 <link rel="stylesheet" href="assets/css/notes.css">
-<div id="list-notes-container">
-
+<div class="content-title-bar-container">
+    <h1>Notizen</h1>
+    <button name="Create" onclick="createStickyNote();" class="create-stickyNote"><i
+            class="fab fa-creative-commons-share"></i></button>
 </div>
+<div id="list-notes-container"></div>
 <script>
     window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
@@ -47,11 +50,29 @@
                 }
                 StickyNoteListEl.className = "stickynotelistelement";
 
+                StickyNoteListElIcon = StickyNoteListEl.appendChild(document.createElement("div"));
+                StickyNoteListElIcon.innerHTML = '<i class="far fa-sticky-note"></i>';
+                StickyNoteListElIcon.className = "stickynotelistelementIcon";
+
+
+                StickyNoteListElContainer = StickyNoteListEl.appendChild(document.createElement("div"));
+                StickyNoteListElContainer.className = "stickynotelistelementContainer";
+
+                stickNoteListElTitle = StickyNoteListElContainer.appendChild(document.createElement("p"));
+                stickNoteListElTitle.innerHTML = note.title;
+                stickNoteListElTitle.className = "stickynotelistelementTitle";
+
+                stickNoteListElTime = StickyNoteListElContainer.appendChild(document.createElement("p"));
+                stickNoteListElTime.innerHTML = note.createdate;
+                stickNoteListElTime.className = "stickynotelistelementTime";
 
             });
         }
     });
     function showStickNote() {
+
+    }
+    function createStickyNote() {
 
     }
 </script>
