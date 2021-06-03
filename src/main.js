@@ -10,6 +10,8 @@ const FormData = require('form-data');
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 var win;
 var trayIcon;
 var tray;
@@ -33,7 +35,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: true,
+    frame: false,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -455,9 +457,9 @@ ipcMain.on("toMain", (event, command) => {
           uploadPB(event, JSON.parse(args.attributes))
           break;
         case "UploadPB_quit":
-          try{
+          try {
             fs.unlinkSync(JSON.parse(args.attributes));
-          } catch(e){
+          } catch (e) {
             event.reply('fromMainC', JSON.stringify({ type: "reply_PB_quit", cmd: true, attributes: JSON.stringify(undefined) }));
           }
           break;
