@@ -1,6 +1,13 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
+
 <script>
     $(function () {
         $("#loading").load("loading.html");
@@ -11,12 +18,26 @@
 </script>
 <link rel="stylesheet" href="assets/css/notes.css">
 <div class="content-title-bar-container">
-    <h1>Notizen</h1>
+    <div style="display: inherit;">
+        <h1>Notizen</h1>
+        <button id="list-notes-expand" onclick="epxandNotesList();"><i class="fas fa-chevron-down"></i></button>
+    </div>
     <button name="Create" onclick="createStickyNote();" class="create-stickyNote"><i
             class="fab fa-creative-commons-share"></i></button>
 </div>
-<div id="list-notes-container"></div>
+<div class="content-container-stickynotes">
+    <div id="list-notes-container"></div>
+    <div id="notes-editor-container">
+        <div id="editorjs">
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
 <script>
+    let StickyNoteList_expanded = true;
+    let current_editor;
+
     window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
         if (args.type == "replyUserData") {
@@ -46,14 +67,13 @@
             StickyNotes.forEach(note => {
                 StickyNoteListEl = document.getElementById("list-notes-container").appendChild(document.createElement("div"));
                 StickyNoteListEl.onclick = function (event) {
-                    showStickNote(note.id);
+                    showStickNote(note);
                 }
                 StickyNoteListEl.className = "stickynotelistelement";
 
                 StickyNoteListElIcon = StickyNoteListEl.appendChild(document.createElement("div"));
                 StickyNoteListElIcon.innerHTML = '<i class="far fa-sticky-note"></i>';
                 StickyNoteListElIcon.className = "stickynotelistelementIcon";
-
 
                 StickyNoteListElContainer = StickyNoteListEl.appendChild(document.createElement("div"));
                 StickyNoteListElContainer.className = "stickynotelistelementContainer";
@@ -65,14 +85,60 @@
                 stickNoteListElTime = StickyNoteListElContainer.appendChild(document.createElement("p"));
                 stickNoteListElTime.innerHTML = note.createdate;
                 stickNoteListElTime.className = "stickynotelistelementTime";
-
             });
         }
     });
-    function showStickNote() {
-
+    function showStickNote(stickynote) {
+        if(current_editor != undefined){
+            current_editor.destroy();
+        }
+        if(stickynote.value != ""){
+            stickynote.value = JSON.parse(stickynote.value);
+        }
+        current_editor = new EditorJS({ 
+            tools: {
+                header: Header,
+                image: SimpleImage,
+                list: List,
+                embed: Embed,
+                table: Table
+            },
+            holder: 'editorjs', 
+            data: stickynote.value,
+            onChange: () => {
+                current_editor.save().then((outputData) => {
+                console.log('Article data: ', outputData)
+                }).catch((error) => {
+                    console.log('Saving failed: ', error)
+            });
+            }
+        });
     }
     function createStickyNote() {
 
+    }
+    function epxandNotesList() {
+        if(StickyNoteList_expanded){
+            StickyNoteList_expanded = false;
+            document.getElementById("list-notes-container").style.width = "70px";
+            document.getElementById("list-notes-expand").style.transform = "rotate(180deg)";
+            document.getElementById("notes-editor-container").style.width = "calc(100% - 50px)";
+
+            noteInfos = document.getElementsByClassName("stickynotelistelementContainer");
+            for(let i=0; i < noteInfos.length; i++){
+                noteInfos[i].style.display = "none";
+            }
+        }
+        else{
+            StickyNoteList_expanded = true;
+            document.getElementById("list-notes-container").style.width = "250px";
+            document.getElementById("list-notes-expand").style.transform = "rotate(180deg)";
+            document.getElementById("notes-editor-container").style.width = "calc(100% - 50px)";
+
+            noteInfos = document.getElementsByClassName("stickynotelistelementContainer");
+            for(let i=0; i < noteInfos.length; i++){
+                noteInfos[i].style.display = "block";
+            }
+        }
     }
 </script>

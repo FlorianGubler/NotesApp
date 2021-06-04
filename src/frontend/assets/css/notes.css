@@ -2,15 +2,29 @@ h1{
     margin: 5px;
 }
 #list-notes-container{
-    width: 100%;
+    width: 250px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: baseline;
+    justify-content: flex-start;
+    margin: 10px;
+    position: relative;
+    background-color: rgb(27, 27, 27);
+    border-radius: 5px;
+}
+#list-notes-expand{
+    margin: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+#list-notes-expand:hover{
+    opacity: 0.6;
 }
 .stickynotelistelement{
-    margin: 10px;
-    width: calc(100% - (2 * 10px));
+    margin-bottom: 5px;
+    width: calc(250px);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -53,4 +67,18 @@ h1{
     font-size: xx-large;
     cursor: pointer;
     margin: 10px;
+}
+#notes-editor-container{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+#editorjs{
+    background-color: rgb(49, 49, 49);
+}
+.content-container-stickynotes{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
