@@ -4,8 +4,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
 
 <script>
@@ -22,8 +22,20 @@
         <h1>Notizen</h1>
         <button id="list-notes-expand" onclick="epxandNotesList();"><i class="fas fa-chevron-down"></i></button>
     </div>
-    <button name="Create" onclick="createStickyNote();" class="create-stickyNote"><i
+    <button onclick="openCreateStickyNote();" class="create-stickyNote"><i
             class="fab fa-creative-commons-share"></i></button>
+</div>
+<div id="create-stickynote-container">
+    <div class="create-stickynote-header">
+        <h2>Neue Notiz erstellen</h2>
+        <p onclick="openCreateStickyNote();"><i class="fas fa-times"></i></p>
+    </div>
+    <div class="create-stickynote-body">
+        <div>
+            <input type="text" id="create-stickynote-newtitle" value="Neue Notiz">
+        </div>
+        <button onclick="createStickyNote();">Erstellen</button>
+    </div>
 </div>
 <div class="content-container-stickynotes">
     <div id="list-notes-container"></div>
@@ -69,11 +81,26 @@
                 StickyNoteListEl.onclick = function (event) {
                     showStickNote(note);
                 }
+                StickyNoteListEl.onmouseover = function (event) {
+                    StickyNoteListEl.getElementsByClassName("stickynotelistelementDelete")[0].style.display = "block";
+                }
+                StickyNoteListEl.onmouseout = function (event) {
+                    StickyNoteListEl.getElementsByClassName("stickynotelistelementDelete")[0].style.display = "none";
+                }
                 StickyNoteListEl.className = "stickynotelistelement";
 
                 StickyNoteListElIcon = StickyNoteListEl.appendChild(document.createElement("div"));
                 StickyNoteListElIcon.innerHTML = '<i class="far fa-sticky-note"></i>';
                 StickyNoteListElIcon.className = "stickynotelistelementIcon";
+
+                StickyNoteListElDelete = StickyNoteListEl.appendChild(document.createElement("div"));
+                StickyNoteListElDelete.innerHTML = '<i class="far fa-trash-alt"></i>';
+                StickyNoteListElDelete.className = "stickynotelistelementDelete";
+                StickyNoteListElDelete.classList.add("stickynotelistelementDelete_ex");
+
+                StickyNoteListElDelete.onclick = function (event) {
+                    deleteStickyNote(note.id);
+                }
 
                 StickyNoteListElContainer = StickyNoteListEl.appendChild(document.createElement("div"));
                 StickyNoteListElContainer.className = "stickynotelistelementContainer";
@@ -86,58 +113,120 @@
                 stickNoteListElTime.innerHTML = note.createdate;
                 stickNoteListElTime.className = "stickynotelistelementTime";
             });
+            showStickNote(StickyNotes[0]);
         }
     });
     function showStickNote(stickynote) {
-        if(current_editor != undefined){
+        if (current_editor != undefined) {
             current_editor.destroy();
         }
-        if(stickynote.value != ""){
-            stickynote.value = JSON.parse(stickynote.value);
-        }
-        current_editor = new EditorJS({ 
-            tools: {
-                header: Header,
-                image: SimpleImage,
-                list: List,
-                embed: Embed,
-                table: Table
-            },
-            holder: 'editorjs', 
-            data: stickynote.value,
-            onChange: () => {
-                current_editor.save().then((outputData) => {
-                console.log('Article data: ', outputData)
-                }).catch((error) => {
-                    console.log('Saving failed: ', error)
-            });
+        window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'StickyNoteValue', attributes: stickynote.id }));
+        window.api.receive("fromMainD", (args) => {
+            if (args.type == "replyStickyNoteValue") {
+                if (args.cmd) {
+                    responseValue = JSON.parse(args.attributes);
+                    try {
+                        stickynote.value = JSON.parse(responseValue.value);
+                    } catch (e) {
+                        stickynote.value = "";
+                    }
+                    current_editor = new EditorJS({
+                        tools: {
+                            header: Header,
+                            list: List,
+                            embed: Embed,
+                            image: SimpleImage,
+                            table: Table
+                        },
+                        holder: 'editorjs',
+                        data: stickynote.value,
+                        autofocus: true,
+                        onChange: () => {
+                            saveStickyNote(stickynote.id);
+                        }
+                    });
+                }
             }
         });
     }
+    function saveStickyNote(StickyNote_ID) {
+        current_editor.save().then((outputData) => {
+            window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'SaveStickyNotes', attributes: JSON.stringify(outputData), additional: StickyNote_ID }));
+        }).catch((error) => {
+            console.log('Saving failed: ', error);
+        });
+    }
+    function openCreateStickyNote() {
+        el = document.getElementById("create-stickynote-container");
+        if (el.style.display == "none" || el.style.display == "") {
+            el.style.display = "flex";
+        }
+        else {
+            el.style.display = "none";
+        }
+    }
     function createStickyNote() {
-
+        data = {
+            title: document.getElementById("create-stickynote-newtitle").value
+        }
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'CreateStickyNote', attributes: data }));
+        window.api.receive("fromMainA", (args) => {
+            if (args.type == "replyStickyNoteCreated") {
+                if (args.cmd) {
+                    location.reload();
+                }
+                else {
+                    console.log(JSON.parse(args.attributes));
+                }
+            }
+        })
+    }
+    function deleteStickyNote(PK_stickynote) {
+        window.api.send("toMain", JSON.stringify({ type: 'UploadData', cmd: 'DeleteStickyNote', attributes: JSON.stringify(PK_stickynote) }));
+        window.api.receive("fromMainA", (args) => {
+            if (args.type == "replyStickyNoteDeleted") {
+                if (args.cmd) {
+                    location.reload();
+                }
+                else {
+                    console.log(JSON.parse(args.attributes));
+                }
+            }
+        })
     }
     function epxandNotesList() {
-        if(StickyNoteList_expanded){
+        if (StickyNoteList_expanded) {
             StickyNoteList_expanded = false;
-            document.getElementById("list-notes-container").style.width = "70px";
+            document.getElementById("list-notes-container").style.width = "50px";
             document.getElementById("list-notes-expand").style.transform = "rotate(180deg)";
             document.getElementById("notes-editor-container").style.width = "calc(100% - 50px)";
 
             noteInfos = document.getElementsByClassName("stickynotelistelementContainer");
-            for(let i=0; i < noteInfos.length; i++){
+            for (let i = 0; i < noteInfos.length; i++) {
                 noteInfos[i].style.display = "none";
             }
+
+            deleletButtons = document.getElementsByClassName("stickynotelistelementDelete");
+            for (let i = 0; i < deleletButtons.length; i++) {
+                deleletButtons[i].classList.remove("stickynotelistelementDelete_ex");
+                deleletButtons[i].classList.add("stickynotelistelementDelete_notex");
+            }
         }
-        else{
+        else {
             StickyNoteList_expanded = true;
             document.getElementById("list-notes-container").style.width = "250px";
-            document.getElementById("list-notes-expand").style.transform = "rotate(180deg)";
+            document.getElementById("list-notes-expand").style.transform = "rotate(360deg)";
             document.getElementById("notes-editor-container").style.width = "calc(100% - 50px)";
 
             noteInfos = document.getElementsByClassName("stickynotelistelementContainer");
-            for(let i=0; i < noteInfos.length; i++){
+            for (let i = 0; i < noteInfos.length; i++) {
                 noteInfos[i].style.display = "block";
+            }
+
+            deleletButtons = document.getElementsByClassName("stickynotelistelementDelete");
+            for (let i = 0; i < deleletButtons.length; i++) {
+                deleletButtons[i].classList.add("stickynotelistelementDelete_ex");
+                deleletButtons[i].classList.remove("stickynotelistelementDelete_notex");
             }
         }
     }

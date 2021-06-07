@@ -155,7 +155,7 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
   }
 }
 
-async function uploadPBAPI(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/') {
+async function setDataWithResponse(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/') {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
   headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
@@ -173,6 +173,7 @@ async function uploadPBAPI(body, url = 'https://dekinotu.myhostpoint.ch/notes/db
   if (response.status != 200) {
     console.log("SetDataAPI: " + response.status);
   }
+  return response.json();
 }
 
 function getUserNotes(event) {
@@ -193,6 +194,16 @@ function getSemesters(event) {
 function GetStickyNotes(event) {
   getData("GetStickyNotes")
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
+}
+
+function GetStickyNoteValue(event, PK_stickynote) {
+  var GetStickyNoteValueBody = {
+    action: "GetStickyNoteValue",
+    PK_stickynote: PK_stickynote
+  }
+  setDataWithResponse(GetStickyNoteValueBody)
+    .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: true, attributes: JSON.stringify(data) })))
+    .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
 }
 
 function checkLogin(event, loginData) {
@@ -322,6 +333,38 @@ function setEmail(event, data) {
     .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewEmail", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
+function saveStickyNotes(event, value, id) {
+  var newstickynotevaluebody = {
+    "action": "SetStickyNote",
+    "StickynoteID": id,
+    "newvalue": value
+  }
+  setData(newstickynotevaluebody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteSaved", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteSaved", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
+function createStickyNote(event, data) {
+  var createstickynoteBody = {
+    "action": "CreateStickyNote",
+    "title": data.title,
+    "value": ""
+  }
+  setData(createstickynoteBody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
+function deleteStickyNote(event, PK_stickynote) {
+  var deleteStickynoteBody = {
+    "action": "DeleteStickyNote",
+    "PK_stickynote": PK_stickynote
+  }
+  setData(deleteStickynoteBody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteDeleted", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteDeleted", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
 function setPassword(event, data) {
   var newpasswordbody = {
     "action": "SetPassword",
@@ -332,6 +375,7 @@ function setPassword(event, data) {
     .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: true, attributes: JSON.stringify("") })); logout(); })
     .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
+
 
 function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
@@ -356,6 +400,7 @@ function UploadPB_GetTmpFilePath(event) {
     }
   });
 }
+
 
 function uploadPB(event, data) {
   const filePath = data.file;
@@ -432,6 +477,9 @@ ipcMain.on("toMain", (event, command) => {
         case "StickyNotes":
           GetStickyNotes(event);
           break;
+        case "StickyNoteValue":
+          GetStickyNoteValue(event, JSON.parse(args.attributes));
+          break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;
@@ -472,6 +520,15 @@ ipcMain.on("toMain", (event, command) => {
           } catch (e) {
             event.reply('fromMainC', JSON.stringify({ type: "reply_PB_quit", cmd: true, attributes: JSON.stringify(undefined) }));
           }
+          break;
+        case "SaveStickyNotes":
+          saveStickyNotes(event, args.attributes, args.additional);
+          break;
+        case "CreateStickyNote":
+          createStickyNote(event, args.attributes);
+          break;
+        case "DeleteStickyNote":
+          deleteStickyNote(event, JSON.parse(args.attributes));
           break;
         default: console.error("Unkwown Command in Messaging");
       }

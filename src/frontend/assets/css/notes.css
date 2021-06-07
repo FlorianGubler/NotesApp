@@ -22,9 +22,10 @@ h1{
 #list-notes-expand:hover{
     opacity: 0.6;
 }
+
 .stickynotelistelement{
     margin-bottom: 5px;
-    width: calc(250px);
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -39,6 +40,27 @@ h1{
 .stickynotelistelementIcon{
     font-size: xx-large;
     margin: 10px;
+}
+.stickynotelistelementDelete{
+    position: absolute;
+    display: none;
+    z-index: 12;
+}
+.stickynotelistelementDelete:hover{
+    opacity: 0.8;
+}
+.stickynotelistelementDelete path{
+    color: red;
+}
+.stickynotelistelementDelete_ex{
+    top: 0;
+    right: 0;
+    margin: 5px;
+}
+.stickynotelistelementDelete_notex{
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 .stickynotelistelementContainer{
     display: flex;
@@ -68,17 +90,97 @@ h1{
     cursor: pointer;
     margin: 10px;
 }
+.create-stickyNote:hover{
+    opacity: 0.6;
+}
 #notes-editor-container{
     width: 100%;
     height: 100%;
     background-color: white;
 }
+/********* EDITOR JS************/
 #editorjs{
     background-color: rgb(49, 49, 49);
+    max-height: 80vh;
+    overflow: auto;
 }
+.ce-toolbar__settings-btn{
+    background-color: #7a7a7a00;
+}
+#editorjs use{
+    fill: #919191;
+}
+/******************************/
 .content-container-stickynotes{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
+}
+
+#create-stickynote-container{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #242525;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    padding: 10px;
+    padding-bottom: 0;
+    box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+    -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+}
+
+.create-stickynote-header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.create-stickynote-header p{
+    cursor: pointer;
+}
+.create-stickynote-header p:hover{
+    opacity: 0.6;
+}
+
+.create-stickynote-body{
+    width: 100%;
+    margin: 10px;
+    color: #242525;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-stickynote-body input{
+    padding: 10px;
+    background-color: #242525;
+    border: 1px solid rgb(153, 153, 153);
+    color: rgb(209, 209, 209);
+}
+
+.create-stickynote-body input:focus{
+    outline: none;
+}
+
+.create-stickynote-body button{
+    margin: 10px;
+    background-color: #242525;
+    border-radius: 0;
+    border: 1px solid rgb(92, 92, 92);
+    padding: 5px;
+    cursor: pointer;
+}
+
+.create-stickynote-body button:hover{
+    background-color: #424242;
 }
