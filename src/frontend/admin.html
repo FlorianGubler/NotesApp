@@ -1,0 +1,41 @@
+<div id="includedContent"></div>
+<div id="loading"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {    options.async = true; });</script>
+<script>
+    $(function () {
+        $("#loading").load("loading.html");
+    });
+    $(function () {
+        $("#includedContent").load("navbar.html");
+    });
+</script>
+<link rel="stylesheet" href="assets/css/notes.css">
+<div class="content-title-bar-container">
+    <h1>Administrator Tools</h1>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script>
+    window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
+    window.api.receive("fromMainC", (args) => {
+        if (args.type == "replyUserData") {
+            var response = JSON.parse(args.attributes);
+            if (response != null) {
+                user_login = response;
+                x = document.getElementsByClassName("use-user-name");
+                for (var i = 0; i < x.length; i++) {
+                    x[i].innerHTML = response.username;
+                }
+                x = document.getElementsByClassName("use-user-email");
+                for (var i = 0; i < x.length; i++) {
+                    x[i].innerHTML = "(" + response.email + ")";
+                    if (response.email_verified == 0) {
+                        x[i].innerHTML += "<p style='display: inline; color: orange;'><i style='color: inherit;' class='fas fa-exclamation-triangle'></i> Not verified</p>";
+                    }
+                }
+                document.getElementById("loading").style.display = "none";
+            }
+
+        }
+    });
+</script>

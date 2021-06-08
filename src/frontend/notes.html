@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
 <script src="assets/js/sleep.js"></script>
+<script>$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {    options.async = true; });</script>
 
 <script>
     $(function () {
@@ -274,11 +275,9 @@
     function set_autosave(){
         el = document.getElementById("set-autosave");
         if(el.checked){
-            document.getElementById("autosave-off-save-editor").style.display = "none";
             autosave = true;
         }
         else{
-            document.getElementById("autosave-off-save-editor").style.display = "block";
             autosave = false;
         }
     }

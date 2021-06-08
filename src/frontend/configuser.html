@@ -3,6 +3,7 @@
 <script src="assets/js/cropprjs/croppr.js"></script>
 <script src="assets/js/sleep.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {    options.async = true; });</script>
 <script>
     $(function () {
         $("#loading").load("loading.html");

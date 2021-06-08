@@ -1,6 +1,7 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {    options.async = true; });</script>
 <script>
 	$(function(){
       $("#includedContent").load("navbar.html");

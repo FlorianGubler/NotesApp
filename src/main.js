@@ -307,7 +307,7 @@ function getUserData() {
     return null;
   }
   else {
-    return { id: login_user.id, username: login_user.username, email: login_user.email, email_verified: login_user.email_is_verified, profilepicture: login_user.profilepicture };
+    return { id: login_user.id, username: login_user.username, email: login_user.email, email_verified: login_user.email_is_verified, profilepicture: login_user.profilepicture, admin: login_user.admin };
   }
 }
 
@@ -555,6 +555,27 @@ ipcMain.on("toMain", (event, command) => {
       break;
     case "Logout":
       logout();
+      break;
+    case "AdminTools":
+      if(login_user.admin == 1){
+        switch (args.cmd) {
+          case "GetUserList":
+            AdminTools_GetUserList(event);
+            break;
+          case "ChangeuserPrivileges":
+            AdminTools_ChangeuserPrivileges(event, JSON.parse(args.attributes));
+            break;
+          case "CreateSemester":
+            AdminTools_CreateSemester(event, JSON.parse(args.attributes));
+            break;
+          case "CreateSubject":
+            AdminTools_CreateSubject(event, JSON.parse(args.attributes));
+            break;
+          default: console.error("Unkwown Command in Messaging");
+        }
+      } else{
+        event.reply('fromMainF', JSON.stringify({ type: "replyAdminTools", cmd: false, attributes: JSON.stringify("User hat keine Rechte für diese Aktion") }))
+      }
       break;
     default: console.error("Unkwown Type in Messaging");
   }
