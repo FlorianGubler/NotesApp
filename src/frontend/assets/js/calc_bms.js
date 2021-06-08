@@ -1,25 +1,25 @@
-function getNotesData(semester){
+function getNotesData(semester) {
     document.getElementById("loading").style.display = "block";
-    window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'Subjects', attributes: ""}));
+    window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'Subjects', attributes: "" }));
     window.api.receive("fromMainB", (args) => {
-        if(args.type == "replySubjects"){
+        if (args.type == "replySubjects") {
             var response = JSON.parse(args.attributes);
             var subjects = [];
             var endnotes = [];
             response.forEach(subj => {
-                if(subj.schoolName == "BMS"){
+                if (subj.schoolName == "BMS") {
                     subjects[subj.subjectName] = [];
                     endnotes[subj.subjectName] = 0;
                 }
             });
-            window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'NotesfromUser', attributes: ""}));
+            window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'NotesfromUser', attributes: "" }));
             window.api.receive("fromMainA", (args) => {
-                if(args.type == "replyUserNotes"){
+                if (args.type == "replyUserNotes") {
                     var response = JSON.parse(args.attributes);
                     response.forEach(note => {
-                        if(note.schoolName == "BMS" ){
-                            if(note.semesterTag == semester || note.FK_semester == semester){
-                                subjects[note.subjectName].push({value: note.value, examName: note.examName});
+                        if (note.schoolName == "BMS") {
+                            if (note.semesterTag == semester || note.FK_semester == semester) {
+                                subjects[note.subjectName].push({ value: note.value, examName: note.examName });
                             }
                         }
                     });
@@ -29,7 +29,7 @@ function getNotesData(semester){
                     td.colSpan = "2";
                     tr.appendChild(td);
                     document.getElementById("table-notes-end").appendChild(tr);
-                    for(var subj in subjects){
+                    for (var subj in subjects) {
                         var tr = document.createElement("tr");
                         var th = document.createElement("th");
                         th.innerHTML = subj;
@@ -37,10 +37,10 @@ function getNotesData(semester){
                         subjects[subj].forEach(note => {
                             var td = document.createElement("td");
                             td.innerHTML = note.value;
-                            if(note.value > 4){
+                            if (note.value > 4) {
                                 td.classList.add("grade-good");
                             }
-                            else if(note.value < 4){
+                            else if (note.value < 4) {
                                 td.classList.add("grade-bad");
                             }
                             tr.appendChild(td);
@@ -50,44 +50,44 @@ function getNotesData(semester){
                     var subjectcount = 0;
                     var endnoteLast = 0;
                     //Make Endnotes
-                    for(var subj in subjects){
-                        endnotes[subj+"_count"] = 0;
+                    for (var subj in subjects) {
+                        endnotes[subj + "_count"] = 0;
                         endnotes[subj] = 0;
                         subjects[subj].forEach(subje => {
                             endnotes[subj] += parseFloat(subje.value);
-                            if(subje.value != 0){
-                                endnotes[subj+"_count"]++;
+                            if (subje.value != 0) {
+                                endnotes[subj + "_count"]++;
                             }
                         })
-                        if(subj.split(" ")[1] != "Vokabeln"){
+                        if (subj.split(" ")[1] != "Vokabeln") {
                             subjectcount++;
                         }
                     }
                     //Add Vokabel endnotes
-                    for(var subj in subjects){
-                        if(subj.split(" ")[1] == "Vokabeln"){
-                            for(endnote in endnotes){
-                                if(endnote == subj.split(" ")[0]){
-                                    if(endnotes[subj+"_count"] != 0){
-                                        endnotes[subj] = endnotes[subj] / endnotes[subj+"_count"];
+                    for (var subj in subjects) {
+                        if (subj.split(" ")[1] == "Vokabeln") {
+                            for (endnote in endnotes) {
+                                if (endnote == subj.split(" ")[0]) {
+                                    if (endnotes[subj + "_count"] != 0) {
+                                        endnotes[subj] = endnotes[subj] / endnotes[subj + "_count"];
                                     }
                                     endnotes[endnote] += endnotes[subj]
-                                    endnotes[endnote+"_count"]++;
+                                    endnotes[endnote + "_count"]++;
                                 }
                             }
                         }
                     }
                     //calc Endnotes & display them
-                    for(var subj in subjects){
-                        if(endnotes[subj+"_count"] != 0){
-                            endnotes[subj] = endnotes[subj] / endnotes[subj+"_count"];
+                    for (var subj in subjects) {
+                        if (endnotes[subj + "_count"] != 0) {
+                            endnotes[subj] = endnotes[subj] / endnotes[subj + "_count"];
                         }
-                        endnotes[subj] = Math.round(endnotes[subj]*2)/2;
-                        if(subj.split(" ")[1] != "Vokabeln"){
-                            if(endnotes[subj] != 0){
+                        endnotes[subj] = Math.round(endnotes[subj] * 2) / 2;
+                        if (subj.split(" ")[1] != "Vokabeln") {
+                            if (endnotes[subj] != 0) {
                                 endnoteLast += endnotes[subj];
                             }
-                            else{
+                            else {
                                 subjectcount--;
                             }
                             tr = document.createElement("tr");
@@ -96,16 +96,16 @@ function getNotesData(semester){
                             tr.appendChild(tdh);
                             tdv = document.createElement("td");
                             tdv.innerHTML = endnotes[subj];
-                            if(endnotes[subj] > 4){
+                            if (endnotes[subj] > 4) {
                                 tdv.classList.add("grade-good");
                             }
-                            else if(endnotes[subj] < 4 && endnotes[subj] != 0){
+                            else if (endnotes[subj] < 4 && endnotes[subj] != 0) {
                                 tdv.classList.add("grade-bad");
                             }
                             tr.appendChild(tdv);
                             document.getElementById("table-notes-end").appendChild(tr);
                         }
-                        
+
                     }
                     var tr = document.createElement("tr");
                     var td = document.createElement("td");
@@ -114,20 +114,20 @@ function getNotesData(semester){
                     tr.appendChild(td);
                     document.getElementById("table-notes-end").appendChild(tr);
 
-                    if(subjectcount != 0){
+                    if (subjectcount != 0) {
                         endnoteLast = endnoteLast / subjectcount;
                     }
 
                     var tr = document.createElement("tr");
                     var td = document.createElement("td");
-                    td.innerHTML = "Endnote des BM Semesters";
+                    td.innerHTML = "Endnote Gesamt";
                     tr.appendChild(td);
                     var tde = document.createElement("td");
                     tde.innerHTML = endnoteLast;
-                    if(endnoteLast > 4){
+                    if (endnoteLast > 4) {
                         tde.classList.add("grade-good");
                     }
-                    else if(endnoteLast < 4 && endnoteLast != 0){
+                    else if (endnoteLast < 4 && endnoteLast != 0) {
                         tde.classList.add("grade-bad");
                     }
                     tr.appendChild(tde);
@@ -137,23 +137,23 @@ function getNotesData(semester){
             });
         }
     });
-    if(document.getElementById("old-semster-choosen-style") != null){
+    if (document.getElementById("old-semster-choosen-style") != null) {
         document.getElementById("old-semster-choosen-style").remove();
     }
-    if(document.getElementsByClassName("active-semester")[0] != null){
+    if (document.getElementsByClassName("active-semester")[0] != null) {
         document.getElementsByClassName("active-semester")[0].classList.remove("active-semester")
     }
-    if(Number.isInteger(semester)){
+    if (Number.isInteger(semester)) {
         newstyle = document.createElement("style");
         semesterNTH = semester + 1;
-        newstyle.innerHTML = ".semester-choose:nth-child("+semesterNTH+"){background-color: #343a40}";
-        newstyle.id="old-semster-choosen-style"
+        newstyle.innerHTML = ".semester-choose:nth-child(" + semesterNTH + "){background-color: #343a40}";
+        newstyle.id = "old-semster-choosen-style"
         document.body.appendChild(newstyle);
     }
-    else{
+    else {
         var semesterarr = Array.from(document.getElementsByClassName("semester-choose"))
         semesterarr.forEach(el => {
-            if(el.innerHTML == semester){
+            if (el.innerHTML == semester) {
                 el.classList.add("active-semester");
             }
         })

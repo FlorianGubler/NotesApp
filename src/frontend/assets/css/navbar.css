@@ -45,7 +45,7 @@ button:focus{
     color: rgb(219, 219, 219);
     cursor: pointer;
     z-index: 10;
-    user-drag: none; 
+    user-drag: none;
 
 }
 #menu a:hover{
@@ -230,8 +230,8 @@ button:focus{
 
 @keyframes reload-spin {
     to {
-        transform: rotate(360deg); 
-    } 
+        transform: rotate(360deg);
+    }
 }
 
 #site-download-update{
@@ -251,4 +251,3 @@ button:focus{
 #site-download-update svg * {
     fill: #6fce43;
 }
-  

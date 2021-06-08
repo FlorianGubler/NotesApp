@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProMarks</title>
     <link rel="stylesheet" href="assets/css/navbar.css">
+    <link src="assets/js/cropprjs/croppr.css" rel="stylesheet" />
+    <script src="assets/js/customalert.js"></script>
+    <link rel="stylesheet" href="assets/css/customalert.css">
+    </link>
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" data-auto-replace-svg></script>
+    <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
 </head>
+
 <body>
     <div id="titlebar"></div>
     <script>
-        $(function(){
-            $("#titlebar").load("titlebar.html"); 
+        $(function () {
+            $("#titlebar").load("titlebar.html");
         });
     </script>
     <div id="site-title-container">
-        <a id="menu-expand" onclick="document.getElementById('menu-expand').style.display = 'none';" href="#menu"><i style="color: inherit;" class="fas fa-ellipsis-v"></i></a>
+        <a id="menu-expand" onclick="document.getElementById('menu-expand').style.display = 'none';" href="#menu"><i
+                style="color: inherit;" class="fas fa-ellipsis-v"></i></a>
         <p id="site-title">ProMarks</p>
     </div>
     <button id="site-reload-btn" onclick="location.reload();"><i class="fas fa-redo"></i></button>
-    <button id="site-download-update" onclick="console.error('No Update Available');"><i class="fas fa-download"></i></button>
+    <button id="site-download-update" onclick="console.error('No Update Available');"><i
+            class="fas fa-download"></i></button>
     <nav id="menu">
-        <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block'; closeMenuAnimation();" href="#"><svg viewBox="0 0 10 10"><polygon points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" /></svg></a>
+        <a id="menu-close"
+            onclick="document.getElementById('menu-expand').style.display = 'block';"
+            href="#"><svg viewBox="0 0 10 10">
+                <polygon
+                    points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" />
+            </svg></a>
         <div id="nav-user">
-        	<img id="profile-pic" src="" alt="Profile Picture" draggable="false">
+            <img id="profile-pic" src="" alt="Profile Picture" draggable="false">
             <a href="configuser.html" id="menu-user" class="use-user-name"></a>
         </div>
         <div id="menu-splitline"></div>
@@ -32,6 +46,8 @@
             <li><a id="bms-anchor" href="bms.html"><i class="fas fa-school"></i> BMS Notenstand</a></li>
             <li><a id="lap-anchor" href="lap.html"><i class="fas fa-chalkboard-teacher"></i> LAP Notenstand</a></li>
             <li><a id="addnote-anchor" href="addnote.html"><i class="far fa-plus-square"></i> Noten hinzufügen</a></li>
+            <li><a id="addnote-anchor" href="notes.html"><i class="far fa-comment-alt"></i> Sticky Notes</a></li>
+            <li id="navbar-item-admin-tools"><a id="addnote-anchor" href="admin.html"><i class="fas fa-unlock-alt"></i> Admin Tools</a></li>
             <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
         <div class="copyright-nav">
@@ -41,39 +57,28 @@
     </nav>
     <script>
         var user_login;
-        window.api.send("toMain", JSON.stringify({type: 'GetData', cmd: 'UserData', attributes: ""}));
+        window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
         window.api.receive("fromMainC", (args) => {
-            if(args.type == "replyUserData"){
+            if (args.type == "replyUserData") {
                 var response = JSON.parse(args.attributes);
-                if(response != null){
+                if (response != null) {
                     user_login = response;
                     x = document.getElementsByClassName("use-user-name");
                     for (var i = 0; i < x.length; i++) {
                         x[i].innerHTML = response.username;
                     }
+                    if(response.admin == 0){
+                        document.getElementById("navbar-item-admin-tools").style.display = "none";
+                    }
                     document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
                 }
             }
         });
-        function logout(){
-            window.api.send("toMain", JSON.stringify({type: 'Logout', cmd: '', attributes: ""}));
-            location.href="login.html";
+        function logout() {
+            window.api.send("toMain", JSON.stringify({ type: 'Logout', cmd: '', attributes: "" }));
+            location.href = "login.html";
         }
-        function closeMenuAnimation(){
-            // document.getElementById('menu').animate([
-            //     { left: '0' },
-            //     { left: '-200px' }
-            // ], {
-            //     duration: 0.5,
-            //     iterations: 'ease-in'
-            // }
-            // );
-        }
-        // document.body.style.backgroundImage = "url('assets/img/background.jpg')";
-        // document.body.style.backgroundRepeat = "no-repeat";
-        // document.body.style.backgroundPosition = "center"
-        // document.body.style.backgroundSize = "cover"
-        // document.body.style.backgroundAttachment = "fixed"
     </script>
 </body>
+
 </html>

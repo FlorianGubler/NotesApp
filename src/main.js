@@ -1,14 +1,17 @@
-const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme } = require('electron');
+const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme, dialog } = require('electron');
 const path = require("path");
 const { defaultApp } = require('process');
 const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
-var FormData = require('form-data');
+const FormData = require('form-data');
+const isImage = require('is-image');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
+
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 var win;
 var trayIcon;
@@ -33,7 +36,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: false,
+    frame: true,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -46,9 +49,11 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
+      webSecurity: true,
       preload: path.join(app.getAppPath(), 'preload.js')
     }
   });
+
   win.loadFile('frontend/login.html');
   win.maximize()
   showWindow();
@@ -150,6 +155,27 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
   }
 }
 
+async function setDataWithResponse(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/') {
+  let headers = new fetch.Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
+
+  var raw = JSON.stringify([body]);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  var response = await fetch(url, requestOptions);
+  if (response.status != 200) {
+    console.log("SetDataAPI: " + response.status);
+  }
+  return response.json();
+}
+
 function getUserNotes(event) {
   getData("GetUserNotes")
     .then(data => event.reply('fromMainA', JSON.stringify({ type: "replyUserNotes", cmd: "", attributes: JSON.stringify(data) })))
@@ -163,6 +189,21 @@ function getSubjects(event) {
 function getSemesters(event) {
   getData("GetSemesters")
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
+}
+
+function GetStickyNotes(event) {
+  getData("GetStickyNotes")
+    .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
+}
+
+function GetStickyNoteValue(event, PK_stickynote) {
+  var GetStickyNoteValueBody = {
+    action: "GetStickyNoteValue",
+    PK_stickynote: PK_stickynote
+  }
+  setDataWithResponse(GetStickyNoteValueBody)
+    .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: true, attributes: JSON.stringify(data) })))
+    .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
 }
 
 function checkLogin(event, loginData) {
@@ -238,7 +279,7 @@ function logout() {
   });
 }
 
-function reloadUserData(){
+function reloadUserData() {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
   headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
@@ -266,7 +307,7 @@ function getUserData() {
     return null;
   }
   else {
-    return { id: login_user.id, username: login_user.username, email: login_user.email, email_verified: login_user.email_is_verified, profilepicture: login_user.profilepicture };
+    return { id: login_user.id, username: login_user.username, email: login_user.email, email_verified: login_user.email_is_verified, profilepicture: login_user.profilepicture, admin: login_user.admin };
   }
 }
 
@@ -292,6 +333,38 @@ function setEmail(event, data) {
     .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewEmail", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
+function saveStickyNotes(event, value, id) {
+  var newstickynotevaluebody = {
+    "action": "SetStickyNote",
+    "StickynoteID": id,
+    "newvalue": value
+  }
+  setData(newstickynotevaluebody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteSaved", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteSaved", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
+function createStickyNote(event, data) {
+  var createstickynoteBody = {
+    "action": "CreateStickyNote",
+    "title": data.title,
+    "value": ""
+  }
+  setData(createstickynoteBody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
+function deleteStickyNote(event, PK_stickynote) {
+  var deleteStickynoteBody = {
+    "action": "DeleteStickyNote",
+    "PK_stickynote": PK_stickynote
+  }
+  setData(deleteStickynoteBody)
+    .then(() => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteDeleted", cmd: true, attributes: JSON.stringify(undefined) })) })
+    .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteDeleted", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
+}
+
 function setPassword(event, data) {
   var newpasswordbody = {
     "action": "SetPassword",
@@ -303,30 +376,77 @@ function setPassword(event, data) {
     .catch(err => event.reply('fromMainA', JSON.stringify({ type: "replyNewPassword", cmd: false, attributes: JSON.stringify("Interner Fehler") })));
 }
 
-// function uploadPB(event, file){
-//   let headers = new fetch.Headers();
-//   headers.append('Content-Type', 'image/jpeg');
-//   headers.append('Authorization', 'Basic ' + base64.encode(login_user.username+":"+login_user.password));
 
-//   let formdata = new FormData();
-//   formdata.append("newpb", file);
+function UploadPB_GetTmpFilePath(event) {
+  dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
+    allowedFileTypes = ["png", "jpg", "gif"];
+    if (result.filePaths[0] != undefined) {
+      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase()) && isImage(result.filePaths[0])) {
+        const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
+        fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
+          if (err) {
+            console.log("Error Found:", err);
+          }
+          else {
+            event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: true, attributes: JSON.stringify(tmp_filePath) }));
+          }
+        });
+      }
+      else {
+        event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: false, attributes: JSON.stringify("Diese Datei ist kein Bild") }));
+      }
+    } else {
+      event.reply('fromMainA', JSON.stringify({ type: "reply_UploadPB_tmpPath", cmd: "quit", attributes: JSON.stringify(undefined) }));
+    }
+  });
+}
 
-//   var requestOptions = {
-//     method: 'POST',
-//     headers: headers,
-//     body: formdata,
-//     redirect: 'follow'
-//   };
 
-//  fetch(url, requestOptions).then(response => {
-//     if(response.status != 200){
-//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: false, attributes: JSON.stringify("")}));;
-//     }
-//     else{
-//       event.reply('fromMainC', JSON.stringify({type: "replyPBUpload", cmd: true, attributes: JSON.stringify("")}));
-//     }
-//   });
-// }
+function uploadPB(event, data) {
+  const filePath = data.file;
+  const fileName = data.file.replace(/^.*[\\\/]/, '');
+
+  var uploadPBdata = {
+    "action": "UploadPB_Data",
+    "file": fileName,
+    "x": data.x,
+    "y": data.y,
+    "width": data.width,
+    "height": data.height,
+  }
+
+  const form = new FormData();
+  const stats = fs.statSync(filePath);
+  const fileSizeInBytes = stats.size;
+  const fileStream = fs.createReadStream(filePath);
+  form.append('uploadpb', fileStream, { knownLength: fileSizeInBytes });
+  form.append('uploadpb-data', JSON.stringify(uploadPBdata));
+
+  let headers = new fetch.Headers();
+  headers.append('Authorization', 'Basic ' + base64.encode(login_user.email + ":" + login_user.password));
+
+  const options = {
+    method: 'POST',
+    credentials: 'include',
+    headers: headers,
+    body: form
+  };
+
+  fetch("https://dekinotu.myhostpoint.ch/notes/dbapi/uploadpb/", options)
+    .then(res => {
+      if (res.ok) {
+        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: true, attributes: "" }));
+        fs.unlinkSync(filePath)
+      } else {
+        console.log(res);
+        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Fehler beim Upload") }));
+      }
+    }).catch((e) => {
+      event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Interner Fehler") }));
+    });
+
+
+}
 
 function checkMode(event) {
   if (win.isMaximized()) {
@@ -353,6 +473,12 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "Semesters":
           getSemesters(event);
+          break;
+        case "StickyNotes":
+          GetStickyNotes(event);
+          break;
+        case "StickyNoteValue":
+          GetStickyNoteValue(event, JSON.parse(args.attributes));
           break;
         default: console.error("Unkwown Command in Messaging");
       }
@@ -382,9 +508,28 @@ ipcMain.on("toMain", (event, command) => {
         case "Email":
           setEmail(event, JSON.parse(args.attributes))
           break;
-        // case "UploadPB":
-        //   uploadPB(event, JSON.parse(args.attributes))
-        //   break;
+        case "UploadPB_GetTmpFilePath":
+          UploadPB_GetTmpFilePath(event);
+          break;
+        case "UploadPB":
+          uploadPB(event, JSON.parse(args.attributes))
+          break;
+        case "UploadPB_quit":
+          try {
+            fs.unlinkSync(JSON.parse(args.attributes));
+          } catch (e) {
+            event.reply('fromMainC', JSON.stringify({ type: "reply_PB_quit", cmd: true, attributes: JSON.stringify(undefined) }));
+          }
+          break;
+        case "SaveStickyNotes":
+          saveStickyNotes(event, args.attributes, args.additional);
+          break;
+        case "CreateStickyNote":
+          createStickyNote(event, args.attributes);
+          break;
+        case "DeleteStickyNote":
+          deleteStickyNote(event, JSON.parse(args.attributes));
+          break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;
@@ -410,6 +555,27 @@ ipcMain.on("toMain", (event, command) => {
       break;
     case "Logout":
       logout();
+      break;
+    case "AdminTools":
+      if(login_user.admin == 1){
+        switch (args.cmd) {
+          case "GetUserList":
+            AdminTools_GetUserList(event);
+            break;
+          case "ChangeuserPrivileges":
+            AdminTools_ChangeuserPrivileges(event, JSON.parse(args.attributes));
+            break;
+          case "CreateSemester":
+            AdminTools_CreateSemester(event, JSON.parse(args.attributes));
+            break;
+          case "CreateSubject":
+            AdminTools_CreateSubject(event, JSON.parse(args.attributes));
+            break;
+          default: console.error("Unkwown Command in Messaging");
+        }
+      } else{
+        event.reply('fromMainF', JSON.stringify({ type: "replyAdminTools", cmd: false, attributes: JSON.stringify("User hat keine Rechte für diese Aktion") }))
+      }
       break;
     default: console.error("Unkwown Type in Messaging");
   }

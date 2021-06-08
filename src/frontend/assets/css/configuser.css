@@ -70,13 +70,13 @@ span.psw {
 }
 
 .modal {
-  display: block; 
-  position: fixed; 
-  z-index: 1; 
+  display: block;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 32px;
-  width: 100%; 
-  height: calc(100vh - 32px);  
+  width: 100%;
+  height: calc(100vh - 32px);
   overflow: auto;
   background-color: rgba(61, 61, 61, 0);
   padding-top: 10px;
@@ -86,7 +86,7 @@ span.psw {
   background-color: #333435;
   margin: 100px auto 10px auto;
   border: 1px solid rgb(39, 39, 39);
-  width: 50%; 
+  width: 50%;
 }
 
 .animate {
@@ -94,6 +94,129 @@ span.psw {
   animation: animatezoom 0.6s
 }
 
+.upload-pb-select-picture{
+  background-color: rgba(0, 0, 0, 0) !important;
+  border: none !important;
+  color: rgb(116, 116, 236) !important;
+  text-align: center !important;
+  margin: 0px !important;
+  margin-top: 10px !important;
+  padding: 0 !important;
+}
+
+#upload-pb-container{
+  background-color: #242525;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: none;
+  padding: 10px;
+  box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+  -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+}
+
+#slider-resize-reset{
+  justify-self: flex-start;
+  margin-bottom: 25px;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: larger;
+}
+
+#upload-pb-container h2{
+  margin: 17px;
+  font-size: large;
+}
+
+.uploadpb-cropper-image-container{
+  position: relative;
+  margin: 10px;
+  height: 50vh;
+}
+
+.uploadpb-cropper-image-container canvas, .uploadpb-cropper-image-container img{
+  height: 100%;
+  /*border: 1px solid white;*/
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.upload-pb-inner-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-pb-inner-container button{
+  background-color: #616264;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+}
+
+.upload-pb-inner-container button:hover{
+  opacity: 0.6;
+}
+
+.exit-upload-container{
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 5px;
+}
+
+.exit-upload-container button{
+  background-color: rgba(61, 61, 61, 0);
+  color: white;
+}
+
+.edit-image-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.resize-image-slider-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.resize-image-slider{
+  -webkit-appearance: slider-vertical;
+  width: 1px;
+  height: 150%;
+  padding: 0;
+  background: rgb(126, 124, 124);
+  outline: none;
+}
+
+.resize-image-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: rgb(58, 57, 57);
+  cursor: pointer;
+  border: 1px solid rgb(138, 135, 135);
+  border-radius: 100%;
+}
+
+#little-image-resize{
+  font-size: small;
+}
+
+#big-image-resize{
+  font-size: larger;
+}
 
 #login-response-false, #login-response-true{
     padding: 10px;
@@ -108,4 +231,31 @@ span.psw {
   width: 100vw;
   height: 1px;
   background-color: #b9b9b9;
+}
+
+.uploadpb-title-container{
+  position: relative;
+  width: fit-content;
+}
+
+.uploadpb-title-container button{
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  border: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+#upload-pb-information{
+  display: none;
+  background-color: #484d4d75;
+  padding: 5px;
+  width: 150px;
+  font-size: x-small;
+  position: absolute;
+  left: 101%;
+  top: 0;
+  z-index: 100;
 }

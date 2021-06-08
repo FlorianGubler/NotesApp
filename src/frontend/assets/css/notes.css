@@ -1,0 +1,307 @@
+h1{
+    margin: 5px;
+}
+#list-notes-container{
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 10px;
+    position: relative;
+    background-color: rgb(27, 27, 27);
+    border-radius: 5px;
+}
+#list-notes-expand{
+    margin: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+#list-notes-expand:hover{
+    opacity: 0.6;
+}
+
+.stickynotelistelement{
+    margin-bottom: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgb(54, 54, 54);
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+}
+.stickynotelistelement-active{
+    background-color: rgb(73, 73, 73);
+    border: 1px solid rgb(112, 112, 112);
+}
+.stickynotelistelement:hover{
+    opacity: 0.6;
+}
+.stickynotelistelementIcon{
+    font-size: xx-large;
+    margin: 10px;
+}
+.stickynotelistelementDelete{
+    position: absolute;
+    display: none;
+    z-index: 12;
+}
+.stickynotelistelementDelete:hover{
+    opacity: 0.8;
+}
+.stickynotelistelementDelete path{
+    color: red;
+}
+.stickynotelistelementDelete_ex{
+    top: 0;
+    right: 0;
+    margin: 5px;
+}
+.stickynotelistelementDelete_notex{
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.stickynotelistelementContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: baseline;
+}
+.stickynotelistelementTitle{
+    font-size: large;
+    margin-bottom: 5px;
+}
+.stickynotelistelementTime{
+    font-size: x-small;
+    opacity: 0.75;
+}
+.content-title-bar-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.create-stickyNote{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    font-size: xx-large;
+    cursor: pointer;
+    margin: 10px;
+}
+.create-stickyNote:hover{
+    opacity: 0.6;
+}
+#notes-editor-container{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    margin-right: 10px;
+}
+/********* EDITOR JS************/
+#editorjs{
+    background-color: rgb(49, 49, 49);
+    max-height: 80vh;
+    overflow: auto;
+}
+.ce-toolbar__settings-btn{
+    background-color: #7a7a7a00;
+}
+#editorjs use{
+    fill: #919191;
+}
+/******************************/
+.content-container-stickynotes{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+#create-stickynote-container{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #242525;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    padding: 10px;
+    padding-bottom: 0;
+    box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+    -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+}
+
+.create-stickynote-header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.create-stickynote-header p{
+    cursor: pointer;
+}
+.create-stickynote-header p:hover{
+    opacity: 0.6;
+}
+
+.create-stickynote-body{
+    width: 100%;
+    margin: 10px;
+    color: #242525;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-stickynote-body input{
+    padding: 10px;
+    background-color: #242525;
+    border: 1px solid rgb(153, 153, 153);
+    color: rgb(209, 209, 209);
+}
+
+.create-stickynote-body input:focus{
+    outline: none;
+}
+
+.create-stickynote-body button{
+    margin: 10px;
+    background-color: #242525;
+    border-radius: 0;
+    border: 1px solid rgb(92, 92, 92);
+    padding: 5px;
+    cursor: pointer;
+}
+
+.create-stickynote-body button:hover{
+    background-color: #424242;
+}
+
+.config-editor-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+}
+
+#autosave-off-save-editor{
+    background-color: gray;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+}
+
+#autosave-off-save-editor:hover{
+    opacity: 0.6;
+}
+
+#set-autosave{
+    cursor: pointer;
+    margin: 5px;
+}
+
+.config-editor-container label{
+    font-size: small;
+    color: rgb(185, 185, 185);
+}
+
+.set-autosave-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#no-stickynotes-found{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-stickynotes-found-imgcontainer{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#no-stickynotes-found img{
+    width: 50%;
+}
+
+/********** Loading ***********************/
+
+#loading-container{
+    height: 50px;
+    width: 50px;
+    position: relative;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transform: scale(0.8);
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  background: #8a8a8a;
+  animation: load1 1s infinite ease-in-out;
+  width: 5px;
+}
+.loader {
+  color: #8a8a8a;
+  position: relative;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: '';
+}
+.loader:before {
+  left: -1em;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 1em;
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 2px;
+  }
+  40% {
+    box-shadow: 0 -1em;
+    height: 10px;
+  }
+}
+
+
+/********************************************/
