@@ -141,9 +141,10 @@ h1{
     justify-content: flex-start;
     background-color: #242525;
     animation: elementPopUp 0.5s ease forwards;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     z-index: 100;
     padding: 10px;
     padding-bottom: 0;
@@ -152,10 +153,10 @@ h1{
 
 @keyframes elementPopUp {
     from {
-        transform: scale(0);
+        transform: translate(-50%, -50%) scale(0);
     }
     to {
-        transform: scale(1);
+        transform: translate(-50%, -50%) scale(1);
     }
 }
 
