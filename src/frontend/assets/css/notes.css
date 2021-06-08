@@ -61,6 +61,7 @@ h1{
     top: 0;
     right: 0;
     margin: 5px;
+    font-size: small;
 }
 .stickynotelistelementDelete_notex{
     left: 50%;
@@ -113,6 +114,15 @@ h1{
 .ce-toolbar__settings-btn{
     background-color: #7a7a7a00;
 }
+.ce-block__content, .ce-toolbar__content{
+    margin: 0 15px;
+}
+.ce-toolbar__plus{
+    left: 17px;
+}
+.ce-toolbox{
+    left: 45px;
+}
 #editorjs use{
     fill: #919191;
 }
@@ -130,15 +140,23 @@ h1{
     align-items: center;
     justify-content: flex-start;
     background-color: #242525;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    animation: elementPopUp 0.5s ease forwards;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     z-index: 100;
     padding: 10px;
     padding-bottom: 0;
     box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
-    -webkit-box-shadow: 0px 3px 33px 12px rgba(0,0,0,0.74);
+}
+
+@keyframes elementPopUp {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 
 .create-stickynote-header{
@@ -254,8 +272,8 @@ h1{
 /********** Loading ***********************/
 
 #loading-container{
-    height: 50px;
-    width: 50px;
+    height: 45px;
+    width: 45px;
     position: relative;
     display: none;
     flex-direction: row;
