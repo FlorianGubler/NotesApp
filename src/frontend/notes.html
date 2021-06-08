@@ -130,10 +130,9 @@
                     stickNoteListElTime = StickyNoteListElContainer.appendChild(document.createElement("p"));
                     stickNoteListElTime.innerHTML = note.createdate;
                     stickNoteListElTime.className = "stickynotelistelementTime";
-
-                    set_autosave();
-                    showStickNote(StickyNotes[0], document.getElementsByClassName("stickynotelistelement")[0]);
                 });
+                set_autosave();
+                showStickNote(StickyNotes[0], document.getElementsByClassName("stickynotelistelement")[0]);
             } else{
                 noStickyNotesFound();
             }
