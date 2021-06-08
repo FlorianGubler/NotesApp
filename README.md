@@ -5,10 +5,7 @@ To use it please request an account by me.
 
 *Npm Commands:*
 
-- (npm init -y) If "package.json" does not exist
-- npm i --save-dev electron
-- npm install base-64
-- npm install node-fetch
+- npm install
 
 *For App Building:*
 
