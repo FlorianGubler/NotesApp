@@ -48,9 +48,10 @@
     </div>
     <div class="create-stickynote-body">
         <div>
+            <label>Name </label>
             <input type="text" id="create-stickynote-newtitle" value="Neue Notiz">
         </div>
-        <button onclick="createStickyNote();">Erstellen</button>
+        <button onclick="createStickyNote();" id="create-stickynote-submitbtn">Erstellen</button>
     </div>
 </div>
 <div class="content-container-stickynotes">
@@ -66,6 +67,13 @@
     let StickyNoteList_expanded = true;
     let current_editor;
     let autosave = true;
+
+
+    document.getElementById("create-stickynote-newtitle").addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+            document.getElementById("create-stickynote-submitbtn").click();
+        }
+    });
 
     window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
