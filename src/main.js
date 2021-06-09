@@ -228,7 +228,6 @@ function checkLogin(event, loginData) {
     if (loginData.remember && login == true) {
       fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
         if (err) return console.log(err);
-        console.log('Remember status > frontend/assets/data/data.json');
       });
     }
     return result.json();

@@ -52,7 +52,7 @@ h1{
     z-index: 12;
 }
 .stickynotelistelementDelete:hover{
-    opacity: 0.8;
+    opacity: 0.6;
 }
 .stickynotelistelementDelete path{
     color: red;
