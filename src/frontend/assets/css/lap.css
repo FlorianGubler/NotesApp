@@ -21,8 +21,7 @@ td, th{
     border-radius: 5px;
 }
 #edit-table:hover{
-    background-color:#928b8b70;
-    box-shadow: 5px 5px 5px rgb(24, 24, 24);
+    opacity: 0.6;
 }
 #edit-table path{
     color:#a2a3a3;
