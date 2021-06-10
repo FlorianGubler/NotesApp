@@ -56,12 +56,16 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
 <script>
+    document.getElementById("loading").style.display = "block";
     window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
         if (args.type == "replyUserData") {
             var response = JSON.parse(args.attributes);
             if (response != null) {
                 user_login = response;
+                if (user_login.admin != 1) {
+                    location.href = "home.html";
+                }
                 x = document.getElementsByClassName("use-user-name");
                 for (var i = 0; i < x.length; i++) {
                     x[i].innerHTML = response.username;
@@ -84,7 +88,6 @@
             users = JSON.parse(args.attributes);
             userlist = document.getElementById("user-list-table");
 
-            counter = 0;
             users.forEach(user => {
                 userel = userlist.appendChild(document.createElement("tr"));
                 userel.className = "userlist-listel";
@@ -107,38 +110,39 @@
                 }
 
                 useradmin = userel.appendChild(document.createElement("td"));
-                useradmin.innerHTML = user.admin;
+
                 if (user.admin == 1) {
                     useradmin.innerHTML = '<i class="fas fa-check userlist-correct"></i>';
                     btnchangeclass = "change-privileges-button_down";
-                    changePrivilegeto = 0;
+                    user.changePrivilegeTo = 0;
                 }
                 else {
                     useradmin.innerHTML = '<i class="fas fa-times userlist-false"></i>';
                     btnchangeclass = "change-privileges-button_up";
-                    changePrivilegeto = 1;
+                    user.changePrivilegeTo = 1;
                 }
-                useradmin.addEventListener("mouseover", e => {
-                    document.getElementsByClassName("userlist-listel")[counter].getElementsByTagName("button")[0].style.display = "block";
-                });
-                useradmin.addEventListener("mouseout", e => {
-                    document.getElementsByClassName("userlist-listel")[counter].getElementsByTagName("button")[0].style.display = "none";
-                });
 
-                useradminchange = userel.appendChild(document.createElement("button"));
+                useradminchange = useradmin.appendChild(document.createElement("button"));
+                useradminchange.id = "userlist-changeprivilege-" + user.id;
                 useradminchange.className = "change-privileges-btn " + btnchangeclass;
                 useradminchange.addEventListener("click", e => {
-                    updateUserPrivileges(user.id, changePrivilegeto);
+                    updateUserPrivileges(user.id, user.changePrivilegeTo);
                 });
                 useradminchange.innerHTML = '<i class="fas fa-long-arrow-alt-up"></i>';
+
+                useradmin.addEventListener("mouseover", e => {
+                    document.getElementById("userlist-changeprivilege-" + user.id).style.display = "block";
+                });
+                useradmin.addEventListener("mouseout", e => {
+                    document.getElementById("userlist-changeprivilege-" + user.id).style.display = "none";
+                });
 
                 userpb = userel.appendChild(document.createElement("td"));
                 userpbimg = userpb.appendChild(document.createElement("img"));
                 userpbimg.className = "user-list-image";
                 userpbimg.src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + user.profilepicture;
-
-                counter++;
             });
+            document.getElementById("loading").style.display = "none";
         }
     });
 
@@ -188,6 +192,15 @@
         }
     }
     function updateUserPrivileges(userid, newPrivilege) {
+        window.api.send("toMain", JSON.stringify({ type: 'AdminTools', cmd: 'ChangeuserPrivileges', attributes: JSON.stringify({ userID: userid, newPrivilege: newPrivilege }) }));
+        window.api.receive("fromMainZ", (args) => {
+            if (args.type == "AdminTools_ReplyChangePrivileges") {
+                if (args.cmd) {
+                    location.reload();
+                } else {
 
+                }
+            }
+        });
     }
 </script>

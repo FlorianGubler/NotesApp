@@ -484,6 +484,16 @@ function AdminTools_CreateSubject(event, data) {
     .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyCreateSubject", cmd: true, attributes: JSON.stringify(undefined) })))
 }
 
+function AdminTools_ChangeuserPrivileges(event, data) {
+  var changeprivilegebody = {
+    "action": "AdminTools_ChangeuserPrivileges",
+    "userID": data.userID,
+    "newPrivilege": data.newPrivilege
+  }
+  setData(changeprivilegebody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyChangePrivileges", cmd: true, attributes: JSON.stringify(undefined) })))
+}
+
 ipcMain.on("toMain", (event, command) => {
   args = JSON.parse(command);
   switch (args.type) {

@@ -88,8 +88,8 @@
     background-color: #3e444a;
 }
 #user-list-table td, #user-list-table th{
-    padding: 0.5vw;
-    font-size: 0.9vw;
+    padding: 5px;
+    font-size: small;
     position: relative;
     text-align: center;
     max-width: 200px;
@@ -98,4 +98,24 @@
     width: 25%;
     border: 1px solid rgb(160, 160, 160);
     border-radius: 100%;
+}
+.change-privileges-btn{
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    display: none;
+}
+.change-privileges-btn:hover{
+    opacity: 0.6;
+}
+.change-privileges-button_up{
+    transform: rotate(360deg);
+}
+.change-privileges-button_down{
+    transform: rotate(180deg);
 }
