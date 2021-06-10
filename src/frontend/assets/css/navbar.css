@@ -251,3 +251,17 @@ button:focus{
 #site-download-update svg * {
     fill: #6fce43;
 }
+
+#titlebar-shareIcon{
+    z-index: 100000;
+    position: absolute;
+    right: 55px;
+    top: 52px;
+    font-size: larger;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#titlebar-shareIcon:hover{
+    opacity: 0.6;
+}

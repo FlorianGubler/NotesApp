@@ -189,6 +189,11 @@ function getSemesters(event) {
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
 }
 
+function getSchools(event) {
+  getData("GetSchools")
+    .then(data => event.reply('fromMainM', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
+}
+
 function GetStickyNotes(event) {
   getData("GetStickyNotes")
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
@@ -454,6 +459,31 @@ function checkMode(event) {
   }
 }
 
+function AdminTools_GetUserList(event) {
+  getData("AdminTools_GetUserList")
+    .then(data => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyUserList", cmd: true, attributes: JSON.stringify(data) })))
+}
+
+function AdminTools_CreateSemester(event, data) {
+  var newsemesterbody = {
+    "action": "AdminTools_CreateSemester",
+    "semesterTag": data.semesterTag,
+  }
+  setData(newsemesterbody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyCreateSemester", cmd: true, attributes: JSON.stringify(undefined) })))
+}
+
+function AdminTools_CreateSubject(event, data) {
+  var newsubjectbody = {
+    "action": "AdminTools_CreateSubject",
+    "subjectName": data.subjectName,
+    "FK_school": data.subjectSchool,
+    "additionalTag": data.additionalTag
+  }
+  setData(newsubjectbody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyCreateSubject", cmd: true, attributes: JSON.stringify(undefined) })))
+}
+
 ipcMain.on("toMain", (event, command) => {
   args = JSON.parse(command);
   switch (args.type) {
@@ -471,6 +501,8 @@ ipcMain.on("toMain", (event, command) => {
         case "Semesters":
           getSemesters(event);
           break;
+        case "Schools":
+          getSchools(event);
         case "StickyNotes":
           GetStickyNotes(event);
           break;
@@ -554,7 +586,7 @@ ipcMain.on("toMain", (event, command) => {
       logout();
       break;
     case "AdminTools":
-      if(login_user.admin == 1){
+      if (login_user.admin == 1) {
         switch (args.cmd) {
           case "GetUserList":
             AdminTools_GetUserList(event);
@@ -570,7 +602,7 @@ ipcMain.on("toMain", (event, command) => {
             break;
           default: console.error("Unkwown Command in Messaging");
         }
-      } else{
+      } else {
         event.reply('fromMainF', JSON.stringify({ type: "replyAdminTools", cmd: false, attributes: JSON.stringify("User hat keine Rechte für diese Aktion") }))
       }
       break;
