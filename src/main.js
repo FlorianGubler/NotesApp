@@ -1,12 +1,10 @@
 const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme, dialog } = require('electron');
 const path = require("path");
-const { defaultApp } = require('process');
 const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 const FormData = require('form-data');
-const isImage = require('is-image');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
@@ -380,7 +378,7 @@ function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
     allowedFileTypes = ["png", "jpg", "gif"];
     if (result.filePaths[0] != undefined) {
-      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase()) && isImage(result.filePaths[0])) {
+      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
         const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
         fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
           if (err) {
