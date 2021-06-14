@@ -589,6 +589,9 @@ ipcMain.on("toMain", (event, command) => {
         case "GetMode":
           checkMode(event);
           break;
+        case "OpenExternal":
+          openExternalWebpage(JSON.parse(args.attributes));
+          break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;

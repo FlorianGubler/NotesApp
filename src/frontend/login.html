@@ -43,6 +43,8 @@
           <input type="checkbox" checked="checked" id="remember"> Angemeldet bleiben
         </label>
 
+        <a style="float: right; color: rgb(103, 103, 216); cursor: pointer;" onclick='window.api.send("toMain", JSON.stringify({ type: "Window", cmd: "OpenExternal", attributes: JSON.stringify("https://dekinotu.myhostpoint.ch/notes/register.php") }))'>Registrieren</a>
+
         <p style='background-color: red;display: none;' id='login-response-false'>Login failed</p>
 
       </div>
