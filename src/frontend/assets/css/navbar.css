@@ -265,3 +265,51 @@ button:focus{
 #titlebar-shareIcon:hover{
     opacity: 0.6;
 }
+.share-container{
+    animation: shareIconPopUp 0.5s ease forwards;
+    position: absolute;
+    right: 55px;
+    top: 77.5px;
+    background-color: #3e444a;
+    padding: 10px;
+    z-index: 50;
+    min-width: 250px;
+    display: none;
+}
+
+.share-inner-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-right: 5px;
+}
+
+.share-container h3{
+    margin: 5px;
+}
+
+.share-container label{
+    color: #888888;
+    margin: 5px;
+}
+
+.share-container p{
+    margin: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    background-color: #2c2f31;
+    border: 1px solid white;
+    width: calc(100% - 4px);
+    font-size: smaller;
+}
+
+@keyframes shareIconPopUp {
+    from {
+        transform: translate(50%, -50%) scale(0);
+    }
+    to {
+        transform: translate(0%, 0%) scale(1);
+    }
+}

@@ -26,13 +26,13 @@
                 style="color: inherit;" class="fas fa-ellipsis-v"></i></a>
         <p id="site-title">ProMarks</p>
     </div>
-    <button id="titlebar-shareIcon"><i class="fas fa-share-alt"></i></button>
-    <button id="site-download-update" onclick="console.error('No Update Available');"><i class="fas fa-download"></i></button>
+    <button id="titlebar-shareIcon" onclick="openShareLink();"><i class="fas fa-share-alt"></i></button>
+    <button id="site-download-update" onclick="console.error('No Update Available');"><i
+            class="fas fa-download"></i></button>
     <button id="site-reload-btn" onclick="location.reload();"><i class="fas fa-redo"></i></button>
     <nav id="menu">
-        <a id="menu-close"
-            onclick="document.getElementById('menu-expand').style.display = 'block';"
-            href="#"><svg viewBox="0 0 10 10">
+        <a id="menu-close" onclick="document.getElementById('menu-expand').style.display = 'block';" href="#"><svg
+                viewBox="0 0 10 10">
                 <polygon
                     points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1" />
             </svg></a>
@@ -47,7 +47,8 @@
             <li><a id="lap-anchor" href="lap.html"><i class="fas fa-chalkboard-teacher"></i> LAP Notenstand</a></li>
             <li><a id="addnote-anchor" href="addnote.html"><i class="far fa-plus-square"></i> Noten hinzufügen</a></li>
             <li><a id="addnote-anchor" href="notes.html"><i class="far fa-comment-alt"></i> Sticky Notes</a></li>
-            <li id="navbar-item-admin-tools"><a id="addnote-anchor" href="admin.html"><i class="fas fa-unlock-alt"></i> Admin Tools</a></li>
+            <li id="navbar-item-admin-tools"><a id="addnote-anchor" href="admin.html"><i class="fas fa-unlock-alt"></i>
+                    Admin Tools</a></li>
             <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
         <div class="copyright-nav">
@@ -55,6 +56,16 @@
             <p>&copy; by Florian Gubler 2021 ZLI BLJ</p>
         </div>
     </nav>
+    <div class="share-container" id="share-container">
+        <div class="share-inner-container">
+            <h3>Noten Teilen</h3>
+            <label>Sharelink</label>
+            <p href="testlink.com">testlink.com</p>
+
+            <label>Token</label>
+            <p>111111</p>
+        </div>
+    </div>
     <script>
         var user_login;
         window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
@@ -67,7 +78,7 @@
                     for (var i = 0; i < x.length; i++) {
                         x[i].innerHTML = response.username;
                     }
-                    if(response.admin == 0){
+                    if (response.admin == 0) {
                         document.getElementById("navbar-item-admin-tools").style.display = "none";
                     }
                     document.getElementById("profile-pic").src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + response.profilepicture;
@@ -77,6 +88,15 @@
         function logout() {
             window.api.send("toMain", JSON.stringify({ type: 'Logout', cmd: '', attributes: "" }));
             location.href = "login.html";
+        }
+        function openShareLink() {
+            el = document.getElementById("share-container");
+            if (el.style.display == "none" || el.style.display == "") {
+                el.style.display = "block";
+            }
+            else {
+                el.style.display = "none";
+            }
         }
     </script>
 </body>

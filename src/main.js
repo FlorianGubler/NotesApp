@@ -5,11 +5,21 @@ let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 const FormData = require('form-data');
+const { exit } = require('process');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
+// require('dns').resolve('www.google.com', function (err) {
+//   if (err) {
+//     alert("No internet Connection");
+//     exit;
+//   } else{
+//     console.log("connected");
+//   }
+// });
 
 var win;
 var trayIcon;
@@ -209,6 +219,7 @@ function GetStickyNoteValue(event, PK_stickynote) {
     .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
 }
 
+
 function checkLogin(event, loginData) {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
@@ -357,6 +368,17 @@ function createStickyNote(event, data) {
     .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
 }
 
+function ChangeStickyNoteTitle(event, data) {
+  ChangeStickyNoteTitleBody = {
+    action: "ChangeStickyNoteTitle",
+    stickyNoteID: data.stickynoteID,
+    newTitle: data.newTitle
+  }
+  setData(ChangeStickyNoteTitleBody)
+    .then(() => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteTitleChange", cmd: true, attributes: JSON.stringify(undefined) })))
+    .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteTitleChange", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
+}
+
 function deleteStickyNote(event, PK_stickynote) {
   var deleteStickynoteBody = {
     "action": "DeleteStickyNote",
@@ -451,12 +473,14 @@ function uploadPB(event, data) {
 }
 
 function checkMode(event) {
-  if (win.isMaximized()) {
-    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }))
-  }
-  else {
-    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }))
-  }
+  try {
+    if (win.isMaximized()) {
+      event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }))
+    }
+    else {
+      event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }))
+    }
+  } catch (ex) { }
 }
 
 function AdminTools_GetUserList(event) {
@@ -565,6 +589,9 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "CreateStickyNote":
           createStickyNote(event, args.attributes);
+          break;
+        case "ChangeStickyNoteTitle":
+          ChangeStickyNoteTitle(event, JSON.parse(args.attributes))
           break;
         case "DeleteStickyNote":
           deleteStickyNote(event, JSON.parse(args.attributes));
