@@ -12,6 +12,7 @@
     </link>
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" data-auto-replace-svg></script>
     <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <script src="assets/js/copy.js"></script>
 </head>
 
 <body>
@@ -59,11 +60,22 @@
     <div class="share-container" id="share-container">
         <div class="share-inner-container">
             <h3>Noten Teilen</h3>
+
+            <button id="renew-share-link" onclick="renewSharelink();"><i class="fas fa-sync-alt"></i></button>
+
             <label>Sharelink</label>
-            <p href="testlink.com">testlink.com</p>
+            <div class="share-values-container">
+                <p id="share-link">testlink.com</p>
+                <button class="share-copy-btn" onclick="copySmth(document.getElementById('share-link').innerHTML);"><i
+                        class="fas fa-copy"></i></button>
+            </div>
 
             <label>Token</label>
-            <p>111111</p>
+            <div class="share-values-container">
+                <p id="share-token">111111</p>
+                <button class="share-copy-btn" onclick="copySmth(document.getElementById('share-token').innerHTML);"><i
+                        class="fas fa-copy"></i></button>
+            </div>
         </div>
     </div>
     <script>
@@ -98,6 +110,21 @@
                 el.style.display = "none";
             }
         }
+        function renewSharelink() {
+            document.getElementById("renew-share-link").classList.add("renew-share-link-loading");
+            window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'ShareLink', attributes: "" }));
+            window.api.receive("fromMainM", (args) => {
+                if (args.type == "replyShareLink") {
+                    response = JSON.parse(args.attributes);
+                    full_link = "https://dekinotu.myhostpoint.ch/notes/share.php?link=" + response.link;
+                    document.getElementById("share-link").setAttribute("link", full_link);
+                    document.getElementById("share-link").innerHTML = full_link.slice(0, 30) + "...";
+                    document.getElementById("share-token").innerHTML = response.token;
+                    document.getElementById("renew-share-link").classList.remove("renew-share-link-loading");
+                }
+            });
+        }
+        renewSharelink();
     </script>
 </body>
 

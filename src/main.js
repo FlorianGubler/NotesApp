@@ -209,6 +209,11 @@ function GetStickyNotes(event) {
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
 }
 
+function GetShareLink(event){
+  getData("GetShareLink")
+    .then(data => event.reply('fromMainM', JSON.stringify({ type: "replyShareLink", cmd: "", attributes: JSON.stringify(data) })))
+}
+
 function GetStickyNoteValue(event, PK_stickynote) {
   var GetStickyNoteValueBody = {
     action: "GetStickyNoteValue",
@@ -542,6 +547,9 @@ ipcMain.on("toMain", (event, command) => {
           break;
         case "StickyNoteValue":
           GetStickyNoteValue(event, JSON.parse(args.attributes));
+          break;
+        case "ShareLink":
+          GetShareLink(event);
           break;
         default: console.error("Unkwown Command in Messaging");
       }
