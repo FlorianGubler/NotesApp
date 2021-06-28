@@ -1,6 +1,6 @@
-window.alert = function (txt) {
-    createCustomAlert(txt);
-}
+// window.alert = function (txt) {
+//     createCustomAlert(txt);
+// }
 
 function createCustomAlert(txt) {
     if (document.getElementById("customAlertContainer")) return;

@@ -1,17 +1,25 @@
 const { app, BrowserWindow, screen, Tray, Menu, nativeImage, globalShortcut, Main, ipcMain, nativeTheme, dialog } = require('electron');
 const path = require("path");
-const { defaultApp } = require('process');
 const fs = require('fs');
 let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 const FormData = require('form-data');
-const isImage = require('is-image');
+const { exit } = require('process');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
+// require('dns').resolve('www.google.com', function (err) {
+//   if (err) {
+//     alert("No internet Connection");
+//     exit;
+//   } else{
+//     console.log("connected");
+//   }
+// });
 
 var win;
 var trayIcon;
@@ -191,9 +199,19 @@ function getSemesters(event) {
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
 }
 
+function getSchools(event) {
+  getData("GetSchools")
+    .then(data => event.reply('fromMainM', JSON.stringify({ type: "replySemesters", cmd: "", attributes: JSON.stringify(data) })))
+}
+
 function GetStickyNotes(event) {
   getData("GetStickyNotes")
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
+}
+
+function GetShareLink(event){
+  getData("GetShareLink")
+    .then(data => event.reply('fromMainM', JSON.stringify({ type: "replyShareLink", cmd: "", attributes: JSON.stringify(data) })))
 }
 
 function GetStickyNoteValue(event, PK_stickynote) {
@@ -205,6 +223,7 @@ function GetStickyNoteValue(event, PK_stickynote) {
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: true, attributes: JSON.stringify(data) })))
     .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteValue", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
 }
+
 
 function checkLogin(event, loginData) {
   let headers = new fetch.Headers();
@@ -228,7 +247,6 @@ function checkLogin(event, loginData) {
     if (loginData.remember && login == true) {
       fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
         if (err) return console.log(err);
-        console.log('Remember status > frontend/assets/data/data.json');
       });
     }
     return result.json();
@@ -355,6 +373,17 @@ function createStickyNote(event, data) {
     .catch(err => { event.reply('fromMainA', JSON.stringify({ type: "replyStickyNoteCreated", cmd: false, attributes: JSON.stringify("Interner Fehler") })) })
 }
 
+function ChangeStickyNoteTitle(event, data) {
+  ChangeStickyNoteTitleBody = {
+    action: "ChangeStickyNoteTitle",
+    stickyNoteID: data.stickynoteID,
+    newTitle: data.newTitle
+  }
+  setData(ChangeStickyNoteTitleBody)
+    .then(() => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteTitleChange", cmd: true, attributes: JSON.stringify(undefined) })))
+    .catch(err => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNoteTitleChange", cmd: false, attributes: JSON.stringify("Interner Fehler") })))
+}
+
 function deleteStickyNote(event, PK_stickynote) {
   var deleteStickynoteBody = {
     "action": "DeleteStickyNote",
@@ -381,7 +410,7 @@ function UploadPB_GetTmpFilePath(event) {
   dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
     allowedFileTypes = ["png", "jpg", "gif"];
     if (result.filePaths[0] != undefined) {
-      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase()) && isImage(result.filePaths[0])) {
+      if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
         const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
         fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
           if (err) {
@@ -449,12 +478,49 @@ function uploadPB(event, data) {
 }
 
 function checkMode(event) {
-  if (win.isMaximized()) {
-    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }))
+  try {
+    if (win.isMaximized()) {
+      event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "max", attributes: "" }))
+    }
+    else {
+      event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }))
+    }
+  } catch (ex) { }
+}
+
+function AdminTools_GetUserList(event) {
+  getData("AdminTools_GetUserList")
+    .then(data => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyUserList", cmd: true, attributes: JSON.stringify(data) })))
+}
+
+function AdminTools_CreateSemester(event, data) {
+  var newsemesterbody = {
+    "action": "AdminTools_CreateSemester",
+    "semesterTag": data.semesterTag,
   }
-  else {
-    event.reply('fromMainF', JSON.stringify({ type: "replyWinMode", cmd: "notMax", attributes: "" }))
+  setData(newsemesterbody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyCreateSemester", cmd: true, attributes: JSON.stringify(undefined) })))
+}
+
+function AdminTools_CreateSubject(event, data) {
+  var newsubjectbody = {
+    "action": "AdminTools_CreateSubject",
+    "subjectName": data.subjectName,
+    "FK_school": data.subjectSchool,
+    "additionalTag": data.additionalTag
   }
+  setData(newsubjectbody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyCreateSubject", cmd: true, attributes: JSON.stringify(undefined) })))
+}
+
+function AdminTools_ChangeuserPrivileges(event, data) {
+  var changeprivilegebody = {
+    "action": "AdminTools_ChangeuserPrivileges",
+    "userID": data.userID,
+    "newPrivilege": data.newPrivilege
+  }
+  setData(changeprivilegebody)
+    .then(() => event.reply('fromMainZ', JSON.stringify({ type: "AdminTools_ReplyChangePrivileges", cmd: true, attributes: JSON.stringify(undefined) })))
 }
 
 ipcMain.on("toMain", (event, command) => {
@@ -474,11 +540,16 @@ ipcMain.on("toMain", (event, command) => {
         case "Semesters":
           getSemesters(event);
           break;
+        case "Schools":
+          getSchools(event);
         case "StickyNotes":
           GetStickyNotes(event);
           break;
         case "StickyNoteValue":
           GetStickyNoteValue(event, JSON.parse(args.attributes));
+          break;
+        case "ShareLink":
+          GetShareLink(event);
           break;
         default: console.error("Unkwown Command in Messaging");
       }
@@ -527,6 +598,9 @@ ipcMain.on("toMain", (event, command) => {
         case "CreateStickyNote":
           createStickyNote(event, args.attributes);
           break;
+        case "ChangeStickyNoteTitle":
+          ChangeStickyNoteTitle(event, JSON.parse(args.attributes))
+          break;
         case "DeleteStickyNote":
           deleteStickyNote(event, JSON.parse(args.attributes));
           break;
@@ -550,6 +624,9 @@ ipcMain.on("toMain", (event, command) => {
         case "GetMode":
           checkMode(event);
           break;
+        case "OpenExternal":
+          openExternalWebpage(JSON.parse(args.attributes));
+          break;
         default: console.error("Unkwown Command in Messaging");
       }
       break;
@@ -557,7 +634,7 @@ ipcMain.on("toMain", (event, command) => {
       logout();
       break;
     case "AdminTools":
-      if(login_user.admin == 1){
+      if (login_user.admin == 1) {
         switch (args.cmd) {
           case "GetUserList":
             AdminTools_GetUserList(event);
@@ -573,7 +650,7 @@ ipcMain.on("toMain", (event, command) => {
             break;
           default: console.error("Unkwown Command in Messaging");
         }
-      } else{
+      } else {
         event.reply('fromMainF', JSON.stringify({ type: "replyAdminTools", cmd: false, attributes: JSON.stringify("User hat keine Rechte für diese Aktion") }))
       }
       break;

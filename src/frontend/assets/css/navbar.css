@@ -251,3 +251,153 @@ button:focus{
 #site-download-update svg * {
     fill: #6fce43;
 }
+
+#titlebar-shareIcon{
+    z-index: 100000;
+    position: absolute;
+    right: 55px;
+    top: 52px;
+    font-size: larger;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#titlebar-shareIcon:hover{
+    opacity: 0.6;
+}
+.share-container{
+    animation: shareIconPopUp 0.5s ease forwards;
+    position: absolute;
+    right: 55px;
+    top: 77.5px;
+    background-color: #3e444a;
+    padding: 10px;
+    z-index: 50;
+    min-width: 250px;
+    display: none;
+}
+
+.share-inner-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-right: 5px;
+    position: relative;
+}
+
+.share-container h3{
+    margin: 5px;
+}
+
+.share-container label{
+    color: #888888;
+    margin: 5px;
+    margin-bottom: 0px;
+}
+
+.share-container p{
+    width: fit-content;
+    max-width: 250px;
+    overflow: hidden;
+    display: inline
+}
+
+#share-link{
+    text-decoration: underline;
+    color: rgb(131, 132, 180);
+    cursor: pointer;
+}
+
+#renew-share-link{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-size: larger;
+}
+
+.share-title-info-container{
+    position: relative;
+    width: fit-content;
+}
+
+#share-info{
+    position: absolute;
+    top: 0;
+    right: -10px;
+}
+
+#share-info-text{
+    display: none;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 12px);
+    background-color: #2c2f31;
+    z-index: 50;
+    padding: 5px;
+    min-width: 125px;
+}
+
+#share-info-text p{
+    font-size: x-small;
+}
+
+.renew-share-link-loading{
+    animation: rotateLoading 1s linear infinite;
+}
+
+#renew-share-link:hover{
+    opacity: 0.7;
+}
+
+.share-values-container{
+    position: relative;
+    width: 100%;
+    margin: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    background-color: #2c2f31;
+    border: 1px solid rgb(170, 170, 170);
+    width: calc(100% - 4px);
+    font-size: smaller;
+    color: rgb(170, 170, 170);
+}
+
+.share-copy-btn{
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    font-size: medium;
+    cursor: pointer;
+}
+.share-copy-btn:hover{
+    opacity: 0.7;
+}
+.share-copy-btn path{
+    fill: #a5a5a5;
+}
+
+@keyframes rotateLoading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shareIconPopUp {
+    from {
+        transform: translate(50%, -50%) scale(0);
+    }
+    to {
+        transform: translate(0%, 0%) scale(1);
+    }
+}

@@ -46,24 +46,33 @@ h1{
     font-size: xx-large;
     margin: 10px;
 }
-.stickynotelistelementDelete{
+.StickyNoteListElActionsContainer{
     position: absolute;
-    display: none;
     z-index: 12;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
-.stickynotelistelementDelete:hover{
-    opacity: 0.8;
+.stickynotelistelementDelete, .stickynotelistelementEdit{
+    margin: 2px;
+}
+
+.stickynotelistelementDelete:hover, .stickynotelistelementEdit:hover{
+    opacity: 0.6;
 }
 .stickynotelistelementDelete path{
     color: red;
 }
-.stickynotelistelementDelete_ex{
+.stickynotelistelementEdit path{
+    color: rgb(159, 159, 253);
+}
+.StickyNoteListElActionsContainer_ex{
     top: 0;
     right: 0;
     margin: 5px;
-    font-size: small;
 }
-.stickynotelistelementDelete_notex{
+.StickyNoteListElActionsContainer_notex{
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -134,7 +143,7 @@ h1{
     justify-content: flex-start;
 }
 
-#create-stickynote-container{
+#create-stickynote-container, #change-stickynote-title-container{
     display: none;
     flex-direction: column;
     align-items: center;
@@ -160,7 +169,7 @@ h1{
     }
 }
 
-.create-stickynote-header{
+.create-stickynote-header, .change-stickynote-title-header{
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -169,14 +178,14 @@ h1{
     margin: 10px;
 }
 
-.create-stickynote-header p{
+.create-stickynote-header p, .change-stickynote-title-header p{
     cursor: pointer;
 }
-.create-stickynote-header p:hover{
+.create-stickynote-header p:hover, .change-stickynote-title-header p:hover{
     opacity: 0.6;
 }
 
-.create-stickynote-body{
+.create-stickynote-body, .change-stickynote-title-body{
     width: 100%;
     margin: 10px;
     color: #242525;
@@ -186,18 +195,18 @@ h1{
     justify-content: center;
 }
 
-.create-stickynote-body input{
+.create-stickynote-body input, .change-stickynote-title-body input{
     padding: 10px;
     background-color: #242525;
     border: 1px solid rgb(153, 153, 153);
     color: rgb(175, 175, 175);
 }
 
-.create-stickynote-body input:focus{
+.create-stickynote-body input:focus, .change-stickynote-title-body input:focus{
     outline: none;
 }
 
-.create-stickynote-body button{
+.create-stickynote-body button, .change-stickynote-title-body button{
     margin: 10px;
     background-color: #242525;
     border-radius: 0;
@@ -206,7 +215,7 @@ h1{
     cursor: pointer;
 }
 
-.create-stickynote-body button:hover{
+.create-stickynote-body button:hover, .change-stickynote-title-body button:hover{
     background-color: #424242;
 }
 
@@ -321,6 +330,4 @@ h1{
     height: 20px;
   }
 }
-
-
 /********************************************/

@@ -1,0 +1,121 @@
+.content-container{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 10px;
+    position: relative;
+    width: 80%;
+}
+.input-content-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: relative;
+    margin: 10px;
+}
+.user-list-container{
+    max-height: 70%;
+    overflow-y: auto;
+}
+#create-subject-container, #create-semester-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    margin: 10px;
+    padding: 15px;
+    width: 100%;
+}
+.input-content-container input, .input-content-container select, .input-content-container button{
+    margin: 5px;
+}
+.admin-create-input-containers{
+    width: 100%;
+}
+.userlist-correct path{
+    fill: rgb(0, 190, 0);
+}
+.userlist-false path{
+    fill: red;
+}
+.input-content-container input{
+    color: rgb(163, 163, 163);
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background-color: #323233;
+}
+.input-content-container select{
+    color: rgb(163, 163, 163);
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #323233;
+}
+.input-content-container button{
+    color: rgb(163, 163, 163);
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #323233;
+    cursor: pointer;
+}
+.input-content-container button:hover{
+    opacity: 0.6;
+}
+.input-content-container label{
+    font-size: x-small;
+    color: rgb(163, 163, 163);
+}
+#user-list-table tr{
+    background-color: #292a2b;
+}
+#user-list-table tr:nth-child(even){
+    background-color: #3e444a;
+}
+#user-list-table th{
+    background-color: #3e444a;
+}
+#user-list-table td, #user-list-table th{
+    padding: 5px;
+    font-size: small;
+    position: relative;
+    text-align: center;
+    max-width: 200px;
+}
+.user-list-image{
+    width: 25%;
+    border: 1px solid rgb(160, 160, 160);
+    border-radius: 100%;
+}
+.change-privileges-btn{
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    display: none;
+}
+.change-privileges-btn:hover{
+    opacity: 0.6;
+}
+.change-privileges-button_up{
+    transform: rotate(360deg);
+}
+.change-privileges-button_down{
+    transform: rotate(180deg);
+}

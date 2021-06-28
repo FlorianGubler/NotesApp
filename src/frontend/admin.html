@@ -1,7 +1,7 @@
 <div id="includedContent"></div>
 <div id="loading"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {    options.async = true; });</script>
+<script>$.ajaxPrefilter(function (options, originalOptions, jqXHR) { options.async = true; });</script>
 <script>
     $(function () {
         $("#loading").load("loading.html");
@@ -11,17 +11,61 @@
     });
 </script>
 <link rel="stylesheet" href="assets/css/notes.css">
+<link rel="stylesheet" href="assets/css/admin.css">
 <div class="content-title-bar-container">
     <h1>Administrator Tools</h1>
 </div>
+<div class="content-container">
+    <div class="user-list-container">
+        <table id="user-list-table">
+            <tr>
+                <th>UserID</th>
+                <th>Benutzername</th>
+                <th>Email</th>
+                <th>Email Ok</th>
+                <th>Admin Rechte</th>
+                <th>Profilbild</th>
+            </tr>
+        </table>
+    </div>
+    <div class="input-content-container">
+        <fieldset id="create-subject-container">
+            <legend>Neues Fach erstellen</legend>
+            <div class="admin-create-input-containers">
+                <label for="create-subject-name-input">Fach Name</label>
+                <input id="create-subject-name-input" placeholder="Neues Fach" required>
+            </div>
+            <select id="create-subject-school-input">
+                <option disabled selected>-- Schule wählen --</option>
+            </select>
+            <div class="admin-create-input-containers">
+                <label for="create-subject-addtionaltag-input">Additional Tag</label>
+                <input id="create-subject-addtionaltag-input" placeholder="LAP">
+            </div>
+            <button onclick="createSubject();">Erstellen</button>
+        </fieldset>
+        <fieldset id="create-semester-container">
+            <legend>Neues Semester erstellen</legend>
+            <div class="admin-create-input-containers">
+                <label for="create-semester-name-input">Semester Tag</label>
+                <input id="create-semester-name-input" placeholder="Neues Semester" required>
+            </div>
+            <button onclick="createSemester();">Erstellen</button>
+        </fieldset>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
 <script>
+    document.getElementById("loading").style.display = "block";
     window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
     window.api.receive("fromMainC", (args) => {
         if (args.type == "replyUserData") {
             var response = JSON.parse(args.attributes);
             if (response != null) {
                 user_login = response;
+                if (user_login.admin != 1) {
+                    location.href = "home.html";
+                }
                 x = document.getElementsByClassName("use-user-name");
                 for (var i = 0; i < x.length; i++) {
                     x[i].innerHTML = response.username;
@@ -38,4 +82,125 @@
 
         }
     });
+    window.api.send("toMain", JSON.stringify({ type: 'AdminTools', cmd: 'GetUserList', attributes: "" }));
+    window.api.receive("fromMainZ", (args) => {
+        if (args.type == "AdminTools_ReplyUserList") {
+            users = JSON.parse(args.attributes);
+            userlist = document.getElementById("user-list-table");
+
+            users.forEach(user => {
+                userel = userlist.appendChild(document.createElement("tr"));
+                userel.className = "userlist-listel";
+
+                userid = userel.appendChild(document.createElement("td"));
+                userid.innerHTML = "#" + user.id;
+
+                username = userel.appendChild(document.createElement("td"));
+                username.innerHTML = user.username;
+
+                useremail = userel.appendChild(document.createElement("td"));
+                useremail.innerHTML = user.email;
+
+                useremailok = userel.appendChild(document.createElement("td"));
+                if (user.email_is_verified == 1) {
+                    useremailok.innerHTML = '<i class="fas fa-check userlist-correct"></i>';
+                }
+                else {
+                    useremailok.innerHTML = '<i class="fas fa-times userlist-false"></i>';
+                }
+
+                useradmin = userel.appendChild(document.createElement("td"));
+
+                if (user.admin == 1) {
+                    useradmin.innerHTML = '<i class="fas fa-check userlist-correct"></i>';
+                    btnchangeclass = "change-privileges-button_down";
+                    user.changePrivilegeTo = 0;
+                }
+                else {
+                    useradmin.innerHTML = '<i class="fas fa-times userlist-false"></i>';
+                    btnchangeclass = "change-privileges-button_up";
+                    user.changePrivilegeTo = 1;
+                }
+
+                useradminchange = useradmin.appendChild(document.createElement("button"));
+                useradminchange.id = "userlist-changeprivilege-" + user.id;
+                useradminchange.className = "change-privileges-btn " + btnchangeclass;
+                useradminchange.addEventListener("click", e => {
+                    updateUserPrivileges(user.id, user.changePrivilegeTo);
+                });
+                useradminchange.innerHTML = '<i class="fas fa-long-arrow-alt-up"></i>';
+
+                useradmin.addEventListener("mouseover", e => {
+                    document.getElementById("userlist-changeprivilege-" + user.id).style.display = "block";
+                });
+                useradmin.addEventListener("mouseout", e => {
+                    document.getElementById("userlist-changeprivilege-" + user.id).style.display = "none";
+                });
+
+                userpb = userel.appendChild(document.createElement("td"));
+                userpbimg = userpb.appendChild(document.createElement("img"));
+                userpbimg.className = "user-list-image";
+                userpbimg.src = "https://dekinotu.myhostpoint.ch/notes/assets/profilepictures/" + user.profilepicture;
+            });
+            document.getElementById("loading").style.display = "none";
+        }
+    });
+
+    window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'Schools', attributes: "" }));
+    window.api.receive("fromMainM", (args) => {
+        if (args.type == "replySemesters") {
+            schools = JSON.parse(args.attributes);
+            schoolsSelect = document.getElementById("create-subject-school-input");
+            schools.forEach(school => {
+                newoption = schoolsSelect.appendChild(document.createElement("option"));
+                newoption.value = school.id;
+                newoption.innerHTML = school.schoolName;
+            });
+        }
+    });
+
+    function createSemester() {
+        newsemestertag = document.getElementById("create-semester-name-input").value;
+        if (newsemestertag != "") {
+            window.api.send("toMain", JSON.stringify({ type: 'AdminTools', cmd: 'CreateSemester', attributes: JSON.stringify({ semesterTag: newsemestertag }) }));
+            window.api.receive("fromMainZ", (args) => {
+                if (args.type == "AdminTools_ReplyCreateSemester") {
+                    if (args.cmd) {
+                        location.reload();
+                    } else {
+
+                    }
+                }
+            });
+        }
+    }
+    function createSubject() {
+        newsubjectname = document.getElementById("create-subject-name-input").value;
+        newsubjectschool = document.getElementById("create-subject-school-input").value;
+        newsubjectaddtionaltag = document.getElementById("create-subject-addtionaltag-input").value;
+        if (newsubjectname != "" && newsubjectschool != undefined) {
+            window.api.send("toMain", JSON.stringify({ type: 'AdminTools', cmd: 'CreateSubject', attributes: JSON.stringify({ subjectName: newsubjectname, subjectSchool: newsubjectschool, additionalTag: newsubjectaddtionaltag }) }));
+            window.api.receive("fromMainZ", (args) => {
+                if (args.type == "AdminTools_ReplyCreateSubject") {
+                    if (args.cmd) {
+                        location.reload();
+                    } else {
+
+                    }
+                }
+            });
+        }
+    }
+    function updateUserPrivileges(userid, newPrivilege) {
+        window.api.send("toMain", JSON.stringify({ type: 'AdminTools', cmd: 'ChangeuserPrivileges', attributes: JSON.stringify({ userID: userid, newPrivilege: newPrivilege }) }));
+        window.api.receive("fromMainZ", (args) => {
+            if (args.type == "AdminTools_ReplyChangePrivileges") {
+                if (args.cmd) {
+                    location.reload();
+                } else {
+
+                }
+            }
+        });
+    }
 </script>
