@@ -59,14 +59,24 @@
     </nav>
     <div class="share-container" id="share-container">
         <div class="share-inner-container">
-            <h3>Noten Teilen</h3>
+            <div class="share-title-info-container">
+                <h3>Noten Teilen</h3>
+                <p id="share-info"><i class="fas fa-info-circle"></i></p>
+
+                <div id="share-info-text">
+                    <p>
+                        Diese Links werden nach ca. 1 Tag ungültig. Zudem ist zurzeit nur das BMS Notensharing möglich.
+                    </p>
+                </div>
+            </div>
 
             <button id="renew-share-link" onclick="renewSharelink();"><i class="fas fa-sync-alt"></i></button>
 
             <label>Sharelink</label>
             <div class="share-values-container">
                 <p id="share-link">testlink.com</p>
-                <button class="share-copy-btn" onclick="copySmth(document.getElementById('share-link').innerHTML);"><i
+                <button class="share-copy-btn"
+                    onclick="copySmth(document.getElementById('share-link').getAttribute('link'));"><i
                         class="fas fa-copy"></i></button>
             </div>
 
@@ -79,6 +89,14 @@
         </div>
     </div>
     <script>
+        el = document.getElementById("share-info");
+        el.addEventListener("mouseover", e => {
+            document.getElementById("share-info-text").style.display = "block";
+        })
+        el.addEventListener("mouseout", e => {
+            document.getElementById("share-info-text").style.display = "none";
+        })
+
         var user_login;
         window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
         window.api.receive("fromMainC", (args) => {
@@ -118,6 +136,9 @@
                     response = JSON.parse(args.attributes);
                     full_link = "https://dekinotu.myhostpoint.ch/notes/share.php?link=" + response.link;
                     document.getElementById("share-link").setAttribute("link", full_link);
+                    document.getElementById("share-link").addEventListener("click", e => {
+                        window.api.send('toMain', JSON.stringify({ type: 'Window', cmd: 'OpenExternal', attributes: JSON.stringify(full_link) }));
+                    });
                     document.getElementById("share-link").innerHTML = full_link.slice(0, 30) + "...";
                     document.getElementById("share-token").innerHTML = response.token;
                     document.getElementById("renew-share-link").classList.remove("renew-share-link-loading");
