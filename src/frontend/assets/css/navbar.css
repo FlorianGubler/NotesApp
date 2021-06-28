@@ -328,6 +328,38 @@ button:focus{
     position: absolute;
     top: 0;
     right: -10px;
+    font-size: small;
+}
+
+#internet-connection-failed{
+    position: absolute;
+    right: 0;
+    z-index: 150;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 150px;
+    background-color: rgba(243, 91, 91, 0.514);
+    border: 1px solid red;
+    margin: 10px;
+    animation: warn_message 3s;
+    opacity: 0;
+}
+#internet-connection-failed img{
+    width: 15px;
+    margin: 5px;
+}
+#internet-connection-failed p{
+    line-break: normal;
+    font-size: x-small;
+    margin: 10px;
+}
+
+@keyframes warn_message {
+    0% {right: -200px; opacity: 1;}
+    90% {opacity: 1;}
+    100% {right: 0px; opacity: 0;}
 }
 
 #share-info-text{

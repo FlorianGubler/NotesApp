@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
     type="text/css">
   <link rel="stylesheet" href="assets/css/login.css" type="text/css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/jquery.js"></script>
   <script src="https://use.fontawesome.com/releases/v5.9.0/js/all.js" data-auto-replace-svg></script>
   <script>$.ajaxPrefilter(function (options, originalOptions, jqXHR) { options.async = true; });</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,11 +32,11 @@
         <h2>ProMarks</h2>
       </div>
       <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="email" placeholder="Enter Email" id="uname" required>
+        <label for="uname"><b>E-Mail</b></label>
+        <input type="email" placeholder="E-Mail eingeben" id="uname" required>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" id="psw" required>
+        <input type="password" placeholder="Passwort eingeben" id="psw" required>
 
         <button type="submit">Login</button>
         <label>
@@ -56,10 +56,21 @@
     </form>
   </div>
 
+  <div id="internet-connection-failed">
+    <img src="assets/img/ban.svg" alt="ban-icon">
+    <p>Es konnte keine Verbindung zum Server hergestellt werden</p>
+  </div>
+
   <script>
 
     document.getElementById("login").style.display = "none";
     document.getElementById("loading").style.display = "block";
+
+    window.api.receive("internet-connection-error", (args) => {
+      if (args.CONNECTION == "FAILED") {
+        document.getElementById("internet-connection-failed").style.display = "flex";
+      }
+    });
 
     //AutoLogin Check
     window.api.send("toMain", JSON.stringify({ type: 'CheckData', cmd: 'AutoLogin', attributes: "" }));

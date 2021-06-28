@@ -5,21 +5,11 @@ let base64 = require('base-64');
 const fetch = require("node-fetch")
 const exec = require("child_process").exec;
 const FormData = require('form-data');
-const { exit } = require('process');
 
 const appName = "ProMarks";
 const iconPath = 'frontend/assets/img/icon.png';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
-// require('dns').resolve('www.google.com', function (err) {
-//   if (err) {
-//     alert("No internet Connection");
-//     exit;
-//   } else{
-//     console.log("connected");
-//   }
-// });
 
 var win;
 var trayIcon;
@@ -44,7 +34,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: true,
+    frame: false,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -118,6 +108,10 @@ function createTray() {
 
 app.whenReady().then(init);
 
+function sendInternetFailure(error) {
+  win.webContents.send('internet-connection-error', JSON.stringify({CONNECTION: 'FAILED'}));
+}
+
 async function getData(action) {
   let headers = new fetch.Headers();
   headers.append('Content-Type', 'application/json');
@@ -135,8 +129,10 @@ async function getData(action) {
     body: raw,
     redirect: 'follow'
   };
+  try {
+    var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
+  } catch (e) { sendInternetFailure(e); return false; }
 
-  var response = await fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions);
   if (response.status != 200) {
     console.log("GetDataAPI: " + response.status);
   }
@@ -157,7 +153,13 @@ async function setData(body, url = 'https://dekinotu.myhostpoint.ch/notes/dbapi/
     redirect: 'follow'
   };
 
-  var response = await fetch(url, requestOptions);
+  try {
+    var response = await fetch(url, requestOptions);
+  } catch (e) {
+    sendInternetFailure(e);
+    return false;
+  }
+
   if (response.status != 200) {
     console.log("SetDataAPI: " + response.status);
   }
@@ -176,8 +178,12 @@ async function setDataWithResponse(body, url = 'https://dekinotu.myhostpoint.ch/
     body: raw,
     redirect: 'follow'
   };
-
-  var response = await fetch(url, requestOptions);
+  try {
+    var response = await fetch(url, requestOptions);
+  } catch (e) {
+    sendInternetFailure(e);
+    return false;
+  }
   if (response.status != 200) {
     console.log("SetDataAPI: " + response.status);
   }
@@ -209,7 +215,7 @@ function GetStickyNotes(event) {
     .then(data => event.reply('fromMainD', JSON.stringify({ type: "replyStickyNotes", cmd: "", attributes: JSON.stringify(data) })))
 }
 
-function GetShareLink(event){
+function GetShareLink(event) {
   getData("GetShareLink")
     .then(data => event.reply('fromMainM', JSON.stringify({ type: "replyShareLink", cmd: "", attributes: JSON.stringify(data) })))
 }
@@ -236,24 +242,32 @@ function checkLogin(event, loginData) {
     body: raw,
     redirect: 'follow'
   };
-  fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
-    if (result.status == 200) {
-      login = true
-    }
-    else {
-      login = false
-    }
-    event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(login) }));
-    if (loginData.remember && login == true) {
-      fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
-        if (err) return console.log(err);
-      });
-    }
-    return result.json();
-  }).then(json => {
-    login_user = json
-    login_user.password = loginData.password;
-  }).catch(err => console.log("error in login fetch: ", err));
+  try {
+    fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
+      if (result.status == 200) {
+        login = true
+      }
+      else {
+        login = false
+      }
+      event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(login) }));
+      if (loginData.remember && login == true) {
+        fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
+          if (err) return console.log(err);
+        });
+      }
+      return result.json();
+    }).then(json => {
+      login_user = json
+      login_user.password = loginData.password;
+    }).catch(e => {
+      sendInternetFailure(e);
+      return false;
+    });
+  } catch (e) {
+    sendInternetFailure(e);
+    return false;
+  }
 }
 
 function checkAutoLogin(event) {
@@ -308,15 +322,24 @@ function reloadUserData() {
     body: raw,
     redirect: 'follow'
   };
-  fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
-    if (result.status == 200) {
-      return result.json();
-    }
-  }).then(json => {
-    password = login_user.password
-    login_user = json
-    login_user.password = password;
-  }).catch(err => console.log("error in reload user data: ", err));
+  try {
+    fetch('https://dekinotu.myhostpoint.ch/notes/dbapi/', requestOptions).then((result) => {
+      if (result.status == 200) {
+        return result.json();
+      }
+    }).then(json => {
+      password = login_user.password
+      login_user = json
+      login_user.password = password;
+    }).catch(e => {
+      sendInternetFailure(e);
+      return false;
+    })
+  } catch (e) {
+    sendInternetFailure(e);
+    return false;
+  }
+
 }
 
 function getUserData() {
@@ -461,20 +484,24 @@ function uploadPB(event, data) {
     body: form
   };
 
-  fetch("https://dekinotu.myhostpoint.ch/notes/dbapi/uploadpb/", options)
-    .then(res => {
-      if (res.ok) {
-        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: true, attributes: "" }));
-        fs.unlinkSync(filePath)
-      } else {
-        console.log(res);
-        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Fehler beim Upload") }));
-      }
-    }).catch((e) => {
-      event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Interner Fehler") }));
-    });
-
-
+  try {
+    fetch("https://dekinotu.myhostpoint.ch/notes/dbapi/uploadpb/", options)
+      .then(res => {
+        if (res.ok) {
+          event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: true, attributes: "" }));
+          fs.unlinkSync(filePath)
+        } else {
+          console.log(res);
+          event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Fehler beim Upload") }));
+        }
+      }).catch(e => {
+        sendInternetFailure(e);
+        event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Interner Fehler") }));
+      })
+  } catch (e) {
+    sendInternetFailure(e);
+    event.reply('fromMainC', JSON.stringify({ type: "replyPBUpload", cmd: false, attributes: JSON.stringify("Interner Fehler") }));
+  }
 }
 
 function checkMode(event) {

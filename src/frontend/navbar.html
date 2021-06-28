@@ -13,6 +13,7 @@
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" data-auto-replace-svg></script>
     <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
     <script src="assets/js/copy.js"></script>
+    <script src="assets/js/sleep.js"></script>
 </head>
 
 <body>
@@ -88,6 +89,10 @@
             </div>
         </div>
     </div>
+    <div id="internet-connection-failed">
+        <img src="assets/img/ban.svg" alt="ban-icon">
+        <p>Es konnte keine Verbindung zum Server hergestellt werden</p>
+    </div>
     <script>
         el = document.getElementById("share-info");
         el.addEventListener("mouseover", e => {
@@ -96,6 +101,12 @@
         el.addEventListener("mouseout", e => {
             document.getElementById("share-info-text").style.display = "none";
         })
+
+        window.api.receive("internet-connection-error", (args) => {
+            if (args.CONNECTION == "FAILED") {
+                document.getElementById("internet-connection-failed").style.display = "flex";
+            }
+        });
 
         var user_login;
         window.api.send("toMain", JSON.stringify({ type: 'GetData', cmd: 'UserData', attributes: "" }));
@@ -134,16 +145,20 @@
             window.api.receive("fromMainM", (args) => {
                 if (args.type == "replyShareLink") {
                     response = JSON.parse(args.attributes);
-                    full_link = "https://dekinotu.myhostpoint.ch/notes/share.php?link=" + response.link;
-                    document.getElementById("share-link").setAttribute("link", full_link);
-                    document.getElementById("share-link").addEventListener("click", e => {
-                        window.api.send('toMain', JSON.stringify({ type: 'Window', cmd: 'OpenExternal', attributes: JSON.stringify(full_link) }));
-                    });
-                    document.getElementById("share-link").innerHTML = full_link.slice(0, 30) + "...";
-                    document.getElementById("share-token").innerHTML = response.token;
-                    document.getElementById("renew-share-link").classList.remove("renew-share-link-loading");
+                    showNewShareLink(response);
                 }
             });
+        }
+        async function showNewShareLink(response) {
+            await sleep(2000);
+            full_link = "https://dekinotu.myhostpoint.ch/notes/share.php?link=" + response.link;
+            document.getElementById("share-link").setAttribute("link", full_link);
+            document.getElementById("share-link").addEventListener("click", e => {
+                window.api.send('toMain', JSON.stringify({ type: 'Window', cmd: 'OpenExternal', attributes: JSON.stringify(full_link) }));
+            });
+            document.getElementById("share-link").innerHTML = full_link.slice(0, 30) + "...";
+            document.getElementById("share-token").innerHTML = response.token;
+            document.getElementById("renew-share-link").classList.remove("renew-share-link-loading");
         }
         renewSharelink();
     </script>
