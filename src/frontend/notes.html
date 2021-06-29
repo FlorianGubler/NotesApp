@@ -166,7 +166,12 @@
                     StickyNoteListElContainer.className = "stickynotelistelementContainer";
 
                     stickNoteListElTitle = StickyNoteListElContainer.appendChild(document.createElement("p"));
-                    stickNoteListElTitle.innerHTML = note.title;
+                    MAX_NOTES_TITLE_LENGTH = 10;
+                    if(note.title.length > MAX_NOTES_TITLE_LENGTH){
+                        stickNoteListElTitle.innerHTML = note.title.slice(0, MAX_NOTES_TITLE_LENGTH) + "...";
+                    } else {
+                        stickNoteListElTitle.innerHTML = note.title;
+                    }
                     stickNoteListElTitle.className = "stickynotelistelementTitle";
 
                     stickNoteListElTime = StickyNoteListElContainer.appendChild(document.createElement("p"));

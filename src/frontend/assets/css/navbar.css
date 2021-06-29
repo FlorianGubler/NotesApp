@@ -251,7 +251,10 @@ button:focus{
 #site-download-update svg * {
     fill: #6fce43;
 }
-
+#titlebar{
+    position: relative;
+    z-index: 1000;
+}
 #titlebar-shareIcon{
     z-index: 100000;
     position: absolute;
@@ -385,7 +388,7 @@ button:focus{
 
 #retry svg{
     margin: 5px;
-    transform: scale(0.8);
+    transform: scale(0.65);
 }
 
 #retry path{
@@ -394,7 +397,7 @@ button:focus{
 
 #retry p{
     color: rgb(101, 171, 252);
-    font-size: smaller;
+    font-size: x-small;
 }
 
 @keyframes retryPopUp {

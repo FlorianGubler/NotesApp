@@ -109,7 +109,7 @@ function createTray() {
 app.whenReady().then(init);
 
 function sendInternetFailure(error) {
-  win.webContents.send('internet-connection-error', JSON.stringify({CONNECTION: 'FAILED'}));
+  win.webContents.send('internet-connection-error', JSON.stringify({ CONNECTION: 'FAILED' }));
 }
 
 async function getData(action) {
@@ -271,13 +271,17 @@ function checkLogin(event, loginData) {
 }
 
 function checkAutoLogin(event) {
-  var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', { encoding: 'utf8', flag: 'r' });
-  if (autoLoginData != "" && autoLoginData != null) {
-    var autoLoginData = JSON.parse(autoLoginData);
-    autoLoginData.remember = false;
-    checkLogin(event, autoLoginData)
-  }
-  else {
+  try {
+    var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', { encoding: 'utf8', flag: 'r' });
+    if (autoLoginData != "" && autoLoginData != null) {
+      var autoLoginData = JSON.parse(autoLoginData);
+      autoLoginData.remember = false;
+      checkLogin(event, autoLoginData)
+    }
+    else {
+      event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(false) }));
+    }
+  } catch {
     event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(false) }));
   }
 }
