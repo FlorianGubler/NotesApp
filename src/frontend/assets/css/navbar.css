@@ -358,10 +358,49 @@ button:focus{
 
 @keyframes warn_message {
     0% {right: -200px; opacity: 1;}
-    90% {opacity: 1;}
+    85% {opacity: 1;}
     100% {right: 0px; opacity: 0;}
 }
 
+#retry{
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: fit-content;
+    z-index: 99;
+    cursor: pointer;
+    border-radius: 10px;
+    animation: retryPopUp 2s;
+}
+
+#retry:hover{
+    opacity: 0.6;
+}
+
+#retry svg{
+    margin: 5px;
+    transform: scale(0.8);
+}
+
+#retry path{
+    fill: rgb(68, 68, 238);
+}
+
+#retry p{
+    color: rgb(101, 171, 252);
+    font-size: smaller;
+}
+
+@keyframes retryPopUp {
+    from {top: -100px; opacity: 0;}
+    to {top: 10%; opacity: 1;}
+}
 #share-info-text{
     display: none;
     position: absolute;

@@ -1,11 +1,11 @@
 *{
-	user-drag: none; 
+	user-drag: none;
 }
 body {
 	overflow: hidden;
 }
 img{
-	user-drag: none; 
+	user-drag: none;
 	user-select: none;
 }
 .ui-titlebar {
@@ -16,7 +16,7 @@ img{
 	background-color: #3e444a;
 	user-select: none;
 	cursor: default;
-} 
+}
 .ui-titleicon {
 	flex-grow: 1;
 	max-width: 32px;
@@ -34,6 +34,7 @@ img{
 	font: 12px/32px "Segoe UI", Arial, sans-serif;
 	color: #fff;
 	text-indent: 10px;
+	z-index: 150;
 }
 .ui-titlecontrols {
 	max-width: 144px;
@@ -54,8 +55,8 @@ img{
 .ui-btn.close:hover {
 	background: #e81123;
 }
-.ui-btn svg path, 
-.ui-btn svg rect, 
+.ui-btn svg path,
+.ui-btn svg rect,
 .ui-btn svg polygon {
 	fill: #fff;
 }

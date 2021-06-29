@@ -34,7 +34,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: false,
+    frame: true,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
