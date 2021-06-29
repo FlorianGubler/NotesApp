@@ -53,7 +53,8 @@
                     Admin Tools</a></li>
             <li><a onclick="logout();" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
-        <div class="copyright-nav">
+        <div class="copyright-nav" style="cursor: pointer;"
+            onclick='window.api.send("toMain", JSON.stringify({ type: "Window", cmd: "OpenExternal", attributes: JSON.stringify("https://dekinotu.myhostpoint.ch/notes/") }))'>
             <img src="assets/img/icon.png">
             <p>&copy; by Florian Gubler 2021 ZLI BLJ</p>
         </div>

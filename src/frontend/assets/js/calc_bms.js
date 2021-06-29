@@ -37,6 +37,21 @@ function getNotesData(semester) {
                         subjects[subj].forEach(note => {
                             var td = document.createElement("td");
                             td.innerHTML = note.value;
+                            td.style.position = "relative";
+                            notetitle = td.appendChild(document.createElement("p"));
+                            MAX_EXAM_TITLE_LENGTH = 20;
+                            if(note.examName.length > MAX_EXAM_TITLE_LENGTH){
+                                notetitle.innerHTML = note.examName.slice(0, MAX_EXAM_TITLE_LENGTH) + "...";
+                            } else {
+                                notetitle.innerHTML = note.examName;
+                            }
+                            notetitle.className = "bms-note-title";
+                            td.addEventListener("mouseover", e => {
+                                td.getElementsByClassName("bms-note-title")[0].style.display = "block";
+                            });
+                            td.addEventListener("mouseout", e => {
+                                td.getElementsByClassName("bms-note-title")[0].style.display = "none";
+                            });
                             if (note.value > 4) {
                                 td.classList.add("grade-good");
                             }

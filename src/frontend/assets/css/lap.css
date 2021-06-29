@@ -105,7 +105,7 @@ td, th{
     margin-right: 20px;
     margin: 20px;
 }
-.table-split{    
+.table-split{
     border-radius: 5px;
     margin: 5px;
     width: 2px;
@@ -133,6 +133,16 @@ td, th{
 }
 #table-notes-norm td, #table-notes-norm th{
     padding: 10px;
+}
+.lap-note-title{
+    position: absolute;
+    top: 0;
+    right: 0px;
+    display: none;
+    background-color: #1c1c1c8c;
+    border: 1px solid rgba(255, 255, 255, 0.548);
+    padding: 5px;
+    font-size: xx-small;
 }
 .grade-bad{
     color: #ff0000;
