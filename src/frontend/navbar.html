@@ -76,7 +76,7 @@
 
             <label>Sharelink</label>
             <div class="share-values-container">
-                <p id="share-link">testlink.com</p>
+                <p id="share-link">example.com</p>
                 <button class="share-copy-btn"
                     onclick="copySmth(document.getElementById('share-link').getAttribute('link'));"><i
                         class="fas fa-copy"></i></button>
@@ -84,7 +84,7 @@
 
             <label>Token</label>
             <div class="share-values-container">
-                <p id="share-token">111111</p>
+                <p id="share-token">123456</p>
                 <button class="share-copy-btn" onclick="copySmth(document.getElementById('share-token').innerHTML);"><i
                         class="fas fa-copy"></i></button>
             </div>
@@ -173,8 +173,7 @@
             document.getElementById("share-token").innerHTML = response.token;
             document.getElementById("renew-share-link").classList.remove("renew-share-link-loading");
         }
-        renewSharelink();
-    </script>
+        </script>
 </body>
 
 </html>

@@ -7,7 +7,7 @@ const exec = require("child_process").exec;
 const FormData = require('form-data');
 
 const appName = "ProMarks";
-const iconPath = 'frontend/assets/img/icon.png';
+const iconPath = 'resources/app/frontend/assets/img/icon.png';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -34,7 +34,7 @@ function shutdown() {
 function createWindow() {
   win = new BrowserWindow({
     show: false,
-    frame: true,
+    frame: false,
     center: true,
     backgroundColor: '#1c1c1c',
     resizable: true,
@@ -42,7 +42,7 @@ function createWindow() {
     minHeight: WinminHeight,
     alwaysOnTop: false,
     titleBarStyle: "hidden",
-    icon: "frontend/assets/img/logo.png",
+    icon: "resources/app/frontend/assets/img/logo.png",
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -252,7 +252,7 @@ function checkLogin(event, loginData) {
       }
       event.reply('fromMainA', JSON.stringify({ type: "replyLogin", cmd: "", attributes: JSON.stringify(login) }));
       if (loginData.remember && login == true) {
-        fs.writeFile('frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
+        fs.writeFile('resources/app/frontend/assets/data/data.json', JSON.stringify(loginData), function (err) {
           if (err) return console.log(err);
         });
       }
@@ -272,7 +272,7 @@ function checkLogin(event, loginData) {
 
 function checkAutoLogin(event) {
   try {
-    var autoLoginData = fs.readFileSync('frontend/assets/data/data.json', { encoding: 'utf8', flag: 'r' });
+    var autoLoginData = fs.readFileSync('resources/app/frontend/assets/data/data.json', { encoding: 'utf8', flag: 'r' });
     if (autoLoginData != "" && autoLoginData != null) {
       var autoLoginData = JSON.parse(autoLoginData);
       autoLoginData.remember = false;
@@ -310,7 +310,7 @@ function uploadNotes(event, data) {
 
 function logout() {
   login_user = null;
-  fs.writeFile('frontend/assets/data/data.json', "", function (err) {
+  fs.writeFile('resources/app/frontend/assets/data/data.json', "", function (err) {
     if (err) return console.log(err);
   });
 }
@@ -438,7 +438,7 @@ function UploadPB_GetTmpFilePath(event) {
     allowedFileTypes = ["png", "jpg", "gif"];
     if (result.filePaths[0] != undefined) {
       if (allowedFileTypes.includes(result.filePaths[0].split(".")[(result.filePaths[0].split(".").length - 1)].toLowerCase())) {
-        const tmp_filePath = "frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
+        const tmp_filePath = "resources/app/frontend/assets/img/tmp_uploadPB/" + path.basename(result.filePaths[0]);
         fs.copyFile(result.filePaths[0], tmp_filePath, (err) => {
           if (err) {
             console.log("Error Found:", err);
