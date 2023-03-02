@@ -1,6 +1,6 @@
-# Simple Notes Calculator by Florian Gubler with NODEJS
+# Simple Notes Calculator App with NODEJS
 
-Simple Electron App to manage my Grades in School.
+Electron App to manage my Grades in School.
 To use it please request an account by me. 
 
 *Npm Commands:*
